@@ -1,0 +1,27 @@
+discovery:
+  image: mateuszsojka/eureka-service
+  container_name: eureka-service
+  ports:
+   - "8761:8761"
+hystrix:
+  image: mateuszsojka/hystrix-dashboard
+  container_name: hystrix-dashboard
+  ports:
+   - "7979:7979"
+  links:
+   - discovery
+configserver:
+  image: mateuszsojka/config-server
+  container_name: config-server
+  ports:
+   - "8888:8888"
+  links:
+   - discovery
+authservice:
+  image: mateuszsojka/auth-service
+  container_name: auth-service
+  external_links:
+   - usersdb:users_database
+  links:
+   - discovery
+   - configserver
