@@ -1,6 +1,8 @@
 spring:
   application:
     name: auth-service
+  profiles:
+    active: development
   datasource:
     url: jdbc:postgresql://172.17.0.2:5432/usersdb
     username: sysadm
