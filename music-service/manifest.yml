@@ -1,10 +1,10 @@
 ---
 applications:
-- name: auth-service
-  host: auth-service-${random-word}
+- name: music-service
+  host: music-service-${random-word}
   memory: 512M
   instances: 1
   timeout: 90
-  path: target/auth-service-0.1.jar
+  path: target/music-service-0.1.jar
   env:
 SPRING_PROFILES_ACTIVE: development
