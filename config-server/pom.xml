@@ -21,7 +21,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
         <docker.image.prefix>mateuszsojka</docker.image.prefix>
-        <start-class>services.Application</start-class>
+        <start-class>pl.polsl.ConfigServerApplication</start-class>
     </properties>
 
     <dependencies>

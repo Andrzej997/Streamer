@@ -1,6 +1,5 @@
 package pl.polsl.repository;
 
-import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import pl.polsl.model.Users;
@@ -10,7 +9,7 @@ import pl.polsl.model.Users;
  */
 @org.springframework.stereotype.Repository
 @RepositoryRestResource
-public interface UsersRepository extends CrudRepository<Users, Long>, UsersRepositoryCustom, QueryDslPredicateExecutor {
+public interface UsersRepository extends CrudRepository<Users, Long>, UsersRepositoryCustom {
 
     Users findByUserNameAndPassword(String username, String password);
 
