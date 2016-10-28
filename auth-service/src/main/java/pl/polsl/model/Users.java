@@ -12,17 +12,6 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Table(name = "USERS", schema = "users_schema", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_name", "email"})})
 public class Users extends BaseEntity {
-    private Long userId;
-    private String userName;
-    private String password;
-    private String name;
-    private String surname;
-    private String nationality;
-    private String email;
-
-    public Users() {
-
-    }
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -37,6 +26,39 @@ public class Users extends BaseEntity {
 
             })
     @GeneratedValue(generator = "generator")
+    private Long userId;
+
+    @Basic
+    @Column(name = "user_name", nullable = false, length = 255)
+    @NotNull
+    private String userName;
+
+    @Basic
+    @Column(name = "password", nullable = false, length = 255)
+    @NotNull
+    private String password;
+
+    @Basic
+    @Column(name = "name", nullable = true, length = 255)
+    private String name;
+
+    @Basic
+    @Column(name = "surname", nullable = true, length = 255)
+    private String surname;
+
+    @Basic
+    @Column(name = "nationality", nullable = true, length = 255)
+    private String nationality;
+
+    @Basic
+    @Column(name = "email", nullable = false, length = 1024)
+    @NotNull
+    private String email;
+
+    public Users() {
+
+    }
+
     public Long getUserId() {
         return userId;
     }
@@ -45,9 +67,6 @@ public class Users extends BaseEntity {
         this.userId = userId;
     }
 
-    @Basic
-    @Column(name = "user_name", nullable = false, length = 255)
-    @NotNull
     public String getUserName() {
         return userName;
     }
@@ -56,9 +75,6 @@ public class Users extends BaseEntity {
         this.userName = userName;
     }
 
-    @Basic
-    @Column(name = "password", nullable = false, length = 255)
-    @NotNull
     public String getPassword() {
         return password;
     }
@@ -67,8 +83,6 @@ public class Users extends BaseEntity {
         this.password = password;
     }
 
-    @Basic
-    @Column(name = "name", nullable = true, length = 255)
     public String getName() {
         return name;
     }
@@ -77,8 +91,6 @@ public class Users extends BaseEntity {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "surname", nullable = true, length = 255)
     public String getSurname() {
         return surname;
     }
@@ -87,8 +99,6 @@ public class Users extends BaseEntity {
         this.surname = surname;
     }
 
-    @Basic
-    @Column(name = "nationality", nullable = true, length = 255)
     public String getNationality() {
         return nationality;
     }
@@ -97,9 +107,6 @@ public class Users extends BaseEntity {
         this.nationality = nationality;
     }
 
-    @Basic
-    @Column(name = "email", nullable = false, length = 1024)
-    @NotNull
     public String getEmail() {
         return email;
     }
