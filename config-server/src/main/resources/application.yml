@@ -18,3 +18,7 @@ spring:
       server:
         git:
           uri: https://github.com/Andrzej997/Streamer-Spring-Cloud-Config-Server
+          force-pull: true
+        default-profile: docker
+      discovery:
+        enabled: true

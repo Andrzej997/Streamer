@@ -7,4 +7,5 @@ applications:
   disk: 256M
   timeout: 90
   path: target/auth-service-0.1.jar
-SPRING_PROFILES_ACTIVE: cloud
+  env:
+    SPRING_PROFILES_ACTIVE: cloud
