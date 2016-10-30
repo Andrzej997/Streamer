@@ -1,10 +1,10 @@
 ---
 applications:
 - name: ebook-service
-  host: ebook-service-${random-word}
+  host: ebook-service-mateuszsojka
   memory: 512M
+  disk: 256M
   instances: 1
   timeout: 90
   path: target/ebook-service-0.1.jar
-  env:
-SPRING_PROFILES_ACTIVE: development
+SPRING_PROFILES_ACTIVE: cloud

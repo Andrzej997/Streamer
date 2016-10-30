@@ -1,10 +1,9 @@
 ---
 applications:
 - name: music-service
-  host: music-service-${random-word}
+  host: music-service-mateuszsojka
   memory: 512M
   instances: 1
   timeout: 90
   path: target/music-service-0.1.jar
-  env:
-SPRING_PROFILES_ACTIVE: development
+SPRING_PROFILES_ACTIVE: cloud

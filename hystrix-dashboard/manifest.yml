@@ -1,0 +1,10 @@
+---
+applications:
+- name: hystrix-dashboard
+  host: hystrix-dashboard-mateuszsojka
+  memory: 512M
+  disk: 256M
+  instances: 1
+  timeout: 90
+  path: target/hystrix-dashboard-0.1.jar
+SPRING_PROFILES_ACTIVE: cloud

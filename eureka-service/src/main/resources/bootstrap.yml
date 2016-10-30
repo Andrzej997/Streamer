@@ -3,3 +3,8 @@ spring:
     name: eureka-service
   profiles:
     active: development
+
+  cloud:
+    config:
+      discovery:
+        enabled: true

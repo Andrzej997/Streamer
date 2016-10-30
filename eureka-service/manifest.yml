@@ -1,10 +1,10 @@
 ---
 applications:
-- name: config-server
-  host: config-server-mateuszsojka
+- name: eureka-service
+  host: eureka-service-mateuszsojka
   memory: 512M
   disk: 256M
   instances: 1
   timeout: 90
-  path: target/config-server-0.1.jar
+  path: target/eureka-service-0.1.jar
 SPRING_PROFILES_ACTIVE: cloud

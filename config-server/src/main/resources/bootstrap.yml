@@ -3,3 +3,7 @@ spring:
     name: config-server
   profiles:
     active: development
+  cloud:
+    config:
+      discovery:
+        enabled: true

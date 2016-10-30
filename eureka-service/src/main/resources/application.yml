@@ -4,9 +4,14 @@ server:
 eureka:
   instance:
     hostname: eureka-service
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
   client:
     registerWithEureka: false
     fetchRegistry: false
     serviceUrl:
       defaultZone: http://eureka-service:${server.port}/eureka/
+  server:
+    enable-self-preservation: false
+
 spring.cloud.config.discovery.enabled: true

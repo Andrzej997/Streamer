@@ -1,10 +1,9 @@
 ---
 applications:
 - name: image-service
-  host: image-service-${random-word}
+  host: image-service-mateuszsojka
   memory: 512M
   instances: 1
   timeout: 90
   path: target/image-service-0.1.jar
-  env:
-SPRING_PROFILES_ACTIVE: development
+SPRING_PROFILES_ACTIVE: cloud

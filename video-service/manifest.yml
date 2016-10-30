@@ -1,10 +1,10 @@
 ---
 applications:
 - name: video-service
-  host: video-service-${random-word}
+  host: video-service-mateuszsojka
   memory: 512M
+  disk: 256M
   instances: 1
   timeout: 90
   path: target/video-service-0.1.jar
-  env:
-SPRING_PROFILES_ACTIVE: development
+SPRING_PROFILES_ACTIVE: cloud

@@ -1,10 +1,10 @@
 ---
 applications:
 - name: auth-service
-  host: auth-service-${random-word}
+  host: auth-service-mateuszsojka
   memory: 512M
   instances: 1
+  disk: 256M
   timeout: 90
   path: target/auth-service-0.1.jar
-  env:
-SPRING_PROFILES_ACTIVE: development
+SPRING_PROFILES_ACTIVE: cloud

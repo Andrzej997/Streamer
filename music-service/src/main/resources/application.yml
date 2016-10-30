@@ -1,5 +1,5 @@
 server:
-  port: 9000
+  port: 9006
 
 eureka:
   client:
@@ -7,6 +7,8 @@ eureka:
       defaultZone: http://eureka-service:8761/eureka/
   instance:
     preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
 
 ribbon:
   eureka:
