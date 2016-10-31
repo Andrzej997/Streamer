@@ -1,8 +1,23 @@
 spring:
+  profiles: development
   application:
     name: hystrix-dashboard
-  profiles:
-    active: development
   cloud:
     config:
-      uri: ${vcap.services.${PREFIX:}configserver.credentials.uri:http://user:password@localhost:8888}
+      uri: http://localhost:8888
+---
+spring:
+  profiles: docker
+  application:
+    name: hystrix-dashboard
+  cloud:
+    config:
+      uri: http://config-service:8888
+---
+spring:
+  profiles: cloud
+  application:
+    name: hystrix-dashboard
+  cloud:
+    config:
+      uri: http://config-server-mateuszsojka.cfapps.io:8888/

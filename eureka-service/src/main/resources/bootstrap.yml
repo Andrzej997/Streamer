@@ -1,10 +1,29 @@
 spring:
+  profiles: development
   application:
     name: eureka-service
-  profiles:
-    active: development
-
   cloud:
     config:
+      uri: http://localhost:8888
+      discovery:
+        enabled: true
+---
+spring:
+  profiles: docker
+  application:
+    name: eureka-service
+  cloud:
+    config:
+      uri: http://config-service:8888
+            discovery:
+              enabled: true
+---
+spring:
+  profiles: cloud
+  application:
+    name: eureka-service
+  cloud:
+    config:
+      uri: http://config-server-mateuszsojka.cfapps.io:8888/
       discovery:
         enabled: true

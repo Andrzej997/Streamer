@@ -1,25 +1,23 @@
 spring:
+  profiles: development
   application:
     name: video-service
-  profiles:
-    active: development
-  datasource:
-    url: jdbc:postgresql://172.17.0.4:5432/ebookdb
-    username: sysadm
-    password: sysadm
-    driver-class-name: org.postgresql.Driver
-    auto-commit: true
-    connection-timeout: 1000
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    database: POSTGRESQL
   cloud:
     config:
-      uri: http://config-server:8888
-encrypt:
-  failOnError: false
-logging:
-  file: log.txt
-  level: error
+      uri: http://localhost:8888
+---
+spring:
+  profiles: docker
+  application:
+    name: video-service
+  cloud:
+    config:
+      uri: http://config-service:8888
+---
+spring:
+  profiles: cloud
+  application:
+    name: video-service
+  cloud:
+    config:
+      uri: http://config-server-mateuszsojka.cfapps.io:8888/

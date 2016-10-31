@@ -1,9 +1,13 @@
 spring:
   application:
     name: config-server
-  profiles:
-    active: development
   cloud:
     config:
       discovery:
         enabled: true
+      server:
+        git:
+          uri: https://github.com/Andrzej997/Streamer-Spring-Cloud-Config-Server
+          clone-on-start: true
+server:
+  port: 8888
