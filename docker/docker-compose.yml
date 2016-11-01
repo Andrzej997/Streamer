@@ -27,6 +27,8 @@ auth-service:
   image: mateuszsojka/auth-service
   container_name: auth-service
   restart: always
+  ports:
+   - 9000:9000
   external_links:
    - usersdb:usersdb
   links:
