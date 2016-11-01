@@ -53,15 +53,16 @@ public class Ebook extends BaseEntity {
     private Long ebookFileId;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id", referencedColumnName = "genre_id")
+    @JoinColumn(name = "genre_id", referencedColumnName = "genre_id", insertable = false, updatable = false)
     private LiteraryGenre literaryGenreByGenreId;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByOwnerId;
 
     @ManyToOne
-    @JoinColumn(name = "ebook_file_id", referencedColumnName = "ebook_file_id", nullable = false)
+    @JoinColumn(name = "ebook_file_id", referencedColumnName = "ebook_file_id", nullable = false,
+            updatable = false, insertable = false)
     private EbookFiles ebookFilesByEbookFileId;
 
     @OneToMany(mappedBy = "ebookByEbookId")

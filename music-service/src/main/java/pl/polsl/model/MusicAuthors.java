@@ -21,11 +21,11 @@ public class MusicAuthors extends BaseEntity {
     private Long songId;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "author_id", nullable = false)
+    @JoinColumn(name = "author_id", referencedColumnName = "author_id", nullable = false, insertable = false, updatable = false)
     private MusicArtists musicArtistsByAuthorId;
 
     @ManyToOne
-    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false, insertable = false, updatable = false)
     private Songs songsBySongId;
 
     public MusicAuthors() {

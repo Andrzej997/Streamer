@@ -5,6 +5,22 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    database: POSTGRESQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/imagedb
+    username: sysadm
+    password: sysadm
+    driver-class-name: org.postgresql.Driver
+    auto-commit: true
+    connection-timeout: 1000
 ---
 spring:
   profiles: docker
@@ -13,6 +29,22 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+      naming:
+        strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    database: POSTGRESQL
+  datasource:
+    url: jdbc:postgresql://imagedb:5432/imagedb
+    username: sysadm
+    password: sysadm
+    driver-class-name: org.postgresql.Driver
+    auto-commit: true
+    connection-timeout: 1000
 ---
 spring:
   profiles: cloud

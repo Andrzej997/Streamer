@@ -52,19 +52,19 @@ public class Videos extends BaseEntity {
     private Collection<PlaylistsVideos> playlistsVideosesByVideoId;
 
     @ManyToOne
-    @JoinColumn(name = "video_file_id", referencedColumnName = "video_file_id", nullable = false)
+    @JoinColumn(name = "video_file_id", referencedColumnName = "video_file_id", nullable = false, insertable = false, updatable = false)
     private VideoFiles videoFilesByVideoFileId;
 
     @ManyToOne
-    @JoinColumn(name = "film_genre_id", referencedColumnName = "film_genre_id")
+    @JoinColumn(name = "film_genre_id", referencedColumnName = "film_genre_id", insertable = false, updatable = false)
     private FilmGenres filmGenresByFilmGenreId;
 
     @ManyToOne
-    @JoinColumn(name = "video_serie_id", referencedColumnName = "video_serie_id")
+    @JoinColumn(name = "video_serie_id", referencedColumnName = "video_serie_id", insertable = false, updatable = false)
     private VideoSeries videoSeriesByVideoSerieId;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByOwnerId;
 
     @OneToMany(mappedBy = "videosByVideoId")

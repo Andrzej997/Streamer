@@ -33,7 +33,7 @@ public class UsersLibraries extends BaseEntity {
     private Collection<LibrariesEbooks> librariesEbooksesByLibraryId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByUserId;
 
     public UsersLibraries() {

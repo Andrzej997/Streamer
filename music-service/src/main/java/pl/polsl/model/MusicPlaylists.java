@@ -30,7 +30,7 @@ public class MusicPlaylists extends BaseEntity {
     private Timestamp creationDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByUserId;
 
     @OneToMany(mappedBy = "musicPlaylistsByPlaylistId")

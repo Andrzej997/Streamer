@@ -25,11 +25,11 @@ public class LibrariesEbooks extends BaseEntity {
     private Integer orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "library_id", referencedColumnName = "library_id", nullable = false)
+    @JoinColumn(name = "library_id", referencedColumnName = "library_id", nullable = false, insertable = false, updatable = false)
     private UsersLibraries usersLibrariesByLibraryId;
 
     @ManyToOne
-    @JoinColumn(name = "ebook_id", referencedColumnName = "ebook_id", nullable = false)
+    @JoinColumn(name = "ebook_id", referencedColumnName = "ebook_id", nullable = false, insertable = false, updatable = false)
     private Ebook ebookByEbookId;
 
     public LibrariesEbooks() {

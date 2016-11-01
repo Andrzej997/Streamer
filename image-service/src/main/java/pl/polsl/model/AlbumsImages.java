@@ -25,11 +25,11 @@ public class AlbumsImages extends BaseEntity {
     private Integer orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "album_id", referencedColumnName = "album_id", nullable = false)
+    @JoinColumn(name = "album_id", referencedColumnName = "album_id", nullable = false, insertable = false, updatable = false)
     private Albums albumsByAlbumId;
 
     @ManyToOne
-    @JoinColumn(name = "image_id", referencedColumnName = "image_id", nullable = false)
+    @JoinColumn(name = "image_id", referencedColumnName = "image_id", nullable = false, insertable = false, updatable = false)
     private Images imagesByImageId;
 
     public AlbumsImages() {

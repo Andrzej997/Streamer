@@ -21,11 +21,11 @@ public class VideosAuthors extends BaseEntity {
     private Long authorId;
 
     @ManyToOne
-    @JoinColumn(name = "video_id", referencedColumnName = "video_id", nullable = false)
+    @JoinColumn(name = "video_id", referencedColumnName = "video_id", nullable = false, insertable = false, updatable = false)
     private Videos videosByVideoId;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "director_id", nullable = false)
+    @JoinColumn(name = "author_id", referencedColumnName = "director_id", nullable = false, insertable = false, updatable = false)
     private Directors directorsByAuthorId;
 
     public VideosAuthors() {

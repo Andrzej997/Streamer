@@ -1,22 +1,56 @@
 spring:
   profiles: development
-  application:
-    name: eureka-service
+server:
+  port: 8761
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+eureka:
+  instance:
+    hostname: discovery
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+  server:
+    enable-self-preservation: false
   cloud:
     config:
       uri: http://localhost:8888
-      discovery:
-        enabled: true
 ---
 spring:
   profiles: docker
-  application:
-    name: eureka-service
+server:
+  port: 8761
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+eureka:
+  instance:
+    hostname: discovery
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
+  server:
+    enable-self-preservation: false
   cloud:
     config:
       uri: http://config-service:8888
-            discovery:
-              enabled: true
 ---
 spring:
   profiles: cloud
@@ -25,5 +59,3 @@ spring:
   cloud:
     config:
       uri: http://config-server-mateuszsojka.cfapps.io:8888/
-      discovery:
-        enabled: true

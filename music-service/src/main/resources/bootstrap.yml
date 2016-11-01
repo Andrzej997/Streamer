@@ -5,6 +5,18 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+    database: POSTGRESQL
+  datasource:
+    url: jdbc:postgresql://localhost:5432/musicdb
+    username: sysadm
+    password: sysadm
+    driver-class-name: org.postgresql.Driver
+    auto-commit: true
+    connection-timeout: 1000
 ---
 spring:
   profiles: docker
@@ -13,6 +25,18 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: none
+    database: POSTGRESQL
+  datasource:
+    url: jdbc:postgresql://musicdb:5432/musicdb
+    username: sysadm
+    password: sysadm
+    driver-class-name: org.postgresql.Driver
+    auto-commit: true
+    connection-timeout: 1000
 ---
 spring:
   profiles: cloud

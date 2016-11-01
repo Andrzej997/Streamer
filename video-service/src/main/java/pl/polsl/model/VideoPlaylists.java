@@ -33,7 +33,7 @@ public class VideoPlaylists extends BaseEntity {
     private Collection<PlaylistsVideos> playlistsVideosesByPlaylistId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByUserId;
 
     public VideoPlaylists() {

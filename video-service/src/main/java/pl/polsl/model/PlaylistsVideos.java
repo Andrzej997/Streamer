@@ -25,11 +25,11 @@ public class PlaylistsVideos extends BaseEntity {
     private Integer orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "playlist_id", referencedColumnName = "playlist_id", nullable = false)
+    @JoinColumn(name = "playlist_id", referencedColumnName = "playlist_id", nullable = false, insertable = false, updatable = false)
     private VideoPlaylists videoPlaylistsByPlaylistId;
 
     @ManyToOne
-    @JoinColumn(name = "video_id", referencedColumnName = "video_id", nullable = false)
+    @JoinColumn(name = "video_id", referencedColumnName = "video_id", nullable = false, insertable = false, updatable = false)
     private Videos videosByVideoId;
 
     public PlaylistsVideos() {

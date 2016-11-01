@@ -55,19 +55,19 @@ public class Songs extends BaseEntity {
     private Collection<MusicAuthors> musicAuthorsesBySongId;
 
     @ManyToOne
-    @JoinColumn(name = "file_id", referencedColumnName = "music_file_id", nullable = false)
+    @JoinColumn(name = "file_id", referencedColumnName = "music_file_id", nullable = false, insertable = false, updatable = false)
     private MusicFiles musicFilesByFileId;
 
     @ManyToOne
-    @JoinColumn(name = "album_id", referencedColumnName = "album_id")
+    @JoinColumn(name = "album_id", referencedColumnName = "album_id", insertable = false, updatable = false)
     private MusicAlbums musicAlbumsByAlbumId;
 
     @ManyToOne
-    @JoinColumn(name = "music_genre_id", referencedColumnName = "music_genre_id")
+    @JoinColumn(name = "music_genre_id", referencedColumnName = "music_genre_id", insertable = false, updatable = false)
     private MusicGenres musicGenresByMusicGenreId;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByOwnerId;
 
     public Long getSongId() {

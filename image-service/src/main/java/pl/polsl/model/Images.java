@@ -67,15 +67,15 @@ public class Images extends BaseEntity {
     private Collection<ImageAuthors> imageAuthorsesByImageId;
 
     @ManyToOne
-    @JoinColumn(name = "image_file_id", referencedColumnName = "image_file_id", nullable = false)
+    @JoinColumn(name = "image_file_id", referencedColumnName = "image_file_id", nullable = false, insertable = false, updatable = false)
     private ImageFiles imageFilesByImageFileId;
 
     @ManyToOne
-    @JoinColumn(name = "type_id", referencedColumnName = "type_id")
+    @JoinColumn(name = "type_id", referencedColumnName = "type_id", insertable = false, updatable = false)
     private ImageTypes imageTypesByTypeId;
 
     @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id")
+    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private Users usersByOwnerId;
 
     public Images() {

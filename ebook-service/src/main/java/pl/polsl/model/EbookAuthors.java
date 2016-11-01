@@ -21,11 +21,11 @@ public class EbookAuthors extends BaseEntity {
     private Long authorId;
 
     @ManyToOne
-    @JoinColumn(name = "ebook_id", referencedColumnName = "ebook_id", nullable = false)
+    @JoinColumn(name = "ebook_id", referencedColumnName = "ebook_id", nullable = false, insertable = false, updatable = false)
     private Ebook ebookByEbookId;
 
     @ManyToOne
-    @JoinColumn(name = "author_id", referencedColumnName = "writer_id", nullable = false)
+    @JoinColumn(name = "author_id", referencedColumnName = "writer_id", nullable = false, insertable = false, updatable = false)
     private Writers writersByAuthorId;
 
     public EbookAuthors() {

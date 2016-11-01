@@ -3,6 +3,7 @@ package pl.polsl.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
+import pl.polsl.model.EbookAuthors;
 import pl.polsl.model.EbookAuthorsPK;
 
 /**
@@ -10,6 +11,6 @@ import pl.polsl.model.EbookAuthorsPK;
  */
 @Repository
 @RepositoryRestResource
-public interface EbookAuthorsRepository extends CrudRepository<EbookRepository, EbookAuthorsPK> {
+public interface EbookAuthorsRepository extends CrudRepository<EbookAuthors, EbookAuthorsPK> {
 
 }

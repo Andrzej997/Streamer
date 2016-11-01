@@ -25,11 +25,11 @@ public class PlaylistsSongs extends BaseEntity {
     private Short orderNumber;
 
     @ManyToOne
-    @JoinColumn(name = "playlist_id", referencedColumnName = "playlist_id", nullable = false)
+    @JoinColumn(name = "playlist_id", referencedColumnName = "playlist_id", nullable = false, insertable = false, updatable = false)
     private MusicPlaylists musicPlaylistsByPlaylistId;
 
     @ManyToOne
-    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false, insertable = false, updatable = false)
     private Songs songsBySongId;
 
     public PlaylistsSongs() {
