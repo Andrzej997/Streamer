@@ -4,7 +4,10 @@ spring:
     name: ebook-service
   cloud:
     config:
-      uri: http://localhost:8888
+      failFast: true
+      uri: http://localhost:8888/
+      discovery:
+        serviceId: config-server
   jpa:
     show_sql: true
     hibernate:

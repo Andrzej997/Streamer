@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@SuppressWarnings("CanBeFinal")
 @Configuration
 @EnableAutoConfiguration(exclude = FreeMarkerAutoConfiguration.class)
 @EnableHystrix
@@ -37,6 +38,7 @@ public class HystrixDashboardApplicationTests {
 
 class Service {
 
+    @SuppressWarnings("SameReturnValue")
     @HystrixCommand
     public String hello() {
         return "Hello";

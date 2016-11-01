@@ -15,6 +15,7 @@ public class Writers extends BaseEntity {
 
     @Id
     @Column(name = "writer_id", nullable = false)
+    @GeneratedValue
     private Long writerId;
 
     @Basic

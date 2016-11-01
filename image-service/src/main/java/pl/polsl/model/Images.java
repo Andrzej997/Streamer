@@ -1,5 +1,6 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
@@ -14,6 +15,17 @@ public class Images extends BaseEntity {
 
     @Id
     @Column(name = "image_id", nullable = false)
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long imageId;
 
     @Basic
@@ -45,7 +57,7 @@ public class Images extends BaseEntity {
     private String comments;
 
     @Basic
-    @Column(name = "rating", precision = 0)
+    @Column(name = "rating")
     private Float rating;
 
     @Basic

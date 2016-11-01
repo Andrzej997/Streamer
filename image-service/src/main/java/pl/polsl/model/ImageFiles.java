@@ -15,6 +15,7 @@ public class ImageFiles extends BaseEntity {
 
     @Id
     @Column(name = "image_file_id", nullable = false)
+    @GeneratedValue
     private Long imageFileId;
 
     @Basic

@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 /**
  * Created by Mateusz on 25.10.2016.
  */
+@SuppressWarnings("ALL")
 @RestController
 public class UsersControler {
     protected Logger logger = Logger.getLogger(UsersControler.class.getName());

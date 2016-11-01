@@ -14,6 +14,7 @@ public class FilmGenres extends BaseEntity {
 
     @Id
     @Column(name = "film_genre_id", nullable = false)
+    @GeneratedValue
     private Long filmGenreId;
 
     @Basic

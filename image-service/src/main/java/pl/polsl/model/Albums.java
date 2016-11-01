@@ -15,6 +15,7 @@ public class Albums extends BaseEntity {
 
     @Id
     @Column(name = "album_id", nullable = false)
+    @GeneratedValue
     private Long albumId;
 
     @Basic

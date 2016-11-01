@@ -15,6 +15,7 @@ public class MusicFiles extends BaseEntity {
 
     @Id
     @Column(name = "music_file_id", nullable = false)
+    @GeneratedValue
     private Long musicFileId;
 
     @Basic

@@ -15,6 +15,7 @@ public class VideoFiles extends BaseEntity {
 
     @Id
     @Column(name = "video_file_id", nullable = false)
+    @GeneratedValue
     private Long videoFileId;
 
     @Basic

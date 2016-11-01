@@ -15,6 +15,7 @@ public class MusicPlaylists extends BaseEntity {
 
     @Id
     @Column(name = "playlist_id", nullable = false)
+    @GeneratedValue
     private Long playlistId;
 
     @Basic

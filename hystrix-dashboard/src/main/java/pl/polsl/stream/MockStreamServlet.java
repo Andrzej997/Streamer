@@ -1,9 +1,5 @@
 package pl.polsl.stream;
 
-/**
- * Created by Mateusz on 24.10.2016.
- */
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,14 +89,12 @@ public class MockStreamServlet extends HttpServlet {
             String file = "/" + this.getClass().getPackage().getName().replace('.', '/') + "/" + filename;
             try (InputStream is = this.getClass().getResourceAsStream(file);
                  BufferedReader in = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-                 StringWriter s = new StringWriter();) {
-                int c = -1;
+                 StringWriter s = new StringWriter()) {
+                int c;
                 while ((c = in.read()) > -1) {
                     s.write(c);
                 }
                 return s.toString();
-            } finally {
-
             }
         } catch (Exception e) {
             throw new RuntimeException("Could not find file: " + filename, e);

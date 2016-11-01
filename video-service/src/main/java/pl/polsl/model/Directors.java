@@ -15,6 +15,7 @@ public class Directors extends BaseEntity {
 
     @Id
     @Column(name = "director_id", nullable = false)
+    @GeneratedValue
     private Long directorId;
 
     @Basic

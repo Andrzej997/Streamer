@@ -29,25 +29,25 @@ public class Users extends BaseEntity {
     private Long userId;
 
     @Basic
-    @Column(name = "user_name", nullable = false, length = 255)
+    @Column(name = "user_name", nullable = false)
     @NotNull
     private String userName;
 
     @Basic
-    @Column(name = "password", nullable = false, length = 255)
+    @Column(name = "password", nullable = false)
     @NotNull
     private String password;
 
     @Basic
-    @Column(name = "name", nullable = true, length = 255)
+    @Column(name = "name")
     private String name;
 
     @Basic
-    @Column(name = "surname", nullable = true, length = 255)
+    @Column(name = "surname")
     private String surname;
 
     @Basic
-    @Column(name = "nationality", nullable = true, length = 255)
+    @Column(name = "nationality")
     private String nationality;
 
     @Basic
@@ -128,9 +128,8 @@ public class Users extends BaseEntity {
         if (name != null ? !name.equals(users.name) : users.name != null) return false;
         if (surname != null ? !surname.equals(users.surname) : users.surname != null) return false;
         if (nationality != null ? !nationality.equals(users.nationality) : users.nationality != null) return false;
-        if (email != null ? !email.equals(users.email) : users.email != null) return false;
+        return email != null ? email.equals(users.email) : users.email == null;
 
-        return true;
     }
 
     @Override

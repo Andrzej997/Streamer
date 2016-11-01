@@ -2,8 +2,8 @@ package pl.polsl;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.embedded.ServletRegistrationBean;
-import org.springframework.boot.context.web.SpringBootServletInitializer;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,6 +19,7 @@ import pl.polsl.stream.MockStreamServlet;
 @EnableHystrixDashboard
 public class HystrixDashboardApplication extends SpringBootServletInitializer {
 
+    @SuppressWarnings("SameReturnValue")
     @RequestMapping("/")
     public String home() {
         return "forward:/hystrix";

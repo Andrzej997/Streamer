@@ -11,6 +11,7 @@ import pl.polsl.service.UsersService;
 /**
  * Created by Mateusz on 27.10.2016.
  */
+@SuppressWarnings("ALL")
 @Service
 @Transactional
 public class UsersServiceImpl implements UsersService {

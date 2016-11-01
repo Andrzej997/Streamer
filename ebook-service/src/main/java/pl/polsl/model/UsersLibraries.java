@@ -15,6 +15,7 @@ public class UsersLibraries extends BaseEntity {
 
     @Id
     @Column(name = "library_id", nullable = false)
+    @GeneratedValue
     private Long libraryId;
 
     @Basic

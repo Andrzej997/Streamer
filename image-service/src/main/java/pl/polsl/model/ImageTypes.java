@@ -14,6 +14,7 @@ public class ImageTypes extends BaseEntity {
 
     @Id
     @Column(name = "type_id", nullable = false)
+    @GeneratedValue
     private Long typeId;
 
     @Basic

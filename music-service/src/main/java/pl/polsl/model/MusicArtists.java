@@ -14,6 +14,7 @@ public class MusicArtists extends BaseEntity {
 
     @Id
     @Column(name = "author_id", nullable = false)
+    @GeneratedValue
     private Long authorId;
 
     @Basic

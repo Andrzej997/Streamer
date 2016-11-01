@@ -15,6 +15,7 @@ public class EbookFiles extends BaseEntity {
 
     @Id
     @Column(name = "ebook_file_id", nullable = false)
+    @GeneratedValue
     private Long ebookFileId;
 
     @Basic

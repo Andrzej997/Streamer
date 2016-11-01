@@ -14,6 +14,7 @@ public class Users extends BaseEntity {
 
     @Id
     @Column(name = "user_id", nullable = false)
+    @GeneratedValue
     private Long userId;
 
     @Basic

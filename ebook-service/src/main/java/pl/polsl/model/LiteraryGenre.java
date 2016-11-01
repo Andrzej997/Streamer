@@ -14,6 +14,7 @@ public class LiteraryGenre extends BaseEntity {
 
     @Id
     @Column(name = "genre_id", nullable = false)
+    @GeneratedValue
     private Long genreId;
 
     @Basic

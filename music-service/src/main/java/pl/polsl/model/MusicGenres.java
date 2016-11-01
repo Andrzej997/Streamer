@@ -14,6 +14,7 @@ public class MusicGenres extends BaseEntity {
 
     @Id
     @Column(name = "music_genre_id", nullable = false)
+    @GeneratedValue
     private Long musicGenreId;
 
     @Basic

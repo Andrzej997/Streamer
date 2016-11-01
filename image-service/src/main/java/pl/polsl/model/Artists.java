@@ -15,6 +15,7 @@ public class Artists extends BaseEntity {
 
     @Id
     @Column(name = "artist_id", nullable = false)
+    @GeneratedValue
     private Long artistId;
 
     @Basic
@@ -42,7 +43,7 @@ public class Artists extends BaseEntity {
     private String comments;
 
     @Basic
-    @Column(name = "ratings", precision = 0)
+    @Column(name = "ratings")
     private Float ratings;
 
     @OneToMany(mappedBy = "artistsByAuthorId")
