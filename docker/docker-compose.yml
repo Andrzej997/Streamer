@@ -1,24 +1,24 @@
-discovery:
+eureka-service:
   image: mateuszsojka/eureka-service
   container_name: eureka-service
   ports:
    - "8761:8761"
 
-hystrix:
+hystrix-dashboard:
   image: mateuszsojka/hystrix-dashboard
   container_name: hystrix-dashboard
   ports:
    - "7979:7979"
   links:
-   - discovery
+   - eureka-service
 
-configserver:
+config-server:
   image: mateuszsojka/config-server
   container_name: config-server
   ports:
    - "8888:8888"
   links:
-   - discovery
+   - eureka-service
 
 authservice:
   image: mateuszsojka/auth-service
@@ -26,8 +26,8 @@ authservice:
   external_links:
    - usersdb:users_database
   links:
-   - discovery
-   - configserver
+   - eureka-service
+   - config-server
 
 ebookservice:
   image: mateuszsojka/ebook-service
@@ -35,8 +35,8 @@ ebookservice:
   external_links:
   - ebookdb:ebook_database
   links:
-   - discovery
-   - configserver
+   - eureka-service
+   - config-server
 
 imageservice:
   image: mateuszsojka/image-service
@@ -44,8 +44,8 @@ imageservice:
   external_links:
   - imagedb:image_database
   links:
-   - discovery
-   - configserver
+   - eureka-service
+   - config-server
 
 musicservice:
   image: mateuszsojka/music-service
@@ -53,8 +53,8 @@ musicservice:
   external_links:
   - musicdb:music_database
   links:
-   - discovery
-   - configserver
+   - eureka-service
+   - config-server
 
 videoservice:
   image: mateuszsojka/video-service
@@ -62,5 +62,5 @@ videoservice:
   external_links:
   - videodb:video_database
   links:
-   - discovery
-   - configserver
+   - eureka-service
+   - config-server
