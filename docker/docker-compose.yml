@@ -20,8 +20,6 @@ config-server:
   restart: always
   ports:
    - "8888:8888"
-  depends_on:
-    eureka-service
   links:
    - eureka-service:eureka-service
 
@@ -29,10 +27,6 @@ auth-service:
   image: mateuszsojka/auth-service
   container_name: auth-service
   restart: always
-  depends_on:
-    eureka-service
-    config-server
-    usersdb
   external_links:
    - usersdb:usersdb
   links:
@@ -43,10 +37,6 @@ ebook-service:
   image: mateuszsojka/ebook-service
   container_name: ebook-service
   restart: always
-  depends_on:
-    eureka-service
-    config-server
-    ebookdb
   external_links:
   - ebookdb:ebookdb
   links:
@@ -57,10 +47,6 @@ image-service:
   image: mateuszsojka/image-service
   container_name: image-service
   restart: always
-  depends_on:
-    eureka-service
-    config-server
-    imagedb
   external_links:
   - imagedb:imagedb
   links:
@@ -71,10 +57,6 @@ music-service:
   image: mateuszsojka/music-service
   container_name: music-service
   restart: always
-  depends_on:
-    eureka-service
-    config-server
-    musicdb
   external_links:
   - musicdb:musicdb
   links:
@@ -85,10 +67,6 @@ video-service:
   image: mateuszsojka/video-service
   container_name: video-service
   restart: always
-  depends_on:
-    eureka-service
-    config-server
-    videodb
   external_links:
   - videodb:videodb
   links:
