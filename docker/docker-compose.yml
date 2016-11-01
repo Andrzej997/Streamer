@@ -1,6 +1,7 @@
 eureka-service:
   image: mateuszsojka/eureka-service
   container_name: eureka-service
+  restart: always
   ports:
    - 8761:8761
 
