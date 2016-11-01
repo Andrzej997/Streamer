@@ -20,7 +20,7 @@ config-server:
   links:
    - eureka-service
 
-authservice:
+auth-service:
   image: mateuszsojka/auth-service
   container_name: auth-service
   external_links:
@@ -29,7 +29,7 @@ authservice:
    - eureka-service
    - config-server
 
-ebookservice:
+ebook-service:
   image: mateuszsojka/ebook-service
   container_name: ebook-service
   external_links:
@@ -38,7 +38,7 @@ ebookservice:
    - eureka-service
    - config-server
 
-imageservice:
+image-service:
   image: mateuszsojka/image-service
   container_name: image-service
   external_links:
@@ -47,7 +47,7 @@ imageservice:
    - eureka-service
    - config-server
 
-musicservice:
+music-service:
   image: mateuszsojka/music-service
   container_name: music-service
   external_links:
@@ -56,7 +56,7 @@ musicservice:
    - eureka-service
    - config-server
 
-videoservice:
+video-service:
   image: mateuszsojka/video-service
   container_name: video-service
   external_links:
