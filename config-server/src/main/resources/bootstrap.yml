@@ -1,4 +1,30 @@
 spring:
+  profiles: development
+  application:
+    name: config-server
+  cloud:
+    config:
+      discovery:
+        enabled: true
+      server:
+        git:
+          uri: https://github.com/Andrzej997/Streamer-Spring-Cloud-Config-Server
+          clone-on-start: true
+        health:
+          repositories:
+            service:
+              label: config-service
+            service-dev:
+              name: service
+              profiles: development
+server:
+  port: 8888
+management:
+  context-path: /admin
+---
+
+spring:
+  profiles: docker
   application:
     name: config-server
   cloud:
@@ -20,6 +46,31 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-service:8761/eureka/
+server:
+  port: 8888
+management:
+  context-path: /admin
+
+---
+spring:
+  profiles: cloud
+  application:
+    name: config-server
+  cloud:
+    config:
+      discovery:
+        enabled: true
+      server:
+        git:
+          uri: https://github.com/Andrzej997/Streamer-Spring-Cloud-Config-Server
+          clone-on-start: true
+        health:
+          repositories:
+            service:
+              label: config-service
+            service-dev:
+              name: service
+              profiles: development
 server:
   port: 8888
 management:

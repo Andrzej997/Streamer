@@ -45,6 +45,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     auto-commit: true
     connection-timeout: 1000
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
 ---
 spring:
   profiles: cloud
