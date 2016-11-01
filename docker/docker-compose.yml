@@ -1,66 +1,96 @@
 eureka-service:
   image: mateuszsojka/eureka-service
   container_name: eureka-service
+  restart: always
   ports:
    - "8761:8761"
 
 hystrix-dashboard:
   image: mateuszsojka/hystrix-dashboard
   container_name: hystrix-dashboard
+  restart: always
   ports:
    - "7979:7979"
   links:
-   - eureka-service
+   - eureka-service:eureka-service
 
 config-server:
   image: mateuszsojka/config-server
   container_name: config-server
+  restart: always
   ports:
    - "8888:8888"
+  depends_on:
+    eureka-service
   links:
-   - eureka-service
+   - eureka-service:eureka-service
 
 auth-service:
   image: mateuszsojka/auth-service
   container_name: auth-service
+  restart: always
+  depends_on:
+    eureka-service
+    config-server
+    usersdb
   external_links:
-   - usersdb:users_database
+   - usersdb:usersdb
   links:
-   - eureka-service
-   - config-server
+   - eureka-service:eureka-service
+   - config-server:config-server
 
 ebook-service:
   image: mateuszsojka/ebook-service
   container_name: ebook-service
+  restart: always
+  depends_on:
+    eureka-service
+    config-server
+    ebookdb
   external_links:
-  - ebookdb:ebook_database
+  - ebookdb:ebookdb
   links:
-   - eureka-service
-   - config-server
+   - eureka-service:eureka-service
+   - config-server:config-server
 
 image-service:
   image: mateuszsojka/image-service
   container_name: image-service
+  restart: always
+  depends_on:
+    eureka-service
+    config-server
+    imagedb
   external_links:
-  - imagedb:image_database
+  - imagedb:imagedb
   links:
-   - eureka-service
-   - config-server
+   - eureka-service:eureka-service
+   - config-server:config-server
 
 music-service:
   image: mateuszsojka/music-service
   container_name: music-service
+  restart: always
+  depends_on:
+    eureka-service
+    config-server
+    musicdb
   external_links:
-  - musicdb:music_database
+  - musicdb:musicdb
   links:
-   - eureka-service
-   - config-server
+   - eureka-service:eureka-service
+   - config-server:config-server
 
 video-service:
   image: mateuszsojka/video-service
   container_name: video-service
+  restart: always
+  depends_on:
+    eureka-service
+    config-server
+    videodb
   external_links:
-  - videodb:video_database
+  - videodb:videodb
   links:
-   - eureka-service
-   - config-server
+   - eureka-service:eureka-service
+   - config-server:config-server

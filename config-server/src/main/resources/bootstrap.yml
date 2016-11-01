@@ -5,10 +5,10 @@ spring:
     config:
       discovery:
         enabled: true
-        service-id: config-server
       server:
         git:
           uri: https://github.com/Andrzej997/Streamer-Spring-Cloud-Config-Server
+          clone-on-start: true
         health:
           repositories:
             service:
