@@ -17,10 +17,9 @@ spring:
               name: service
               profiles: development
 eureka:
-  instance:
-    client:
-      serviceUrl:
-        defaultZone: 172.17.0.7:8761/eureka/
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
 server:
   port: 8888
 management:
