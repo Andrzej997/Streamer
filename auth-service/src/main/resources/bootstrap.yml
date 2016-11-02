@@ -23,6 +23,8 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
+      discovery:
+        serviceId: config-server
   jpa:
     show_sql: true
     hibernate:
@@ -37,4 +39,5 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://eureka-service:8761/eureka/
-
+  instance:
+    prefer-ip-address: true

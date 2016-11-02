@@ -13,6 +13,8 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
+      discovery:
+        serviceId: config-server
 ---
 spring:
   profiles: cloud
@@ -21,3 +23,5 @@ spring:
   cloud:
     config:
       uri: http://config-server-mateuszsojka.cfapps.io:8888/
+      discovery:
+        serviceId: config-server
