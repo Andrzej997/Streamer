@@ -81,3 +81,18 @@ video-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
+
+api-gateway:
+  image: mateuszsojka/api-gateway
+  container_name: api-gateway
+  restart: always
+  ports:
+  - 10000:10000
+  links:
+  - eureka-service:eureka-service
+  - config-server:config-server
+  - auth-service:auth-service
+  - ebook-service:ebook-service
+  - image-service:image-service
+  - music-service:music-service
+  - video-service:video-service

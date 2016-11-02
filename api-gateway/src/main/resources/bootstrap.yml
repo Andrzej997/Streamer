@@ -1,0 +1,20 @@
+spring:
+  profiles: development
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      uri: http://localhost:8888
+---
+spring:
+  profiles: docker
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      uri: http://config-service:8888
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
+
