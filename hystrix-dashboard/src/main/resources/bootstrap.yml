@@ -5,6 +5,8 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+      discovery:
+        serviceId: config-server
 ---
 spring:
   profiles: docker

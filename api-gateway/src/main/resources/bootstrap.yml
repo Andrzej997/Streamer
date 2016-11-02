@@ -16,6 +16,7 @@ spring:
     name: api-gateway
   cloud:
     config:
+      failFast: true
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
