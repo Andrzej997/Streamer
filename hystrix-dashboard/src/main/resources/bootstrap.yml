@@ -12,7 +12,7 @@ spring:
     name: hystrix-dashboard
   cloud:
     config:
-      uri: http://config-service:8888
+      uri: http://config-server:8888
       discovery:
         serviceId: config-server
 ---
