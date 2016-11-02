@@ -4,8 +4,12 @@ spring:
     name: api-gateway
   cloud:
     config:
+      failFast: true
       uri: http://localhost:8888
+      discovery:
+        serviceId: config-server
 ---
+
 spring:
   profiles: docker
   application:
@@ -13,8 +17,5 @@ spring:
   cloud:
     config:
       uri: http://config-service:8888
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://eureka-service:8761/eureka/
-
+      discovery:
+        serviceId: config-server

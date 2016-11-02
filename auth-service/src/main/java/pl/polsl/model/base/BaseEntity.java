@@ -6,6 +6,7 @@ import java.io.Serializable;
 /**
  * Created by Mateusz on 25.10.2016.
  */
+@SuppressWarnings("EmptyMethod")
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable, Cloneable {
 

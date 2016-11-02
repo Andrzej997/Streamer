@@ -9,7 +9,7 @@ import java.io.Serializable;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 123456789l;
+    private static final long serialVersionUID = 123456789L;
 
     @Transient
     private Long version;

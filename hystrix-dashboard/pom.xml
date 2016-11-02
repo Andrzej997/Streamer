@@ -4,9 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hystrix-dashboard</artifactId>
-    <version>0.1</version>
+    <version>${streamer.version}</version>
     <packaging>jar</packaging>
-    <url>http://projects.spring.io/spring-cloud/</url>
 
     <name>hystrix-dashboard</name>
     <description>Hystrix dashboard</description>
@@ -14,7 +13,7 @@
     <parent>
         <groupId>pl.polsl</groupId>
         <artifactId>streamer</artifactId>
-        <version>0.1</version>
+        <version>${streamer.version}</version>
     </parent>
 
     <properties>

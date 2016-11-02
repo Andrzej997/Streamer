@@ -15,8 +15,6 @@ spring:
     username: sysadm
     password: sysadm
     driver-class-name: org.postgresql.Driver
-    auto-commit: true
-    connection-timeout: 1000
 ---
 spring:
   profiles: docker
@@ -35,8 +33,6 @@ spring:
     username: sysadm
     password: sysadm
     driver-class-name: org.postgresql.Driver
-    auto-commit: true
-    connection-timeout: 1000
 eureka:
   client:
     serviceUrl:
