@@ -4,6 +4,14 @@ eureka-service:
   ports:
    - 8761:8761
 
+wait_for_eureka:
+  image: dadarek/wait-for-dependencies
+  depends_on:
+   - eureka-service
+  command: eureka-service:8761
+  environment:
+   - SLEEP_LENGTH: 30
+
 config-server:
   image: mateuszsojka/config-server
   container_name: config-server
@@ -82,6 +90,18 @@ video-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
+
+wait_for_services:
+  image: dadarek/wait-for-dependencies
+  depends_on:
+   - auth-service
+   - ebook-service
+   - image-service
+   - music-service
+   - video-service
+  command: auth-service:9000 ebook-service:9002 image-service:9004 music-service:9006 video-service:9008
+  environment:
+   - SLEEP_LENGTH: 30
 
 api-gateway:
   image: mateuszsojka/api-gateway
