@@ -39,6 +39,18 @@ public class UsersControler {
         return usersService.getUserData(email);
     }
 
+    @RequestMapping(value = "/register")
+    public String registerUser(@RequestParam(value = "username") String username,
+                               @RequestParam(value = "password") String password,
+                               @RequestParam(value = "email") String email) {
+        Boolean success = usersService.registerUser(username, password, email);
+        if (success) {
+            return "Registration succesful";
+        } else {
+            return "Registration failed";
+        }
+    }
+
     public UsersService getUsersService() {
         return usersService;
     }

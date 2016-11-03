@@ -9,4 +9,6 @@ public interface UsersService {
     Boolean userExistsByEmail(String email, String password);
 
     String getUserData(String username);
+
+    Boolean registerUser(String username, String password, String email);
 }

@@ -39,6 +39,19 @@ public class UsersServiceImpl implements UsersService {
         return user.getUserName() + " " + user.getEmail();
     }
 
+    @Override
+    public Boolean registerUser(String username, String password, String email) {
+        Users user = new Users();
+        user.setUserName(username);
+        user.setPassword(ShaEncrypter.sha256(password));
+        user.setEmail(email);
+
+        if (usersRepository.findByUserName(username) != null) {
+            return false;
+        }
+        return usersRepository.save(user) != null;
+    }
+
     public UsersRepository getUsersRepository() {
         return usersRepository;
     }
