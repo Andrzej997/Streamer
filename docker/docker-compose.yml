@@ -10,7 +10,7 @@ wait_for_eureka:
    - eureka-service
   command: eureka-service:8761
   environment:
-   - SLEEP_LENGTH: 30
+   - SLEEP_LENGTH=30
 
 config-server:
   image: mateuszsojka/config-server
@@ -101,7 +101,7 @@ wait_for_services:
    - video-service
   command: auth-service:9000 ebook-service:9002 image-service:9004 music-service:9006 video-service:9008
   environment:
-   - SLEEP_LENGTH: 30
+   - SLEEP_LENGTH=30
 
 api-gateway:
   image: mateuszsojka/api-gateway
