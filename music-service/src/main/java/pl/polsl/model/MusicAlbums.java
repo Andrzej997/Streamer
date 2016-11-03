@@ -1,5 +1,6 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
@@ -14,7 +15,17 @@ public class MusicAlbums extends BaseEntity {
 
     @Id
     @Column(name = "album_id", nullable = false)
-    @GeneratedValue
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long albumId;
 
     @Basic

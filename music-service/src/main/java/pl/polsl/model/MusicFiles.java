@@ -1,8 +1,10 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -15,7 +17,17 @@ public class MusicFiles extends BaseEntity {
 
     @Id
     @Column(name = "music_file_id", nullable = false)
-    @GeneratedValue
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long musicFileId;
 
     @Basic
@@ -37,6 +49,10 @@ public class MusicFiles extends BaseEntity {
     @Basic
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic;
+
+    @Lob
+    @Column(name = "file", nullable = false)
+    private Blob file;
 
     @OneToMany(mappedBy = "musicFilesByFileId")
     private Collection<Songs> songsesByMusicFileId;
@@ -129,6 +145,14 @@ public class MusicFiles extends BaseEntity {
 
     public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Blob getFile() {
+        return file;
+    }
+
+    public void setFile(Blob file) {
+        this.file = file;
     }
 
     public Collection<Songs> getSongsesByMusicFileId() {

@@ -78,8 +78,7 @@ public class Songs extends BaseEntity {
     @JoinColumn(name = "music_genre_id", referencedColumnName = "music_genre_id", insertable = false, updatable = false)
     private MusicGenres musicGenresByMusicGenreId;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByOwnerId;
 
     public Long getSongId() {

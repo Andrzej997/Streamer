@@ -1,8 +1,10 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Collection;
 
@@ -15,7 +17,17 @@ public class EbookFiles extends BaseEntity {
 
     @Id
     @Column(name = "ebook_file_id", nullable = false)
-    @GeneratedValue
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long ebookFileId;
 
     @Basic
@@ -36,6 +48,10 @@ public class EbookFiles extends BaseEntity {
     @Basic
     @Column(name = "is_public", nullable = false)
     private Boolean isPublic;
+
+    @Lob
+    @Column(name = "file", nullable = false)
+    private Blob file;
 
     @OneToMany(mappedBy = "ebookFilesByEbookFileId")
     private Collection<Ebook> ebooksByEbookFileId;
@@ -129,6 +145,14 @@ public class EbookFiles extends BaseEntity {
 
     public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public Blob getFile() {
+        return file;
+    }
+
+    public void setFile(Blob file) {
+        this.file = file;
     }
 
     public Collection<Ebook> getEbooksByEbookFileId() {

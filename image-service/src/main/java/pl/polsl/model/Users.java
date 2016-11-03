@@ -9,13 +9,11 @@ import java.util.Collection;
  * Created by Mateusz on 28.10.2016.
  */
 
-@Entity
 @Table(name = "users", schema = "public")
 public class Users extends BaseEntity {
 
     @Id
     @Column(name = "user_id", nullable = false)
-    @GeneratedValue
     private Long userId;
 
     @Basic

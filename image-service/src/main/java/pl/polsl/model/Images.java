@@ -86,8 +86,7 @@ public class Images extends BaseEntity {
     @JoinColumn(name = "type_id", referencedColumnName = "type_id", insertable = false, updatable = false)
     private ImageTypes imageTypesByTypeId;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByOwnerId;
 
     public Images() {

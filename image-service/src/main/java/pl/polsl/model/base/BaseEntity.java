@@ -1,7 +1,10 @@
 package pl.polsl.model.base;
 
+import pl.polsl.model.Users;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 
 /**
  * Created by Mateusz on 25.10.2016.
@@ -43,6 +46,22 @@ public abstract class BaseEntity implements Serializable, Cloneable {
     @PostRemove
     protected void postRemove() {
 
+    }
+
+    private Boolean containsUsers() {
+        Field[] fields = this.getClass().getFields();
+        if (fields == null) {
+            return false;
+        }
+        for (Field field : fields) {
+            if (field.getClass() == null) {
+                continue;
+            }
+            if (field.getClass().equals(Users.class)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Long getVersion() {

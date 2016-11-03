@@ -10,7 +10,7 @@ import java.util.Collection;
  * Created by Mateusz on 18.10.2016.
  */
 @Entity
-@Table(name = "video", schema = "public")
+@Table(name = "videos", schema = "public")
 public class Videos extends BaseEntity {
 
     @Id
@@ -75,8 +75,7 @@ public class Videos extends BaseEntity {
     @JoinColumn(name = "video_serie_id", referencedColumnName = "video_serie_id", insertable = false, updatable = false)
     private VideoSeries videoSeriesByVideoSerieId;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByOwnerId;
 
     @OneToMany(mappedBy = "videosByVideoId")

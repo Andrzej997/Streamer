@@ -1,5 +1,6 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
@@ -15,7 +16,17 @@ public class VideoPlaylists extends BaseEntity {
 
     @Id
     @Column(name = "playlist_id", nullable = false)
-    @GeneratedValue
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long playlistId;
 
     @Basic
@@ -33,11 +44,16 @@ public class VideoPlaylists extends BaseEntity {
     @OneToMany(mappedBy = "videoPlaylistsByPlaylistId")
     private Collection<PlaylistsVideos> playlistsVideosesByPlaylistId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByUserId;
 
     public VideoPlaylists() {
+    }
+
+    @PostLoad
+    @Override
+    protected void postLoad() {
+
     }
 
     @Override

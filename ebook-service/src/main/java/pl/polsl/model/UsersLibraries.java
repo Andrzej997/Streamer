@@ -1,5 +1,6 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
 import javax.persistence.*;
@@ -15,7 +16,17 @@ public class UsersLibraries extends BaseEntity {
 
     @Id
     @Column(name = "library_id", nullable = false)
-    @GeneratedValue
+    @GenericGenerator(
+            name = "generator",
+            strategy = "sequence-identity",
+            parameters = {
+                    @org.hibernate.annotations.Parameter(
+                            name = "sequence",
+                            value = "DEFAULTDBSEQ"
+                    )
+
+            })
+    @GeneratedValue(generator = "generator")
     private Long libraryId;
 
     @Basic
@@ -33,8 +44,7 @@ public class UsersLibraries extends BaseEntity {
     @OneToMany(mappedBy = "usersLibrariesByLibraryId")
     private Collection<LibrariesEbooks> librariesEbooksesByLibraryId;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByUserId;
 
     public UsersLibraries() {

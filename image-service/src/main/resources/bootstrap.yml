@@ -8,7 +8,7 @@ spring:
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
       naming:
         strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
         physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy

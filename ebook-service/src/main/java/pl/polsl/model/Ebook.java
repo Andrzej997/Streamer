@@ -68,8 +68,7 @@ public class Ebook extends BaseEntity {
     @JoinColumn(name = "genre_id", referencedColumnName = "genre_id", insertable = false, updatable = false)
     private LiteraryGenre literaryGenreByGenreId;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    @Transient
     private Users usersByOwnerId;
 
     @ManyToOne
