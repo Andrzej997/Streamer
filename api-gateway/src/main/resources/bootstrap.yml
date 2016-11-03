@@ -16,7 +16,13 @@ spring:
     name: api-gateway
   cloud:
     config:
-      failFast: true
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-service:8761/eureka/
+  instance:
+    prefer-ip-address: true
+---
