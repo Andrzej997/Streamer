@@ -4,15 +4,6 @@ eureka-service:
   ports:
    - 8761:8761
 
-hystrix-dashboard:
-  image: mateuszsojka/hystrix-dashboard
-  container_name: hystrix-dashboard
-  restart: always
-  ports:
-   - 7979:7979
-  links:
-   - eureka-service:eureka-service
-
 config-server:
   image: mateuszsojka/config-server
   container_name: config-server
@@ -21,6 +12,16 @@ config-server:
    - 8888:8888
   links:
    - eureka-service:eureka-service
+
+hystrix-dashboard:
+  image: mateuszsojka/hystrix-dashboard
+  container_name: hystrix-dashboard
+  restart: always
+  ports:
+   - 7979:7979
+  links:
+   - eureka-service:eureka-service
+   - config-server:config-server
 
 auth-service:
   image: mateuszsojka/auth-service
@@ -87,7 +88,7 @@ api-gateway:
   container_name: api-gateway
   restart: always
   ports:
-  - 10000:10000
+  - 8080:8080
   links:
   - eureka-service:eureka-service
   - config-server:config-server
