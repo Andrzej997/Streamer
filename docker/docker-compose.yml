@@ -6,7 +6,7 @@ eureka-service:
 
 wait_for_eureka:
   image: dadarek/wait-for-dependencies
-  depends_on:
+  links:
    - eureka-service
   command: eureka-service:8761
   environment:
@@ -93,7 +93,7 @@ video-service:
 
 wait_for_services:
   image: dadarek/wait-for-dependencies
-  depends_on:
+  links:
    - auth-service
    - ebook-service
    - image-service
