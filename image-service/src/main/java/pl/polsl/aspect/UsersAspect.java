@@ -20,7 +20,7 @@ public class UsersAspect {
     @Autowired
     private UsersRepositoryCustom usersRepository;
 
-    @Pointcut(value = "execution(* pl.polsl.repository.*(..))")
+    @Pointcut(value = "execution(* pl.polsl.repository.*.*(..))")
     public void getEntity() {
     }
 
