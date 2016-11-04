@@ -4,6 +4,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import pl.polsl.model.Users;
 import pl.polsl.model.base.BaseEntity;
@@ -13,6 +14,7 @@ import pl.polsl.repository.custom.UsersRepositoryCustom;
  * Created by Mateusz on 04.11.2016.
  */
 @Aspect
+@Component
 public class UsersAspect {
 
     @Autowired
