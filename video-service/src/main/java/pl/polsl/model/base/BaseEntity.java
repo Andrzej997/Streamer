@@ -58,10 +58,10 @@ public abstract class BaseEntity implements Serializable, Cloneable {
             return false;
         }
         for (Field field : fields) {
-            if (field.getClass() == null) {
+            if (field.getType() == null) {
                 continue;
             }
-            if (field.getClass().equals(Users.class)) {
+            if (field.getType().equals(Users.class)) {
                 return true;
             }
         }

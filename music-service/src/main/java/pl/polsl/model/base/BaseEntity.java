@@ -12,7 +12,7 @@ import java.lang.reflect.Field;
 @MappedSuperclass
 public abstract class BaseEntity implements Serializable, Cloneable {
 
-    private static final long serialVersionUID = 123456789l;
+    private static final long serialVersionUID = 123456789L;
 
     @Transient
     private Long version;
@@ -53,10 +53,10 @@ public abstract class BaseEntity implements Serializable, Cloneable {
             return false;
         }
         for (Field field : fields) {
-            if (field.getClass() == null) {
+            if (field.getType() == null) {
                 continue;
             }
-            if (field.getClass().equals(Users.class)) {
+            if (field.getType().equals(Users.class)) {
                 return true;
             }
         }
