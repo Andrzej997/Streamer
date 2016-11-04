@@ -48,7 +48,7 @@ public abstract class BaseEntity implements Serializable, Cloneable {
 
     }
 
-    private Boolean containsUsers() {
+    public Boolean containsUsers() {
         Field[] fields = this.getClass().getFields();
         if (fields == null) {
             return false;
@@ -62,6 +62,48 @@ public abstract class BaseEntity implements Serializable, Cloneable {
             }
         }
         return false;
+    }
+
+    public Long getUsersId() {
+        if (this.containsUsers()) {
+            Field f = null;
+            try {
+                f = this.getClass().getField("userId");
+            } catch (NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+            if (f == null) {
+                return null;
+            }
+            try {
+                return f.getLong(this);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    public void injectUser(Users users) {
+        if (users == null) {
+            return;
+        }
+        if (this.containsUsers()) {
+            Field[] declaredFields = this.getClass().getDeclaredFields();
+            if (declaredFields == null) {
+                return;
+            }
+            for (Field field : declaredFields) {
+                if (!Users.class.equals(field.getType())) {
+                    continue;
+                }
+                try {
+                    field.set(this, users);
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Long getVersion() {

@@ -21,11 +21,11 @@ public class ImageAuthors extends BaseEntity {
     private Long authorId;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn(name = "image_id", referencedColumnName = "image_id")
+    @JoinColumn(name = "imageId", nullable = false, insertable = false, updatable = false)
     private Images imagesByImageId;
 
     @ManyToOne
-    @PrimaryKeyJoinColumn(name = "author_id", referencedColumnName = "artist_id")
+    @JoinColumn(name = "authorId", nullable = false, insertable = false, updatable = false)
     private Artists artistsByAuthorId;
 
     public ImageAuthors() {

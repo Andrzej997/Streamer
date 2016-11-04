@@ -8,7 +8,7 @@ spring:
   jpa:
     show_sql: true
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     database: POSTGRESQL
   datasource:
     url: jdbc:postgresql://localhost:5432/usersdb
