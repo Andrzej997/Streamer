@@ -1,7 +1,11 @@
 package pl.polsl.controler;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.dto.UsersDTO;
 import pl.polsl.service.UsersService;
 
 import java.util.logging.Logger;
@@ -26,20 +30,20 @@ public class UsersControler {
         return "index";
     }
 
-    @RequestMapping(value = "/login/{username}/{password}", method = RequestMethod.GET)
-    public Boolean login(@PathVariable(value = "username") String username,
-                         @PathVariable(value = "password") String password) {
+    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean login(@RequestParam(value = "username") String username,
+                         @RequestParam(value = "password") String password) {
         return usersService.userExists(username, password);
     }
 
-    @RequestMapping(value = "/login")
-    public String loginWithEmail(@RequestParam(value = "email") String email,
+    @RequestMapping(value = "/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean loginWithEmail(@RequestParam(value = "email") String email,
                                  @RequestParam(value = "password") String password) {
 
-        return usersService.getUserData(email);
+        return usersService.userExistsByEmail(email, password);
     }
 
-    @RequestMapping(value = "/register")
+    @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public String registerUser(@RequestParam(value = "username") String username,
                                @RequestParam(value = "password") String password,
                                @RequestParam(value = "email") String email) {
@@ -51,6 +55,22 @@ public class UsersControler {
         }
     }
 
+    @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<UsersDTO> getUserData(String username) {
+        UsersDTO user = usersService.getUserData(username);
+        return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean updateUserData(@RequestBody UsersDTO dto) {
+        return usersService.updateUserInformations(dto) != null;
+    }
+
+    @DeleteMapping(value = "/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean deleteUser(@RequestBody UsersDTO dto) {
+        return usersService.deleteUser(dto);
+    }
+
     public UsersService getUsersService() {
         return usersService;
     }
@@ -58,5 +78,7 @@ public class UsersControler {
     public void setUsersService(UsersService usersService) {
         this.usersService = usersService;
     }
+
+
 }
 

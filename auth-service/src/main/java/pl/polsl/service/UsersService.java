@@ -1,5 +1,8 @@
 package pl.polsl.service;
 
+import pl.polsl.dto.UsersDTO;
+import pl.polsl.model.Users;
+
 /**
  * Created by Mateusz on 27.10.2016.
  */
@@ -8,7 +11,11 @@ public interface UsersService {
 
     Boolean userExistsByEmail(String email, String password);
 
-    String getUserData(String username);
+    UsersDTO getUserData(String username);
 
     Boolean registerUser(String username, String password, String email);
+
+    Users updateUserInformations(UsersDTO dto);
+
+    Boolean deleteUser(UsersDTO dto);
 }
