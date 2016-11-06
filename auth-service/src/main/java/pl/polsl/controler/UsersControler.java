@@ -58,7 +58,11 @@ public class UsersControler {
     @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UsersDTO> getUserData(String username) {
         UsersDTO user = usersService.getUserData(username);
-        return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
+        if (user != null) {
+            return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<UsersDTO>(new UsersDTO(), HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping(value = "/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
