@@ -33,7 +33,7 @@ eureka:
   client:
     enabled: false
 server:
-  port: 9000
+  port: 9020
 encrypt:
   failOnError: false
 logging:

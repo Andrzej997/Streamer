@@ -23,3 +23,27 @@ spring:
   cloud:
     config:
       uri: http://config-server-mateuszsojka.cfapps.io:8888/
+---
+spring:
+  profiles: test
+  application:
+    name: music-service
+  jpa:
+    database: h2
+    hibernate:
+      ddl-auto: none
+  datasource:
+    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    username: admin
+    password: admin
+    schema: classpath:/schema.sql
+eureka:
+  client:
+    enabled: false
+server:
+  port: 9026
+encrypt:
+  failOnError: false
+logging:
+  file: log.txt
+  level: error

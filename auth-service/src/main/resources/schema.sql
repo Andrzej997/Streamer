@@ -1,3 +1,4 @@
+drop schema IF EXISTS users_schema;
 DROP TABLE IF EXISTS USERS CASCADE;
 create schema users_schema;
 
@@ -16,7 +17,7 @@ ALTER TABLE users_schema.USERS
 ALTER TABLE users_schema.USERS
   ADD CONSTRAINT UQ_Users_USER_NAME UNIQUE (USER_NAME);
 
-  ALTER TABLE users_schema.USERS
+ALTER TABLE users_schema.USERS
   ADD CONSTRAINT PK_Users
 PRIMARY KEY (USER_ID);
 
