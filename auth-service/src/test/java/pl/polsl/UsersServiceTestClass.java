@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
@@ -20,9 +21,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by Mateusz on 05.11.2016.
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.profiles.active=test", "bootstrap.yml"})
+        properties = {"bootstrap.yml"})
 public class UsersServiceTestClass {
 
     @InjectMocks

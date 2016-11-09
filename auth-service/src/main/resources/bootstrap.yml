@@ -21,15 +21,14 @@ spring:
   application:
     name: auth-service
   jpa:
-    show_sql: true
+    database: h2
     hibernate:
       ddl-auto: none
-    database: POSTGRESQL
   datasource:
-    url: jdbc:postgresql://localhost:5432/usersdb
-    username: sysadm
-    password: sysadm
-    driver-class-name: org.postgresql.Driver
+    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    username: admin
+    password: admin
+    schema: classpath:/schema.sql
 eureka:
   client:
     enabled: false

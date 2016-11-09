@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.polsl.controler.UsersControler;
 import pl.polsl.dto.UsersDTO;
@@ -23,9 +24,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Created by Mateusz on 04.11.2016.
  */
+@ActiveProfiles("test")
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"spring.profiles.active=test", "bootstrap.yml"})
+        properties = {"bootstrap.yml"})
 public class UsersControllerTestClass {
 
     @InjectMocks
