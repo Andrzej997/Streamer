@@ -5,16 +5,6 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-  jpa:
-    show_sql: true
-    hibernate:
-      ddl-auto: validate
-    database: POSTGRESQL
-  datasource:
-    url: jdbc:postgresql://localhost:5432/videodb
-    username: sysadm
-    password: sysadm
-    driver-class-name: org.postgresql.Driver
 ---
 spring:
   profiles: docker
@@ -25,22 +15,6 @@ spring:
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
-  jpa:
-    show_sql: true
-    hibernate:
-      ddl-auto: none
-    database: POSTGRESQL
-  datasource:
-    url: jdbc:postgresql://videodb:5432/videodb
-    username: sysadm
-    password: sysadm
-    driver-class-name: org.postgresql.Driver
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://eureka-service:8761/eureka/
-  instance:
-    prefer-ip-address: true
 ---
 spring:
   profiles: cloud
