@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,11 +14,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import pl.polsl.controler.UsersControler;
+import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.model.Users;
 import pl.polsl.service.UsersService;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Mateusz on 04.11.2016.
@@ -52,7 +53,7 @@ public class UsersControllerTestClass {
 
     @Test
     public void testLogin_whenUserExist() {
-        Mockito.when(usersService.userExists("username", "password")).thenReturn(true);
+        when(usersService.userExists("username", "password")).thenReturn(true);
 
         Boolean login = usersControler.login("username", "password");
 
@@ -61,7 +62,7 @@ public class UsersControllerTestClass {
 
     @Test
     public void testLogin_whenUserNotExists() {
-        Mockito.when(usersService.userExists("username", "password")).thenReturn(false);
+        when(usersService.userExists("username", "password")).thenReturn(false);
 
         Boolean login = usersControler.login("username", "password");
 
@@ -70,7 +71,7 @@ public class UsersControllerTestClass {
 
     @Test
     public void testLoginWithEmail_whenUserExists() {
-        Mockito.when(usersService.userExistsByEmail("email", "password")).thenReturn(true);
+        when(usersService.userExistsByEmail("email", "password")).thenReturn(true);
 
         Boolean login = usersControler.loginWithEmail("email", "password");
 
@@ -79,7 +80,7 @@ public class UsersControllerTestClass {
 
     @Test
     public void testLoginWithEmail_whenNotUserExists() {
-        Mockito.when(usersService.userExistsByEmail("email", "password")).thenReturn(false);
+        when(usersService.userExistsByEmail("email", "password")).thenReturn(false);
 
         Boolean login = usersControler.loginWithEmail("email", "password");
 
@@ -88,26 +89,34 @@ public class UsersControllerTestClass {
 
     @Test
     public void testRegisterUser_whenUserNotExists() {
-        Mockito.when(usersService.registerUser("username", "password", "email")).thenReturn(true);
+        RegistrationDTO registrationDTO = new RegistrationDTO();
+        registrationDTO.setEmail("email");
+        registrationDTO.setPassword("password");
+        registrationDTO.setUsername("username");
+        when(usersService.registerUser("username", "password", "email")).thenReturn(true);
 
-        String result = usersControler.registerUser("username", "password", "email");
+        Boolean result = usersControler.registerUser(registrationDTO);
 
-        assertThat(result).isEqualTo("Registration succesful");
+        assertThat(result).isTrue();
     }
 
     @Test
     public void testRegisterUser_whenUserExists() {
-        Mockito.when(usersService.registerUser("username", "password", "email")).thenReturn(false);
+        RegistrationDTO registrationDTO = new RegistrationDTO();
+        registrationDTO.setEmail("email");
+        registrationDTO.setPassword("password");
+        registrationDTO.setUsername("username");
+        when(usersService.registerUser("username", "password", "email")).thenReturn(false);
 
-        String result = usersControler.registerUser("username", "password", "email");
+        Boolean result = usersControler.registerUser(registrationDTO);
 
-        assertThat(result).isEqualTo("Registration failed");
+        assertThat(result).isFalse();
     }
 
     @Test
     public void testGetUserData_whenUserExists() {
         UsersDTO dto = new UsersDTO();
-        Mockito.when(usersService.getUserData("username")).thenReturn(dto);
+        when(usersService.getUserData("username")).thenReturn(dto);
 
         ResponseEntity<UsersDTO> result = usersControler.getUserData("username");
 
@@ -117,7 +126,7 @@ public class UsersControllerTestClass {
 
     @Test
     public void testGetUserData_whenUserNotExists() {
-        Mockito.when(usersService.getUserData("username")).thenReturn(null);
+        when(usersService.getUserData("username")).thenReturn(null);
 
         ResponseEntity<UsersDTO> result = usersControler.getUserData("username");
 
@@ -127,7 +136,7 @@ public class UsersControllerTestClass {
     @Test
     public void testUpdateUserData_whenUserExists() {
         UsersDTO dto = new UsersDTO();
-        Mockito.when(usersService.updateUserInformations(dto)).thenReturn(new Users());
+        when(usersService.updateUserInformations(dto)).thenReturn(new Users());
 
         Boolean result = usersControler.updateUserData(dto);
 
@@ -137,7 +146,7 @@ public class UsersControllerTestClass {
     @Test
     public void testUpdateUserData_whenUserNotExists() {
         UsersDTO dto = new UsersDTO();
-        Mockito.when(usersService.updateUserInformations(dto)).thenReturn(null);
+        when(usersService.updateUserInformations(dto)).thenReturn(null);
 
         Boolean result = usersControler.updateUserData(dto);
 
@@ -147,7 +156,7 @@ public class UsersControllerTestClass {
     @Test
     public void testDeleteUser_whenUserExists() {
         UsersDTO dto = new UsersDTO();
-        Mockito.when(usersService.deleteUser(dto)).thenReturn(true);
+        when(usersService.deleteUser(dto)).thenReturn(true);
 
         Boolean result = usersControler.deleteUser(dto);
 
@@ -157,9 +166,47 @@ public class UsersControllerTestClass {
     @Test
     public void testDeleteUser_whenUserNotExists() {
         UsersDTO dto = new UsersDTO();
-        Mockito.when(usersService.deleteUser(dto)).thenReturn(false);
+        when(usersService.deleteUser(dto)).thenReturn(false);
 
         Boolean result = usersControler.deleteUser(dto);
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testUsernameExists_whenNotExists() {
+        when(usersService.usernameExists("username")).thenReturn(false);
+
+        Boolean result = usersControler.usernameExists("username");
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void testUsernameExists_whenExists() {
+        when(usersService.usernameExists("username")).thenReturn(true);
+
+        Boolean result = usersControler.usernameExists("username");
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void testEmailExists_whenExists() {
+        String email = "email";
+        when(usersService.checkEmailExists(email)).thenReturn(true);
+
+        Boolean result = usersControler.checkEmailExists(email);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void testEmailExists_whenNotExists() {
+        String email = "email";
+        when(usersService.checkEmailExists(email)).thenReturn(false);
+
+        Boolean result = usersControler.checkEmailExists(email);
 
         assertThat(result).isFalse();
     }

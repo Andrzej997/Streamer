@@ -18,4 +18,8 @@ public interface UsersService {
     Users updateUserInformations(UsersDTO dto);
 
     Boolean deleteUser(UsersDTO dto);
+
+    Boolean usernameExists(String username);
+
+    Boolean checkEmailExists(String email);
 }

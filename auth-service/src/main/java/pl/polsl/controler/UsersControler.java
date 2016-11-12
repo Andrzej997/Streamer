@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.service.UsersService;
 
@@ -31,32 +32,40 @@ public class UsersControler {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean login(@RequestParam(value = "username") String username,
-                         @RequestParam(value = "password") String password) {
+    public
+    @ResponseBody
+    Boolean login(@RequestParam(value = "username") String username,
+                  @RequestParam(value = "password") String password) {
         return usersService.userExists(username, password);
     }
 
     @RequestMapping(value = "/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean loginWithEmail(@RequestParam(value = "email") String email,
-                                 @RequestParam(value = "password") String password) {
+    public
+    @ResponseBody
+    Boolean loginWithEmail(@RequestParam(value = "email") String email,
+                           @RequestParam(value = "password") String password) {
 
         return usersService.userExistsByEmail(email, password);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String registerUser(@RequestParam(value = "username") String username,
-                               @RequestParam(value = "password") String password,
-                               @RequestParam(value = "email") String email) {
-        Boolean success = usersService.registerUser(username, password, email);
-        if (success) {
-            return "Registration succesful";
-        } else {
-            return "Registration failed";
-        }
+    public
+    @ResponseBody
+    Boolean registerUser(@RequestBody RegistrationDTO registrationDTO) {
+        return usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
+    }
+
+    @RequestMapping(value = "/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    Boolean usernameExists(@RequestParam(value = "username") String username) {
+        return usersService.usernameExists(username);
     }
 
     @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<UsersDTO> getUserData(String username) {
+    public
+    @ResponseBody
+    ResponseEntity<UsersDTO> getUserData(@RequestParam(value = "username") String username) {
         UsersDTO user = usersService.getUserData(username);
         if (user != null) {
             return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
@@ -66,13 +75,24 @@ public class UsersControler {
     }
 
     @PutMapping(value = "/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean updateUserData(@RequestBody UsersDTO dto) {
+    public
+    @ResponseBody
+    Boolean updateUserData(@RequestBody UsersDTO dto) {
         return usersService.updateUserInformations(dto) != null;
     }
 
     @DeleteMapping(value = "/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Boolean deleteUser(@RequestBody UsersDTO dto) {
+    public
+    @ResponseBody
+    Boolean deleteUser(@RequestBody UsersDTO dto) {
         return usersService.deleteUser(dto);
+    }
+
+    @GetMapping(value = "/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    Boolean checkEmailExists(@RequestParam(value = "email") String email) {
+        return usersService.checkEmailExists(email);
     }
 
     public UsersService getUsersService() {

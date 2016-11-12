@@ -16,5 +16,9 @@ public interface UsersRepository extends CrudRepository<Users, Long>, UsersRepos
 
     Users findByEmailAndPassword(String email, String password);
 
-    Users findByUserName(String username);
+    Users findByUserName(String userName);
+
+    Long countByUserName(String userName);
+
+    Long countByEmail(String email);
 }

@@ -1,15 +1,28 @@
 package pl.polsl.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Created by Mateusz on 05.11.2016.
  */
 public class UsersDTO {
 
+    @JsonProperty(value = "_userId")
     private Long userId;
+
+    @JsonProperty(value = "_userName")
     private String userName;
+
+    @JsonProperty(value = "_email")
     private String email;
+
+    @JsonProperty(value = "_name")
     private String name;
+
+    @JsonProperty(value = "_surname")
     private String surname;
+
+    @JsonProperty(value = "_nationality")
     private String nationality;
 
     public Long getUserId() {

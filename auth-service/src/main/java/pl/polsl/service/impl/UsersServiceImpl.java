@@ -3,6 +3,7 @@ package pl.polsl.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
 import pl.polsl.mapper.UsersMapper;
@@ -45,6 +46,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Boolean registerUser(String username, String password, String email) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password) || StringUtils.isEmpty(email)) {
+            return false;
+        }
         Users user = new Users();
         user.setUserName(username);
         user.setPassword(ShaEncrypter.sha256(password));
@@ -84,6 +88,24 @@ public class UsersServiceImpl implements UsersService {
             }
         }
         return false;
+    }
+
+    @Override
+    public Boolean usernameExists(String username) {
+        if (StringUtils.isEmpty(username)) {
+            return false;
+        }
+        Long usernames = usersRepository.countByUserName(username);
+        return usernames != null && usernames > 0;
+    }
+
+    @Override
+    public Boolean checkEmailExists(String email) {
+        if (StringUtils.isEmpty(email)) {
+            return false;
+        }
+        Long emails = usersRepository.countByEmail(email);
+        return emails != null && emails > 0;
     }
 
     public UsersRepository getUsersRepository() {
