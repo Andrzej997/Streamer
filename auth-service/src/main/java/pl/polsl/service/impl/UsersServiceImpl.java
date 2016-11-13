@@ -69,6 +69,7 @@ public class UsersServiceImpl implements UsersService {
         if (user != null) {
             Users old = usersRepository.findOne(user.getUserId());
             if (old != null) {
+                user.setPassword(old.getPassword());
                 return usersRepository.save(user);
             }
         }
