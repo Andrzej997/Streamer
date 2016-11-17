@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.annotation.AuthMethod;
 import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
+import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
 
 import java.util.logging.Logger;
@@ -22,6 +25,9 @@ public class UsersControler {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    private SecurityService securityService;
+
     public UsersControler() {
 
     }
@@ -31,38 +37,46 @@ public class UsersControler {
         return "index";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @AuthMethod(params = {"username", "password"})
+    @RequestMapping(value = "/noauth/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean login(@RequestParam(value = "username") String username,
-                  @RequestParam(value = "password") String password) {
-        return usersService.userExists(username, password);
+    ResponseEntity<Boolean> login(@RequestParam(value = "username") String username,
+                                  @RequestParam(value = "password") String password) {
+        Boolean exists = usersService.userExists(username, password);
+        return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @AuthMethod(params = {"email", "password"})
+    @RequestMapping(value = "/noauth/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean loginWithEmail(@RequestParam(value = "email") String email,
-                           @RequestParam(value = "password") String password) {
+    ResponseEntity<Boolean> loginWithEmail(@RequestParam(value = "email") String email,
+                                           @RequestParam(value = "password") String password) {
 
-        return usersService.userExistsByEmail(email, password);
+        Boolean userExistsByEmail = usersService.userExistsByEmail(email, password);
+        return new ResponseEntity<Boolean>(userExistsByEmail, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @AuthMethod(params = {"registrationDTO"})
+    @RequestMapping(value = "/noauth/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean registerUser(@RequestBody RegistrationDTO registrationDTO) {
-        return usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
+    ResponseEntity<Boolean> registerUser(@RequestBody RegistrationDTO registrationDTO) {
+
+        Boolean success = usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
+        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/noauth/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean usernameExists(@RequestParam(value = "username") String username) {
-        return usersService.usernameExists(username);
+    ResponseEntity<Boolean> usernameExists(@RequestParam(value = "username") String username) {
+        Boolean exists = usersService.usernameExists(username);
+        return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/auth/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<UsersDTO> getUserData(@RequestParam(value = "username") String username) {
@@ -74,25 +88,38 @@ public class UsersControler {
         }
     }
 
-    @PutMapping(value = "/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/auth/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean updateUserData(@RequestBody UsersDTO dto) {
-        return usersService.updateUserInformations(dto) != null;
+    ResponseEntity<Boolean> updateUserData(@RequestBody UsersDTO dto) {
+        Boolean success = usersService.updateUserInformations(dto) != null;
+        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("@securityService.hasProtectedAccess()")
+    @DeleteMapping(value = "/auth/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean deleteUser(@RequestBody UsersDTO dto) {
-        return usersService.deleteUser(dto);
+    ResponseEntity<Boolean> deleteUser(@RequestBody UsersDTO dto) {
+        Boolean deleted = usersService.deleteUser(dto);
+        return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/noauth/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    Boolean checkEmailExists(@RequestParam(value = "email") String email) {
-        return usersService.checkEmailExists(email);
+    ResponseEntity<Boolean> checkEmailExists(@RequestParam(value = "email") String email) {
+        Boolean exists = usersService.checkEmailExists(email);
+        return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/auth/password/change", produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> changePassword(@RequestParam(value = "username") String username,
+                                           @RequestParam(value = "password") String password) {
+        Boolean success = usersService.changePassword(username, password);
+        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
 
     public UsersService getUsersService() {

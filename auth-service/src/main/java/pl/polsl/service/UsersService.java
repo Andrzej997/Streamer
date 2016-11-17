@@ -22,4 +22,6 @@ public interface UsersService {
     Boolean usernameExists(String username);
 
     Boolean checkEmailExists(String email);
+
+    Boolean changePassword(String username, String password);
 }

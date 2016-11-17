@@ -30,7 +30,7 @@ public class MockStreamServlet extends HttpServlet {
             // default to using hystrix.stream
             filename = "hystrix.stream";
         } else {
-            // strip any .. / characters to avoid security problems
+            // strip any .. / characters to avoid test problems
             filename = filename.replaceAll("\\.\\.", "");
             filename = filename.replaceAll("/", "");
         }

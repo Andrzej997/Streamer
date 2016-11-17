@@ -109,6 +109,19 @@ public class UsersServiceImpl implements UsersService {
         return emails != null && emails > 0;
     }
 
+    @Override
+    public Boolean changePassword(String username, String password) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return false;
+        }
+        Users user = usersRepository.findByUserName(username);
+        if (user == null) {
+            return false;
+        }
+        user.setPassword(ShaEncrypter.sha256(password));
+        return usersRepository.save(user) != null;
+    }
+
     public UsersRepository getUsersRepository() {
         return usersRepository;
     }

@@ -6,9 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,54 +35,49 @@ public class UsersControllerTestClass {
     @Mock
     private UsersService usersService;
 
-    @Autowired
-    private TestRestTemplate restTemplate;
-
     @Before
     public void initMocks() {
         MockitoAnnotations.initMocks(this);
     }
 
     @Test
-    public void testIndex() {
-        String body = this.restTemplate.getForObject("/", String.class);
-        assertThat(body).isEqualTo("index");
-    }
-
-    @Test
     public void testLogin_whenUserExist() {
         when(usersService.userExists("username", "password")).thenReturn(true);
 
-        Boolean login = usersControler.login("username", "password");
+        ResponseEntity<Boolean> login = usersControler.login("username", "password");
 
-        assertThat(login).isTrue();
+        assertThat(login).isNotNull();
+        assertThat(login.getBody()).isTrue();
     }
 
     @Test
     public void testLogin_whenUserNotExists() {
         when(usersService.userExists("username", "password")).thenReturn(false);
 
-        Boolean login = usersControler.login("username", "password");
+        ResponseEntity<Boolean> login = usersControler.login("username", "password");
 
-        assertThat(login).isFalse();
+        assertThat(login).isNotNull();
+        assertThat(login.getBody()).isFalse();
     }
 
     @Test
     public void testLoginWithEmail_whenUserExists() {
         when(usersService.userExistsByEmail("email", "password")).thenReturn(true);
 
-        Boolean login = usersControler.loginWithEmail("email", "password");
+        ResponseEntity<Boolean> login = usersControler.loginWithEmail("email", "password");
 
-        assertThat(login).isTrue();
+        assertThat(login).isNotNull();
+        assertThat(login.getBody()).isTrue();
     }
 
     @Test
     public void testLoginWithEmail_whenNotUserExists() {
         when(usersService.userExistsByEmail("email", "password")).thenReturn(false);
 
-        Boolean login = usersControler.loginWithEmail("email", "password");
+        ResponseEntity<Boolean> login = usersControler.loginWithEmail("email", "password");
 
-        assertThat(login).isFalse();
+        assertThat(login).isNotNull();
+        assertThat(login.getBody()).isFalse();
     }
 
     @Test
@@ -95,9 +88,10 @@ public class UsersControllerTestClass {
         registrationDTO.setUsername("username");
         when(usersService.registerUser("username", "password", "email")).thenReturn(true);
 
-        Boolean result = usersControler.registerUser(registrationDTO);
+        ResponseEntity<Boolean> result = usersControler.registerUser(registrationDTO);
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
     }
 
     @Test
@@ -108,9 +102,10 @@ public class UsersControllerTestClass {
         registrationDTO.setUsername("username");
         when(usersService.registerUser("username", "password", "email")).thenReturn(false);
 
-        Boolean result = usersControler.registerUser(registrationDTO);
+        ResponseEntity<Boolean> result = usersControler.registerUser(registrationDTO);
 
-        assertThat(result).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
     }
 
     @Test
@@ -120,6 +115,7 @@ public class UsersControllerTestClass {
 
         ResponseEntity<UsersDTO> result = usersControler.getUserData("username");
 
+        assertThat(result).isNotNull();
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(result.getBody()).isEqualTo(dto);
     }
@@ -138,9 +134,10 @@ public class UsersControllerTestClass {
         UsersDTO dto = new UsersDTO();
         when(usersService.updateUserInformations(dto)).thenReturn(new Users());
 
-        Boolean result = usersControler.updateUserData(dto);
+        ResponseEntity<Boolean> result = usersControler.updateUserData(dto);
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
     }
 
     @Test
@@ -148,9 +145,10 @@ public class UsersControllerTestClass {
         UsersDTO dto = new UsersDTO();
         when(usersService.updateUserInformations(dto)).thenReturn(null);
 
-        Boolean result = usersControler.updateUserData(dto);
+        ResponseEntity<Boolean> result = usersControler.updateUserData(dto);
 
-        assertThat(result).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
     }
 
     @Test
@@ -158,9 +156,10 @@ public class UsersControllerTestClass {
         UsersDTO dto = new UsersDTO();
         when(usersService.deleteUser(dto)).thenReturn(true);
 
-        Boolean result = usersControler.deleteUser(dto);
+        ResponseEntity<Boolean> result = usersControler.deleteUser(dto);
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
     }
 
     @Test
@@ -168,27 +167,30 @@ public class UsersControllerTestClass {
         UsersDTO dto = new UsersDTO();
         when(usersService.deleteUser(dto)).thenReturn(false);
 
-        Boolean result = usersControler.deleteUser(dto);
+        ResponseEntity<Boolean> result = usersControler.deleteUser(dto);
 
-        assertThat(result).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
     }
 
     @Test
     public void testUsernameExists_whenNotExists() {
         when(usersService.usernameExists("username")).thenReturn(false);
 
-        Boolean result = usersControler.usernameExists("username");
+        ResponseEntity<Boolean> result = usersControler.usernameExists("username");
 
-        assertThat(result).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
     }
 
     @Test
     public void testUsernameExists_whenExists() {
         when(usersService.usernameExists("username")).thenReturn(true);
 
-        Boolean result = usersControler.usernameExists("username");
+        ResponseEntity<Boolean> result = usersControler.usernameExists("username");
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
     }
 
     @Test
@@ -196,9 +198,10 @@ public class UsersControllerTestClass {
         String email = "email";
         when(usersService.checkEmailExists(email)).thenReturn(true);
 
-        Boolean result = usersControler.checkEmailExists(email);
+        ResponseEntity<Boolean> result = usersControler.checkEmailExists(email);
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
     }
 
     @Test
@@ -206,9 +209,34 @@ public class UsersControllerTestClass {
         String email = "email";
         when(usersService.checkEmailExists(email)).thenReturn(false);
 
-        Boolean result = usersControler.checkEmailExists(email);
+        ResponseEntity<Boolean> result = usersControler.checkEmailExists(email);
 
-        assertThat(result).isFalse();
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
+    }
+
+    @Test
+    public void testChangePassword_whenUserExists() {
+        String username = "username";
+        String password = "password";
+        when(usersService.changePassword(username, password)).thenReturn(true);
+
+        ResponseEntity<Boolean> result = usersControler.changePassword(username, password);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
+    }
+
+    @Test
+    public void testChangePassword_whenUserNotExists() {
+        String username = "username";
+        String password = "password";
+        when(usersService.changePassword(username, password)).thenReturn(false);
+
+        ResponseEntity<Boolean> result = usersControler.changePassword(username, password);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
     }
 
     public UsersControler getUsersControler() {
@@ -227,11 +255,4 @@ public class UsersControllerTestClass {
         this.usersService = usersService;
     }
 
-    public TestRestTemplate getRestTemplate() {
-        return restTemplate;
-    }
-
-    public void setRestTemplate(TestRestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 }

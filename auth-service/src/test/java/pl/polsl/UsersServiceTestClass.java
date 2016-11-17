@@ -258,6 +258,40 @@ public class UsersServiceTestClass {
         assertThat(result).isTrue();
     }
 
+    @Test
+    public void testChangePassword_whenUserExists() {
+        String username = "username";
+        String password = "password";
+        Users users = new Users();
+        users.setUserName(username);
+        users.setPassword(password);
+        users.setEmail("email");
+        users.setUserId(1L);
+        when(usersRepository.findByUserName(username)).thenReturn(users);
+        users.setPassword(ShaEncrypter.sha256(password));
+        when(usersRepository.save(users)).thenReturn(users);
+
+        Boolean result = usersService.changePassword(username, password);
+
+        assertThat(result).isTrue();
+    }
+
+    @Test
+    public void testChangePassword_whenUserNotExists() {
+        String username = "username";
+        String password = "password";
+        Users users = new Users();
+        users.setUserName(username);
+        users.setPassword(password);
+        users.setEmail("email");
+        users.setUserId(1L);
+        when(usersRepository.findByUserName(username)).thenReturn(null);
+
+        Boolean result = usersService.changePassword(username, password);
+
+        assertThat(result).isFalse();
+    }
+
     public UsersService getUsersService() {
         return usersService;
     }
