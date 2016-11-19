@@ -143,6 +143,7 @@
                     <useTestClasspath>true</useTestClasspath>
                     <skip>false</skip>
                     <addResources>true</addResources>
+                    <profiles>test</profiles>
                     <additionalProperties>
                         <jwt.header>AuthHeader</jwt.header>
                     </additionalProperties>
