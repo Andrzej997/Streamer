@@ -239,6 +239,28 @@ public class UsersControllerTestClass {
         assertThat(result.getBody()).isFalse();
     }
 
+    public void testValidateOldPassword_whenUserExists() {
+        String username = "username";
+        String password = "password";
+        when(usersService.userExists(username, password)).thenReturn(true);
+
+        ResponseEntity<Boolean> result = usersControler.validateOldPassword(username, password);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isTrue();
+    }
+
+    public void testValidateOldPassword_whenUserNotExists() {
+        String username = "username";
+        String password = "password";
+        when(usersService.userExists(username, password)).thenReturn(false);
+
+        ResponseEntity<Boolean> result = usersControler.validateOldPassword(username, password);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getBody()).isFalse();
+    }
+
     public UsersControler getUsersControler() {
         return usersControler;
     }

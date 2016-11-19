@@ -113,6 +113,15 @@ public class UsersControler {
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/auth/valid/password", produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> validateOldPassword(@RequestParam(value = "username") String username,
+                                                @RequestParam(value = "password") String password) {
+        Boolean exists = usersService.userExists(username, password);
+        return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/auth/password/change", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
