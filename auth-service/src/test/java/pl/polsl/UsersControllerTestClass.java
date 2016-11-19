@@ -87,6 +87,7 @@ public class UsersControllerTestClass {
         registrationDTO.setPassword("password");
         registrationDTO.setUsername("username");
         when(usersService.registerUser("username", "password", "email")).thenReturn(true);
+        when(usersService.userExists("username", "password")).thenReturn(true);
 
         ResponseEntity<Boolean> result = usersControler.registerUser(registrationDTO);
 

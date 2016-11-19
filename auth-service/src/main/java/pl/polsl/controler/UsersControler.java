@@ -58,14 +58,17 @@ public class UsersControler {
         return new ResponseEntity<Boolean>(userExistsByEmail, HttpStatus.OK);
     }
 
-    @AuthMethod(params = {"registrationDTO"})
     @RequestMapping(value = "/noauth/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean> registerUser(@RequestBody RegistrationDTO registrationDTO) {
 
         Boolean success = usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
-        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
+        if (success) {
+            return this.login(registrationDTO.getUsername(), registrationDTO.getPassword());
+        } else {
+            return new ResponseEntity<Boolean>(success, HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @RequestMapping(value = "/noauth/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
