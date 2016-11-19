@@ -143,6 +143,9 @@
                     <useTestClasspath>true</useTestClasspath>
                     <skip>false</skip>
                     <addResources>true</addResources>
+                    <additionalProperties>
+                        <jwt.header>AuthHeader</jwt.header>
+                    </additionalProperties>
                 </configuration>
             </plugin>
             <plugin>

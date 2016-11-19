@@ -40,6 +40,10 @@ spring:
     username: admin
     password: admin
     schema: classpath:/schema.sql
+jwt:
+  header: AuthHeader
+  key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
+  expiration: 3600
 eureka:
   client:
     enabled: false
@@ -50,7 +54,3 @@ encrypt:
 logging:
   file: log.txt
   level: error
-jwt:
-  header: AuthHeader
-  key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
-  expiration: 3600
