@@ -141,6 +141,7 @@
                 </executions>
                 <configuration>
                     <useTestClasspath>true</useTestClasspath>
+                    <maxAttempts>15000</maxAttempts>
                     <skip>false</skip>
                     <addResources>true</addResources>
                     <profiles>test</profiles>
