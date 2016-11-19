@@ -1,14 +1,18 @@
 package pl.polsl.controler;
 
+import jdk.nashorn.internal.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.annotation.AuthMethod;
 import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
+import pl.polsl.security.Tokenizer;
 import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
 
@@ -27,6 +31,9 @@ public class UsersControler {
 
     @Autowired
     private SecurityService securityService;
+
+    @Autowired
+    private Tokenizer tokenizer;
 
     public UsersControler() {
 
@@ -61,13 +68,15 @@ public class UsersControler {
     @RequestMapping(value = "/noauth/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> registerUser(@RequestBody RegistrationDTO registrationDTO) {
+    ResponseEntity<String> registerUser(@RequestBody RegistrationDTO registrationDTO) {
 
         Boolean success = usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
         if (success) {
-            return this.login(registrationDTO.getUsername(), registrationDTO.getPassword());
+            return new ResponseEntity<String>(JSONParser.quote(
+                    this.generateToken(registrationDTO.getUsername(), registrationDTO.getPassword(),
+                            registrationDTO.getEmail())), HttpStatus.OK);
         } else {
-            return new ResponseEntity<Boolean>(success, HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<String>(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -132,6 +141,20 @@ public class UsersControler {
                                            @RequestParam(value = "password") String password) {
         Boolean success = usersService.changePassword(username, password);
         return new ResponseEntity<Boolean>(success, HttpStatus.OK);
+    }
+
+    private String generateToken(String username, String password, String email) {
+        return this.tokenizer.generateToken(getUserDetails(username, email, password));
+    }
+
+    private UserDetails getUserDetails(String username, String email, String password) {
+        if (!StringUtils.isEmpty(username) && !StringUtils.isEmpty(password)) {
+            return securityService.getUserByUsername(username);
+        }
+        if (!StringUtils.isEmpty(email) && !StringUtils.isEmpty(password)) {
+            return securityService.getUserByEmail(email, password);
+        }
+        return null;
     }
 
     public UsersService getUsersService() {

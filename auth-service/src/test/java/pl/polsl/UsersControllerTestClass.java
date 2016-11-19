@@ -15,7 +15,12 @@ import pl.polsl.controler.UsersControler;
 import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.model.Users;
+import pl.polsl.security.Tokenizer;
+import pl.polsl.security.model.SecuredUser;
+import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -34,6 +39,12 @@ public class UsersControllerTestClass {
 
     @Mock
     private UsersService usersService;
+
+    @Mock
+    private Tokenizer tokenizer;
+
+    @Mock
+    private SecurityService securityService;
 
     @Before
     public void initMocks() {
@@ -86,13 +97,25 @@ public class UsersControllerTestClass {
         registrationDTO.setEmail("email");
         registrationDTO.setPassword("password");
         registrationDTO.setUsername("username");
-        when(usersService.registerUser("username", "password", "email")).thenReturn(true);
-        when(usersService.userExists("username", "password")).thenReturn(true);
+        SecuredUser securedUser = new SecuredUser();
+        securedUser.setId(1L);
+        securedUser.setPassword("password");
+        securedUser.setEmail("email");
+        securedUser.setUsername("username");
+        securedUser.setAuthorities(new ArrayList<>());
+        securedUser.setAccountNonExpired(true);
+        securedUser.setAccountNonLocked(true);
+        securedUser.setCredentialsNonExpired(true);
+        securedUser.setEnabled(true);
 
-        ResponseEntity<Boolean> result = usersControler.registerUser(registrationDTO);
+        when(usersService.registerUser("username", "password", "email")).thenReturn(true);
+        when(securityService.getUserByUsername(registrationDTO.getUsername())).thenReturn(securedUser);
+        when(tokenizer.generateToken(securedUser)).thenReturn("DDDD");
+
+        ResponseEntity<String> result = usersControler.registerUser(registrationDTO);
 
         assertThat(result).isNotNull();
-        assertThat(result.getBody()).isTrue();
+        assertThat(result.getBody()).isNotEmpty();
     }
 
     @Test
@@ -103,10 +126,10 @@ public class UsersControllerTestClass {
         registrationDTO.setUsername("username");
         when(usersService.registerUser("username", "password", "email")).thenReturn(false);
 
-        ResponseEntity<Boolean> result = usersControler.registerUser(registrationDTO);
+        ResponseEntity<String> result = usersControler.registerUser(registrationDTO);
 
         assertThat(result).isNotNull();
-        assertThat(result.getBody()).isFalse();
+        assertThat(result.getBody()).isNull();
     }
 
     @Test
