@@ -5,13 +5,6 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
-  resources:
-    chain:
-      enabled: true
-jwt:
-  header: AuthHeader
-  key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
-  expiration: 36000
 ---
 spring:
   profiles: docker
@@ -22,10 +15,6 @@ spring:
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
-jwt:
-  header: AuthHeader
-  key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
-  expiration: 36000
 ---
 spring:
   profiles: test
