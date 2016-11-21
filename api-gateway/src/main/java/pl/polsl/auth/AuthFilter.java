@@ -2,8 +2,7 @@ package pl.polsl.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -12,6 +11,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 
 /**
  * Created by Mateusz on 21.11.2016.
@@ -39,7 +41,8 @@ public class AuthFilter implements Filter {
         if (checkAuthRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
-                entity = (ResponseEntity) restTemplate.getForEntity(authEndpoint + "/auth/authorize", ResponseEntity.class);
+                entity = restTemplate.exchange(authEndpoint + "/auth/authorize", HttpMethod.GET,
+                        generateHeaders(httpRequest), ResponseEntity.class);
             } catch (HttpClientErrorException e) {
                 exception = e;
             }
@@ -51,6 +54,19 @@ public class AuthFilter implements Filter {
             }
         }
         chain.doFilter(request, httpResponse);
+    }
+
+    private HttpEntity<String> generateHeaders(HttpServletRequest httpRequest) {
+        Enumeration<String> headerNames = httpRequest.getHeaderNames();
+        HttpHeaders headers = new HttpHeaders();
+        List<String> headerNamesList = Collections.list(headerNames);
+        for (String name : headerNamesList) {
+            String headerValue = httpRequest.getHeader(name);
+            if (headerValue != null) {
+                headers.add(name, headerValue);
+            }
+        }
+        return new HttpEntity<>(null, headers);
     }
 
     private Boolean checkAuthRegex(String URI) {
