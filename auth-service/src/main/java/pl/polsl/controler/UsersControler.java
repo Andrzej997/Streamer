@@ -143,6 +143,13 @@ public class UsersControler {
         return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/auth/authorize", produces = MediaType.APPLICATION_JSON_VALUE)
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> authorize() {
+        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    }
+
     private String generateToken(String username, String password, String email) {
         return this.tokenizer.generateToken(getUserDetails(username, email, password));
     }
