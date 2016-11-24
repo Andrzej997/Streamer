@@ -76,7 +76,7 @@ public class Videos extends BaseEntity {
     private VideoSeries videoSeriesByVideoSerieId;
 
     @Transient
-    private Users usersByOwnerId;
+    private UsersView usersViewByOwnerId;
 
     @OneToMany(mappedBy = "videosByVideoId")
     private Collection<VideosAuthors> videosAuthorsesByVideoId;
@@ -238,12 +238,12 @@ public class Videos extends BaseEntity {
         this.videoSeriesByVideoSerieId = videoSeriesByVideoSerieId;
     }
 
-    public Users getUsersByOwnerId() {
-        return usersByOwnerId;
+    public UsersView getUsersViewByOwnerId() {
+        return usersViewByOwnerId;
     }
 
-    public void setUsersByOwnerId(Users usersByOwnerId) {
-        this.usersByOwnerId = usersByOwnerId;
+    public void setUsersViewByOwnerId(UsersView usersViewByOwnerId) {
+        this.usersViewByOwnerId = usersViewByOwnerId;
     }
 
     public Collection<VideosAuthors> getVideosAuthorsesByVideoId() {

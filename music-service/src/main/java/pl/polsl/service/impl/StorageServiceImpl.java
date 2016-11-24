@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.exception.StorageException;
 import pl.polsl.model.MusicFiles;
 import pl.polsl.repository.MusicFilesRepository;
+import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
 
 import javax.persistence.EntityManager;
@@ -31,6 +32,9 @@ public class StorageServiceImpl implements StorageService {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private UsersRepositoryCustom usersRepository;
 
     @Override
     public MusicFiles store(MultipartFile file) {

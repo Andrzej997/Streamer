@@ -1,10 +1,10 @@
 package pl.polsl.repository.custom;
 
-import pl.polsl.model.Users;
+import pl.polsl.model.UsersView;
 
 /**
  * Created by Mateusz on 29.10.2016.
  */
 public interface UsersRepositoryCustom {
-    Users findUsersByUserId(Long userId);
+    UsersView findUsersByUserId(Long userId);
 }

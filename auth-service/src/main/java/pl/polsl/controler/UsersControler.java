@@ -16,15 +16,12 @@ import pl.polsl.security.Tokenizer;
 import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
 
-import java.util.logging.Logger;
-
 /**
  * Created by Mateusz on 25.10.2016.
  */
 @SuppressWarnings("ALL")
 @RestController
 public class UsersControler {
-    protected Logger logger = Logger.getLogger(UsersControler.class.getName());
 
     @Autowired
     private UsersService usersService;
@@ -146,8 +143,8 @@ public class UsersControler {
     @GetMapping(value = "/auth/authorize", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> authorize() {
-        return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+    ResponseEntity<String> authorize() {
+        return new ResponseEntity<String>("T", HttpStatus.OK);
     }
 
     private String generateToken(String username, String password, String email) {

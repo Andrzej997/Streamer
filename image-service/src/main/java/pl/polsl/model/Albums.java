@@ -42,7 +42,7 @@ public class Albums extends BaseEntity {
     private Timestamp creationDate;
 
     @Transient
-    private Users usersByUserId;
+    private UsersView usersViewByUserId;
 
     @OneToMany(mappedBy = "albumsByAlbumId")
     private Collection<AlbumsImages> albumsImagesByAlbumId;
@@ -115,12 +115,12 @@ public class Albums extends BaseEntity {
         this.creationDate = creationDate;
     }
 
-    public Users getUsersByUserId() {
-        return usersByUserId;
+    public UsersView getUsersViewByUserId() {
+        return usersViewByUserId;
     }
 
-    public void setUsersByUserId(Users usersByUserId) {
-        this.usersByUserId = usersByUserId;
+    public void setUsersViewByUserId(UsersView usersViewByUserId) {
+        this.usersViewByUserId = usersViewByUserId;
     }
 
     public Collection<AlbumsImages> getAlbumsImagesByAlbumId() {

@@ -87,7 +87,7 @@ public class Images extends BaseEntity {
     private ImageTypes imageTypesByTypeId;
 
     @Transient
-    private Users usersByOwnerId;
+    private UsersView usersViewByOwnerId;
 
     public Images() {
     }
@@ -277,11 +277,11 @@ public class Images extends BaseEntity {
         this.imageTypesByTypeId = imageTypesByTypeId;
     }
 
-    public Users getUsersByOwnerId() {
-        return usersByOwnerId;
+    public UsersView getUsersViewByOwnerId() {
+        return usersViewByOwnerId;
     }
 
-    public void setUsersByOwnerId(Users usersByOwnerId) {
-        this.usersByOwnerId = usersByOwnerId;
+    public void setUsersViewByOwnerId(UsersView usersViewByOwnerId) {
+        this.usersViewByOwnerId = usersViewByOwnerId;
     }
 }

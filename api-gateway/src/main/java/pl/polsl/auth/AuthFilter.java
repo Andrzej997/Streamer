@@ -37,12 +37,17 @@ public class AuthFilter implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String requestURI = httpRequest.getRequestURI();
-        ResponseEntity<?> entity = null;
+        ResponseEntity<String> entity = null;
+        if (HttpMethod.OPTIONS.name().equals(httpRequest.getMethod())) {
+            chain.doFilter(request, httpResponse);
+            return;
+        }
+
         if (checkAuthRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
                 entity = restTemplate.exchange(authEndpoint + "/auth/authorize", HttpMethod.GET,
-                        generateHeaders(httpRequest), ResponseEntity.class);
+                        generateHeaders(httpRequest), String.class);
             } catch (HttpClientErrorException e) {
                 exception = e;
             }

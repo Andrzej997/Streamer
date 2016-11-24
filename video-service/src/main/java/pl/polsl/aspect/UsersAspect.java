@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
-import pl.polsl.model.Users;
+import pl.polsl.model.UsersView;
 import pl.polsl.model.base.BaseEntity;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 
@@ -35,7 +35,7 @@ public class UsersAspect {
             if (!entity.containsUsers()) {
                 return;
             }
-            Users user = usersRepository.findUsersByUserId(entity.getUsersId());
+            UsersView user = usersRepository.findUsersByUserId(entity.getUsersId());
             if (user != null) {
                 entity.injectUser(user);
             }

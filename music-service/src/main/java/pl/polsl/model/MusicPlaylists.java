@@ -41,8 +41,9 @@ public class MusicPlaylists extends BaseEntity {
     @Column(name = "creation_date")
     private Timestamp creationDate;
 
-    @Transient
-    private Users usersByUserId;
+    @ManyToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private UsersView usersViewByUserId;
 
     @OneToMany(mappedBy = "musicPlaylistsByPlaylistId")
     private Collection<PlaylistsSongs> playlistsSongsesByPlaylistId;
@@ -116,12 +117,12 @@ public class MusicPlaylists extends BaseEntity {
     }
 
 
-    public Users getUsersByUserId() {
-        return usersByUserId;
+    public UsersView getUsersViewByUserId() {
+        return usersViewByUserId;
     }
 
-    public void setUsersByUserId(Users usersByUserId) {
-        this.usersByUserId = usersByUserId;
+    public void setUsersViewByUserId(UsersView usersViewByUserId) {
+        this.usersViewByUserId = usersViewByUserId;
     }
 
     public Collection<PlaylistsSongs> getPlaylistsSongsesByPlaylistId() {

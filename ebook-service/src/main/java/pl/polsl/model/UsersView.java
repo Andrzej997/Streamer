@@ -1,16 +1,19 @@
 package pl.polsl.model;
 
+import org.hibernate.annotations.Immutable;
 import pl.polsl.model.base.BaseEntity;
 
-import javax.persistence.*;
-import java.util.Collection;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
 /**
- * Created by Mateusz on 28.10.2016.
+ * Created by Mateusz on 18.10.2016.
  */
-
-@Table(name = "users", schema = "public")
-public class Users extends BaseEntity {
+@Entity
+@Immutable
+public class UsersView extends BaseEntity {
 
     @Id
     @Column(name = "user_id", nullable = false)
@@ -40,13 +43,7 @@ public class Users extends BaseEntity {
     @Column(name = "email", nullable = false, length = 1024)
     private String email;
 
-    @OneToMany(mappedBy = "usersByUserId")
-    private Collection<Albums> albumsesByUserId;
-
-    @OneToMany(mappedBy = "usersByOwnerId")
-    private Collection<Images> imagesByUserId;
-
-    public Users() {
+    public UsersView() {
     }
 
     @Override
@@ -54,15 +51,16 @@ public class Users extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Users users = (Users) o;
+        UsersView usersView = (UsersView) o;
 
-        if (!userId.equals(users.userId)) return false;
-        if (!userName.equals(users.userName)) return false;
-        if (!password.equals(users.password)) return false;
-        if (name != null ? !name.equals(users.name) : users.name != null) return false;
-        if (surname != null ? !surname.equals(users.surname) : users.surname != null) return false;
-        if (nationality != null ? !nationality.equals(users.nationality) : users.nationality != null) return false;
-        return email.equals(users.email);
+        if (!userId.equals(usersView.userId)) return false;
+        if (!userName.equals(usersView.userName)) return false;
+        if (!password.equals(usersView.password)) return false;
+        if (name != null ? !name.equals(usersView.name) : usersView.name != null) return false;
+        if (surname != null ? !surname.equals(usersView.surname) : usersView.surname != null) return false;
+        if (nationality != null ? !nationality.equals(usersView.nationality) : usersView.nationality != null)
+            return false;
+        return email.equals(usersView.email);
 
     }
 
@@ -80,7 +78,7 @@ public class Users extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Users{" +
+        return "UsersView{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +
@@ -147,19 +145,4 @@ public class Users extends BaseEntity {
         this.email = email;
     }
 
-    public Collection<Albums> getAlbumsesByUserId() {
-        return albumsesByUserId;
-    }
-
-    public void setAlbumsesByUserId(Collection<Albums> albumsesByUserId) {
-        this.albumsesByUserId = albumsesByUserId;
-    }
-
-    public Collection<Images> getImagesByUserId() {
-        return imagesByUserId;
-    }
-
-    public void setImagesByUserId(Collection<Images> imagesByUserId) {
-        this.imagesByUserId = imagesByUserId;
-    }
 }

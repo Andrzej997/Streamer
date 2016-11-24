@@ -78,8 +78,9 @@ public class Songs extends BaseEntity {
     @JoinColumn(name = "music_genre_id", referencedColumnName = "music_genre_id", insertable = false, updatable = false)
     private MusicGenres musicGenresByMusicGenreId;
 
-    @Transient
-    private Users usersByOwnerId;
+    @ManyToOne
+    @JoinColumn(name = "owner_id", referencedColumnName = "user_id", insertable = false, updatable = false)
+    private UsersView usersViewByOwnerId;
 
     public Long getSongId() {
         return songId;
@@ -185,12 +186,12 @@ public class Songs extends BaseEntity {
         this.musicGenresByMusicGenreId = musicGenresByMusicGenreId;
     }
 
-    public Users getUsersByOwnerId() {
-        return usersByOwnerId;
+    public UsersView getUsersViewByOwnerId() {
+        return usersViewByOwnerId;
     }
 
-    public void setUsersByOwnerId(Users usersByOwnerId) {
-        this.usersByOwnerId = usersByOwnerId;
+    public void setUsersViewByOwnerId(UsersView usersViewByOwnerId) {
+        this.usersViewByOwnerId = usersViewByOwnerId;
     }
 
     public Collection<MusicAuthors> getMusicAuthorsesBySongId() {

@@ -1,7 +1,7 @@
 package pl.polsl.repository.custom.impl;
 
 import org.springframework.stereotype.Repository;
-import pl.polsl.model.Users;
+import pl.polsl.model.UsersView;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 
 import javax.persistence.EntityManager;
@@ -19,10 +19,10 @@ public class UsersRepositoryImpl implements UsersRepositoryCustom {
     private EntityManager entityManager;
 
     @Override
-    public Users findUsersByUserId(Long userId) {
-        Query query = entityManager.createNativeQuery("select u.* from USERS where user_id = :userId", Users.class);
+    public UsersView findUsersByUserId(Long userId) {
+        Query query = entityManager.createNativeQuery("select u.* from USERS where user_id = :userId", UsersView.class);
         query.setParameter("userId", userId);
-        List<Users> resultList = (List<Users>) query.getResultList();
+        List<UsersView> resultList = (List<UsersView>) query.getResultList();
         return resultList != null && !resultList.isEmpty() ? resultList.get(0) : null;
     }
 

@@ -1,6 +1,6 @@
 package pl.polsl.model.base;
 
-import pl.polsl.model.Users;
+import pl.polsl.model.UsersView;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -61,7 +61,7 @@ public abstract class BaseEntity implements Serializable, Cloneable {
             if (field.getType() == null) {
                 continue;
             }
-            if (field.getType().equals(Users.class)) {
+            if (field.getType().equals(UsersView.class)) {
                 return true;
             }
         }
@@ -88,8 +88,8 @@ public abstract class BaseEntity implements Serializable, Cloneable {
         return null;
     }
 
-    public void injectUser(Users users) {
-        if (users == null) {
+    public void injectUser(UsersView usersView) {
+        if (usersView == null) {
             return;
         }
         if (this.containsUsers()) {
@@ -98,11 +98,11 @@ public abstract class BaseEntity implements Serializable, Cloneable {
                 return;
             }
             for (Field field : declaredFields) {
-                if (!Users.class.equals(field.getType())) {
+                if (!UsersView.class.equals(field.getType())) {
                     continue;
                 }
                 try {
-                    field.set(this, users);
+                    field.set(this, usersView);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

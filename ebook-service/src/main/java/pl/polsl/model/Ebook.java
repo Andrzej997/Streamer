@@ -69,7 +69,7 @@ public class Ebook extends BaseEntity {
     private LiteraryGenre literaryGenreByGenreId;
 
     @Transient
-    private Users usersByOwnerId;
+    private UsersView usersViewByOwnerId;
 
     @ManyToOne
     @JoinColumn(name = "ebook_file_id", referencedColumnName = "ebook_file_id", nullable = false,
@@ -224,12 +224,12 @@ public class Ebook extends BaseEntity {
         this.literaryGenreByGenreId = literaryGenreByGenreId;
     }
 
-    public Users getUsersByOwnerId() {
-        return usersByOwnerId;
+    public UsersView getUsersViewByOwnerId() {
+        return usersViewByOwnerId;
     }
 
-    public void setUsersByOwnerId(Users usersByOwnerId) {
-        this.usersByOwnerId = usersByOwnerId;
+    public void setUsersViewByOwnerId(UsersView usersViewByOwnerId) {
+        this.usersViewByOwnerId = usersViewByOwnerId;
     }
 
     public EbookFiles getEbookFilesByEbookFileId() {

@@ -45,7 +45,7 @@ public class VideoPlaylists extends BaseEntity {
     private Collection<PlaylistsVideos> playlistsVideosesByPlaylistId;
 
     @Transient
-    private Users usersByUserId;
+    private UsersView usersViewByUserId;
 
     public VideoPlaylists() {
     }
@@ -129,11 +129,11 @@ public class VideoPlaylists extends BaseEntity {
         this.playlistsVideosesByPlaylistId = playlistsVideosesByPlaylistId;
     }
 
-    public Users getUsersByUserId() {
-        return usersByUserId;
+    public UsersView getUsersViewByUserId() {
+        return usersViewByUserId;
     }
 
-    public void setUsersByUserId(Users usersByUserId) {
-        this.usersByUserId = usersByUserId;
+    public void setUsersViewByUserId(UsersView usersViewByUserId) {
+        this.usersViewByUserId = usersViewByUserId;
     }
 }

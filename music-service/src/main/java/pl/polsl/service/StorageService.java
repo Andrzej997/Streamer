@@ -11,4 +11,5 @@ public interface StorageService {
     MusicFiles store(MultipartFile file);
 
     MusicFiles downloadMusicFile(Long id);
+
 }

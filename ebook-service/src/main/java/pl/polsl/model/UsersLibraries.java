@@ -45,7 +45,7 @@ public class UsersLibraries extends BaseEntity {
     private Collection<LibrariesEbooks> librariesEbooksesByLibraryId;
 
     @Transient
-    private Users usersByUserId;
+    private UsersView usersViewByUserId;
 
     public UsersLibraries() {
     }
@@ -123,11 +123,11 @@ public class UsersLibraries extends BaseEntity {
         this.librariesEbooksesByLibraryId = librariesEbooksesByLibraryId;
     }
 
-    public Users getUsersByUserId() {
-        return usersByUserId;
+    public UsersView getUsersViewByUserId() {
+        return usersViewByUserId;
     }
 
-    public void setUsersByUserId(Users usersByUserId) {
-        this.usersByUserId = usersByUserId;
+    public void setUsersViewByUserId(UsersView usersViewByUserId) {
+        this.usersViewByUserId = usersViewByUserId;
     }
 }

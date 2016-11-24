@@ -2,16 +2,22 @@ package pl.polsl.controller;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import pl.polsl.dto.MusicAlbumDTO;
+import pl.polsl.dto.MusicArtistDTO;
+import pl.polsl.dto.MusicGenreDTO;
 import pl.polsl.model.MusicFiles;
+import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by Mateusz on 20.11.2016.
@@ -23,6 +29,9 @@ public class MusicController {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private MusicMetadataService musicMetadataService;
+
     @PostMapping("/auth/upload")
     public ResponseEntity<Boolean> handleFileUpload(@RequestParam("file") MultipartFile file) {
 
@@ -31,8 +40,9 @@ public class MusicController {
     }
 
     @GetMapping("/auth/download")
+    public
     @ResponseBody
-    public String downloadMusicFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    String downloadMusicFile(@RequestParam("id") Long id, HttpServletResponse response) {
         MusicFiles musicFile = storageService.downloadMusicFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + musicFile.getFileName() + "\"");
@@ -45,5 +55,32 @@ public class MusicController {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @GetMapping("/noauth/authors/prediction")
+    public
+    @ResponseBody
+    ResponseEntity<List<MusicArtistDTO>> getArtistsPredictionList(@RequestParam("name") String name,
+                                                                  @RequestParam("name2") String name2,
+                                                                  @RequestParam("surname") String surname) {
+        List<MusicArtistDTO> artistsByPrediction = musicMetadataService.getArtistsByPrediction(name, name2, surname);
+        return new ResponseEntity<List<MusicArtistDTO>>(artistsByPrediction, HttpStatus.OK);
+    }
+
+    @GetMapping("/noauth/albums/prediction")
+    public
+    @ResponseBody
+    ResponseEntity<List<MusicAlbumDTO>> getAlbumsPredictionList(@RequestParam("albumTitle") String albumTitle,
+                                                                @RequestParam("songTitle") String songTitle) {
+        List<MusicAlbumDTO> albumsByPrediction = musicMetadataService.getAlbumsByPrediction(albumTitle, songTitle);
+        return new ResponseEntity<List<MusicAlbumDTO>>(albumsByPrediction, HttpStatus.OK);
+    }
+
+    @GetMapping("/noauth/genres/prediction")
+    public
+    @ResponseBody
+    ResponseEntity<List<MusicGenreDTO>> getGenresPredictionList(@RequestParam("genreName") String genreName) {
+        List<MusicGenreDTO> genresByPrediction = musicMetadataService.getGenresByPrediction(genreName);
+        return new ResponseEntity<List<MusicGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
 }
