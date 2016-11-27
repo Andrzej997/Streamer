@@ -36,7 +36,7 @@ public class MusicGenres extends BaseEntity {
     @Column(name = "comments", length = -1)
     private String comments;
 
-    @OneToMany(mappedBy = "musicGenresByMusicGenreId")
+    @OneToMany(mappedBy = "musicGenresByMusicGenreId", cascade = CascadeType.ALL)
     private Collection<Songs> songsesByMusicGenreId;
 
     public MusicGenres() {

@@ -45,7 +45,7 @@ public class MusicPlaylists extends BaseEntity {
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     private UsersView usersViewByUserId;
 
-    @OneToMany(mappedBy = "musicPlaylistsByPlaylistId")
+    @OneToMany(mappedBy = "musicPlaylistsByPlaylistId", cascade = CascadeType.ALL)
     private Collection<PlaylistsSongs> playlistsSongsesByPlaylistId;
 
     public MusicPlaylists() {

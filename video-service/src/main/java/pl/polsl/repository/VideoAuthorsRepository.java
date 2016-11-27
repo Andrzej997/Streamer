@@ -6,10 +6,14 @@ import org.springframework.stereotype.Repository;
 import pl.polsl.model.VideosAuthors;
 import pl.polsl.model.VideosAuthorsPK;
 
+import java.util.List;
+
 /**
  * Created by Mateusz on 29.10.2016.
  */
 @Repository
 @RepositoryRestResource
 public interface VideoAuthorsRepository extends CrudRepository<VideosAuthors, VideosAuthorsPK> {
+
+    List<VideosAuthors> findByVideoId(Long videoId);
 }

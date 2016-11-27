@@ -40,7 +40,7 @@ public class MusicAlbums extends BaseEntity {
     @Column(name = "comments", length = -1)
     private String comments;
 
-    @OneToMany(mappedBy = "musicAlbumsByAlbumId")
+    @OneToMany(mappedBy = "musicAlbumsByAlbumId", cascade = CascadeType.ALL)
     private Collection<Songs> songsesByAlbumId;
 
     public MusicAlbums() {

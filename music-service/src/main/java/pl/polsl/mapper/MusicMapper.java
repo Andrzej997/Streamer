@@ -1,13 +1,7 @@
 package pl.polsl.mapper;
 
-import pl.polsl.dto.MusicAlbumDTO;
-import pl.polsl.dto.MusicArtistDTO;
-import pl.polsl.dto.MusicFileMetadataDTO;
-import pl.polsl.dto.MusicGenreDTO;
-import pl.polsl.model.MusicAlbums;
-import pl.polsl.model.MusicArtists;
-import pl.polsl.model.MusicFiles;
-import pl.polsl.model.MusicGenres;
+import pl.polsl.dto.*;
+import pl.polsl.model.*;
 
 import java.util.List;
 
@@ -47,4 +41,8 @@ public interface MusicMapper {
     MusicGenres toMusicGenres(MusicGenreDTO musicGenreDTO);
 
     List<MusicGenres> toMusicGenresList(List<MusicGenreDTO> musicGenreDTOList);
+
+    Songs toSongs(SongDTO songDTO);
+
+    SongDTO toSongDTO(Songs songs);
 }

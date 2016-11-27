@@ -56,7 +56,7 @@ public class MusicArtists extends BaseEntity {
     @Column(name = "ratings")
     private Float ratings;
 
-    @OneToMany(mappedBy = "musicArtistsByAuthorId")
+    @OneToMany(mappedBy = "musicArtistsByAuthorId", cascade = CascadeType.ALL)
     private Collection<MusicAuthors> musicAuthors;
 
     public MusicArtists() {

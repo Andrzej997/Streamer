@@ -34,9 +34,8 @@ public class ImageFiles extends BaseEntity {
     @Column(name = "file_name", nullable = false, length = 1024)
     private String fileName;
 
-    @Basic
-    @Column(name = "file_path", nullable = false, length = -1)
-    private String filePath;
+    @Column(name = "file_size", nullable = false)
+    private Long fileSize;
 
     @Basic
     @Column(name = "file_extension", nullable = false, length = 10)
@@ -69,7 +68,7 @@ public class ImageFiles extends BaseEntity {
 
         if (!imageFileId.equals(that.imageFileId)) return false;
         if (!fileName.equals(that.fileName)) return false;
-        if (!filePath.equals(that.filePath)) return false;
+        if (!fileSize.equals(that.fileSize)) return false;
         if (!fileExtension.equals(that.fileExtension)) return false;
         if (!creationDate.equals(that.creationDate)) return false;
         return isPublic.equals(that.isPublic);
@@ -80,7 +79,7 @@ public class ImageFiles extends BaseEntity {
     public int hashCode() {
         int result = imageFileId.hashCode();
         result = 31 * result + fileName.hashCode();
-        result = 31 * result + filePath.hashCode();
+        result = 31 * result + fileSize.hashCode();
         result = 31 * result + fileExtension.hashCode();
         result = 31 * result + creationDate.hashCode();
         result = 31 * result + isPublic.hashCode();
@@ -92,7 +91,7 @@ public class ImageFiles extends BaseEntity {
         return "ImageFiles{" +
                 "imageFileId=" + imageFileId +
                 ", fileName='" + fileName + '\'' +
-                ", filePath='" + filePath + '\'' +
+                ", fileSize='" + fileSize + '\'' +
                 ", fileExtension='" + fileExtension + '\'' +
                 ", creationDate=" + creationDate +
                 ", isPublic=" + isPublic +
@@ -115,12 +114,12 @@ public class ImageFiles extends BaseEntity {
         this.fileName = fileName;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public Long getFileSize() {
+        return fileSize;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
     }
 
     public String getFileExtension() {

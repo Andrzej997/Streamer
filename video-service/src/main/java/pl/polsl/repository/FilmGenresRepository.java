@@ -5,10 +5,14 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Repository;
 import pl.polsl.model.FilmGenres;
 
+import java.util.List;
+
 /**
  * Created by Mateusz on 29.10.2016.
  */
 @Repository
 @RepositoryRestResource
 public interface FilmGenresRepository extends CrudRepository<FilmGenres, Long> {
+
+    List<FilmGenres> findByNameLike(String name);
 }

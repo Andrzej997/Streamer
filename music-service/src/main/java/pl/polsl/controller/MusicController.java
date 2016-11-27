@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.MusicAlbumDTO;
 import pl.polsl.dto.MusicArtistDTO;
 import pl.polsl.dto.MusicGenreDTO;
+import pl.polsl.dto.UploadSongMetadataDTO;
 import pl.polsl.model.MusicFiles;
 import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
@@ -33,10 +34,10 @@ public class MusicController {
     private MusicMetadataService musicMetadataService;
 
     @PostMapping("/auth/upload")
-    public ResponseEntity<Boolean> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         MusicFiles musicFile = storageService.store(file);
-        return ResponseEntity.ok(musicFile != null);
+        return ResponseEntity.ok(musicFile.getMusicFileId());
     }
 
     @GetMapping("/auth/download")
@@ -47,7 +48,7 @@ public class MusicController {
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + musicFile.getFileName() + "\"");
             OutputStream out = response.getOutputStream();
-            response.setContentType("audio/mp3");
+            response.setContentType("audio/" + musicFile.getExtension());
             IOUtils.copy(musicFile.getFile().getBinaryStream(), out);
             out.flush();
             out.close();
@@ -82,5 +83,13 @@ public class MusicController {
     ResponseEntity<List<MusicGenreDTO>> getGenresPredictionList(@RequestParam("genreName") String genreName) {
         List<MusicGenreDTO> genresByPrediction = musicMetadataService.getGenresByPrediction(genreName);
         return new ResponseEntity<List<MusicGenreDTO>>(genresByPrediction, HttpStatus.OK);
+    }
+
+    @PostMapping("/auth/file/metadata")
+    public
+    @ResponseBody
+    ResponseEntity<UploadSongMetadataDTO> saveMusicFileMetadata(@RequestBody UploadSongMetadataDTO uploadSongMetadataDTO) {
+        UploadSongMetadataDTO result = musicMetadataService.saveMetadata(uploadSongMetadataDTO);
+        return ResponseEntity.ok(result);
     }
 }

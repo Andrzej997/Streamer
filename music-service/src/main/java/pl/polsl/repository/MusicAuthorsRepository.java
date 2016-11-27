@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.model.MusicAuthors;
 import pl.polsl.model.MusicAuthorsPK;
 
+import java.util.List;
+
 /**
  * Created by Mateusz on 29.10.2016.
  */
@@ -14,4 +16,8 @@ import pl.polsl.model.MusicAuthorsPK;
 @RepositoryRestResource
 @Transactional
 public interface MusicAuthorsRepository extends CrudRepository<MusicAuthors, MusicAuthorsPK> {
+
+    List<MusicAuthors> findByAuthorId(Long authorId);
+
+    List<MusicAuthors> findBySongId(Long songId);
 }

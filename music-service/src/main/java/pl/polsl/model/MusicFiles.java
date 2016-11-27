@@ -54,7 +54,7 @@ public class MusicFiles extends BaseEntity {
     @Column(name = "file", nullable = false)
     private Blob file;
 
-    @OneToMany(mappedBy = "musicFilesByFileId")
+    @OneToMany(mappedBy = "musicFilesByFileId", cascade = CascadeType.ALL)
     private Collection<Songs> songsesByMusicFileId;
 
     public MusicFiles() {

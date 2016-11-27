@@ -60,10 +60,10 @@ public class Songs extends BaseEntity {
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @OneToMany(mappedBy = "songsBySongId")
+    @OneToMany(mappedBy = "songsBySongId", cascade = CascadeType.ALL)
     private Collection<PlaylistsSongs> playlistsSongsesBySongId;
 
-    @OneToMany(mappedBy = "songsBySongId")
+    @OneToMany(mappedBy = "songsBySongId", cascade = CascadeType.ALL)
     private Collection<MusicAuthors> musicAuthorsesBySongId;
 
     @ManyToOne

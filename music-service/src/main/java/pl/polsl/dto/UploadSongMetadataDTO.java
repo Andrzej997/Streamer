@@ -9,10 +9,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize()
 public class UploadSongMetadataDTO {
 
-    @JsonProperty(value = "_songDTO")
+    @JsonProperty(value = "_song")
     private SongDTO songDTO;
 
-    @JsonProperty(value = "_username")
+    @JsonProperty(value = "_userName")
     private String username;
 
     public SongDTO getSongDTO() {

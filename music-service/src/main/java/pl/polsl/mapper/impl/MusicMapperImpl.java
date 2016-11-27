@@ -2,17 +2,12 @@ package pl.polsl.mapper.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
-import pl.polsl.dto.MusicAlbumDTO;
-import pl.polsl.dto.MusicArtistDTO;
-import pl.polsl.dto.MusicFileMetadataDTO;
-import pl.polsl.dto.MusicGenreDTO;
+import pl.polsl.dto.*;
 import pl.polsl.mapper.MusicMapper;
-import pl.polsl.model.MusicAlbums;
-import pl.polsl.model.MusicArtists;
-import pl.polsl.model.MusicFiles;
-import pl.polsl.model.MusicGenres;
+import pl.polsl.model.*;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -166,4 +161,55 @@ public class MusicMapperImpl implements MusicMapper {
         musicGenreDTOList.forEach(musicGenreDTO -> result.add(this.toMusicGenres(musicGenreDTO)));
         return result;
     }
+
+    @Override
+    public Songs toSongs(SongDTO songDTO) {
+        if (songDTO == null) {
+            return null;
+        }
+        MusicAlbumDTO musicAlbumDTO = songDTO.getAlbum();
+        MusicFileMetadataDTO musicFileMetadataDTO = songDTO.getFileMetadata();
+        MusicGenreDTO musicGenreDTO = songDTO.getGenre();
+        Songs songs = new Songs();
+        songs.setMusicAlbumsByAlbumId(this.toMusicAlbums(musicAlbumDTO));
+        songs.setMusicFilesByFileId(this.toMusicFiles(musicFileMetadataDTO));
+        songs.setMusicGenresByMusicGenreId(this.toMusicGenres(musicGenreDTO));
+        songs.setTitle(songDTO.getTitle());
+        songs.setAlbumId(musicAlbumDTO != null ? musicAlbumDTO.getAlbumId() : null);
+        songs.setFileId(musicFileMetadataDTO != null ? musicFileMetadataDTO.getMusicFileId() : null);
+        songs.setMusicGenreId(musicGenreDTO != null ? musicGenreDTO.getMusicGenreId() : null);
+        songs.setOwnerId(songDTO.getOwnerId());
+        songs.setProductionYear(songDTO.getProductionYear());
+        songs.setRating(songDTO.getRating());
+        songs.setSongId(songDTO.getSongId());
+        return songs;
+    }
+
+    @Override
+    public SongDTO toSongDTO(Songs songs) {
+        if (songs == null) {
+            return null;
+        }
+        SongDTO songDTO = new SongDTO();
+        songDTO.setSongId(songs.getSongId());
+        songDTO.setTitle(songs.getTitle());
+        songDTO.setFileId(songs.getFileId());
+        songDTO.setAuthorId(songs.getAuthorId());
+        songDTO.setAlbumId(songs.getAlbumId());
+        songDTO.setMusicGenreId(songs.getMusicGenreId());
+        songDTO.setRating(songs.getRating());
+        songDTO.setProductionYear(songs.getProductionYear());
+        songDTO.setOwnerId(songs.getOwnerId());
+        Collection<MusicAuthors> musicAuthorsesBySongId = songs.getMusicAuthorsesBySongId();
+        List<MusicArtists> artists = new ArrayList<>();
+        for (MusicAuthors musicAuthors : musicAuthorsesBySongId) {
+            artists.add(musicAuthors.getMusicArtistsByAuthorId());
+        }
+        songDTO.setAuthors(this.toMusicArtistDTOList(artists));
+        songDTO.setFileMetadata(this.toMusicFileMetadataDTO(songs.getMusicFilesByFileId()));
+        songDTO.setGenre(this.toMusicGenreDTO(songs.getMusicGenresByMusicGenreId()));
+        songDTO.setAlbum(this.toMusicAlbumDTO(songs.getMusicAlbumsByAlbumId()));
+        return songDTO;
+    }
+
 }
