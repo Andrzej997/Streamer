@@ -53,7 +53,7 @@ public class ImageFiles extends BaseEntity {
     @Column(name = "file", nullable = false)
     private Blob file;
 
-    @OneToMany(mappedBy = "imageFilesByImageFileId")
+    @OneToMany(mappedBy = "imageFilesByImageFileId", cascade = CascadeType.ALL)
     private Collection<Images> imagesByImageFileId;
 
     public ImageFiles() {

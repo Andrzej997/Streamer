@@ -52,7 +52,7 @@ public class EbookFiles extends BaseEntity {
     @Column(name = "file", nullable = false)
     private Blob file;
 
-    @OneToMany(mappedBy = "ebookFilesByEbookFileId")
+    @OneToMany(mappedBy = "ebookFilesByEbookFileId", cascade = CascadeType.ALL)
     private Collection<Ebook> ebooksByEbookFileId;
 
     public EbookFiles() {

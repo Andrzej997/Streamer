@@ -57,7 +57,7 @@ public class Directors extends BaseEntity {
     @Column(name = "ratings")
     private Float ratings;
 
-    @OneToMany(mappedBy = "directorsByAuthorId")
+    @OneToMany(mappedBy = "directorsByAuthorId", cascade = CascadeType.ALL)
     private Collection<VideosAuthors> videosAuthorsesByDirectorId;
 
     public Directors() {

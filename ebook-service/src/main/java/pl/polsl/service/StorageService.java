@@ -10,6 +10,7 @@ public interface StorageService {
 
     EbookFiles store(MultipartFile file);
 
-    EbookFiles downloadMusicFile(Long id);
+    EbookFiles downloadEbookFile(Long id);
 
+    String getExtension(MultipartFile file);
 }

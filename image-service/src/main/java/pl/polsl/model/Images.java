@@ -72,10 +72,10 @@ public class Images extends BaseEntity {
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @OneToMany(mappedBy = "imagesByImageId")
+    @OneToMany(mappedBy = "imagesByImageId", cascade = CascadeType.ALL)
     private Collection<AlbumsImages> albumsImagesByImageId;
 
-    @OneToMany(mappedBy = "imagesByImageId")
+    @OneToMany(mappedBy = "imagesByImageId", cascade = CascadeType.ALL)
     private Collection<ImageAuthors> imageAuthorsesByImageId;
 
     @ManyToOne

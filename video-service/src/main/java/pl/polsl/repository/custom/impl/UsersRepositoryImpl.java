@@ -1,6 +1,7 @@
 package pl.polsl.repository.custom.impl;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
@@ -14,6 +15,7 @@ import java.util.List;
  * Created by Mateusz on 29.10.2016.
  */
 @Repository
+@Transactional
 public class UsersRepositoryImpl implements UsersRepositoryCustom {
 
     @PersistenceContext

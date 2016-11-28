@@ -60,7 +60,7 @@ public class Videos extends BaseEntity {
     @Column(name = "owner_id")
     private Long ownerId;
 
-    @OneToMany(mappedBy = "videosByVideoId")
+    @OneToMany(mappedBy = "videosByVideoId", cascade = CascadeType.ALL)
     private Collection<PlaylistsVideos> playlistsVideosesByVideoId;
 
     @ManyToOne
@@ -78,7 +78,7 @@ public class Videos extends BaseEntity {
     @Transient
     private UsersView usersViewByOwnerId;
 
-    @OneToMany(mappedBy = "videosByVideoId")
+    @OneToMany(mappedBy = "videosByVideoId", cascade = CascadeType.ALL)
     private Collection<VideosAuthors> videosAuthorsesByVideoId;
 
     public Videos() {

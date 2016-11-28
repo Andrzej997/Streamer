@@ -41,7 +41,7 @@ public class UsersLibraries extends BaseEntity {
     @Column(name = "creation_date")
     private Timestamp creationDate;
 
-    @OneToMany(mappedBy = "usersLibrariesByLibraryId")
+    @OneToMany(mappedBy = "usersLibrariesByLibraryId", cascade = CascadeType.ALL)
     private Collection<LibrariesEbooks> librariesEbooksesByLibraryId;
 
     @Transient

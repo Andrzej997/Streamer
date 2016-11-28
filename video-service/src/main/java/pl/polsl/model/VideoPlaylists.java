@@ -41,7 +41,7 @@ public class VideoPlaylists extends BaseEntity {
     @Column(name = "creation_date")
     private Timestamp creationDate;
 
-    @OneToMany(mappedBy = "videoPlaylistsByPlaylistId")
+    @OneToMany(mappedBy = "videoPlaylistsByPlaylistId", cascade = CascadeType.ALL)
     private Collection<PlaylistsVideos> playlistsVideosesByPlaylistId;
 
     @Transient

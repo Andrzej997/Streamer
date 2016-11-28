@@ -45,7 +45,7 @@ public class VideoSeries extends BaseEntity {
     @Column(name = "year")
     private Timestamp year;
 
-    @OneToMany(mappedBy = "videoSeriesByVideoSerieId")
+    @OneToMany(mappedBy = "videoSeriesByVideoSerieId", cascade = CascadeType.ALL)
     private Collection<Videos> videosesByVideoSerieId;
 
     public Long getVideoSerieId() {

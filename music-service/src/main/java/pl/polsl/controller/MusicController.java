@@ -14,9 +14,9 @@ import pl.polsl.model.MusicFiles;
 import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -40,22 +40,18 @@ public class MusicController {
         return ResponseEntity.ok(musicFile.getMusicFileId());
     }
 
-    @GetMapping("/auth/download")
-    public
-    @ResponseBody
-    String downloadMusicFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    @GetMapping(value = "/noauth/download")
+    public void downloadMusicFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
         MusicFiles musicFile = storageService.downloadMusicFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + musicFile.getFileName() + "\"");
-            OutputStream out = response.getOutputStream();
             response.setContentType("audio/" + musicFile.getExtension());
-            IOUtils.copy(musicFile.getFile().getBinaryStream(), out);
-            out.flush();
-            out.close();
+            IOUtils.copy(musicFile.getFile().getBinaryStream(), response.getOutputStream());
+            response.flushBuffer();
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return;
     }
 
     @GetMapping("/noauth/authors/prediction")

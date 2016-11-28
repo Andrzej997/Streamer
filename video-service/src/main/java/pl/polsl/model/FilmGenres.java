@@ -36,7 +36,7 @@ public class FilmGenres extends BaseEntity {
     @Column(name = "comments", length = -1)
     private String comments;
 
-    @OneToMany(mappedBy = "filmGenresByFilmGenreId")
+    @OneToMany(mappedBy = "filmGenresByFilmGenreId", cascade = CascadeType.ALL)
     private Collection<Videos> videosesByFilmGenreId;
 
     public FilmGenres() {

@@ -36,7 +36,7 @@ public class ImageTypes extends BaseEntity {
     @Column(name = "comments", length = -1)
     private String comments;
 
-    @OneToMany(mappedBy = "imageTypesByTypeId")
+    @OneToMany(mappedBy = "imageTypesByTypeId", cascade = CascadeType.ALL)
     private Collection<Images> imagesByTypeId;
 
     public ImageTypes() {

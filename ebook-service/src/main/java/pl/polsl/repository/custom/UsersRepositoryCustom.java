@@ -7,4 +7,6 @@ import pl.polsl.model.UsersView;
  */
 public interface UsersRepositoryCustom {
     UsersView findUsersByUserId(Long userId);
+
+    UsersView findUsersByUserName(String username);
 }

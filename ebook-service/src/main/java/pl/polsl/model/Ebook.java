@@ -76,10 +76,10 @@ public class Ebook extends BaseEntity {
             updatable = false, insertable = false)
     private EbookFiles ebookFilesByEbookFileId;
 
-    @OneToMany(mappedBy = "ebookByEbookId")
+    @OneToMany(mappedBy = "ebookByEbookId", cascade = CascadeType.ALL)
     private Collection<EbookAuthors> ebookAuthorsesByEbookId;
 
-    @OneToMany(mappedBy = "ebookByEbookId")
+    @OneToMany(mappedBy = "ebookByEbookId", cascade = CascadeType.ALL)
     private Collection<LibrariesEbooks> librariesEbooksesByEbookId;
 
     public Ebook() {

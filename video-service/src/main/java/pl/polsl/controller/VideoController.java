@@ -16,7 +16,6 @@ import pl.polsl.service.VideoMetadataService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -40,22 +39,18 @@ public class VideoController {
         return ResponseEntity.ok(videoFile.getVideoFileId());
     }
 
-    @GetMapping("/auth/download")
-    public
-    @ResponseBody
-    String downloadMusicFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    @GetMapping("/noauth/download")
+    public void downloadVideoFile(@RequestParam("id") Long id, HttpServletResponse response) {
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + videoFile.getFileName() + "\"");
-            OutputStream out = response.getOutputStream();
             response.setContentType("audio/" + videoFile.getExtension());
-            IOUtils.copy(videoFile.getFile().getBinaryStream(), out);
-            out.flush();
-            out.close();
+            IOUtils.copy(videoFile.getFile().getBinaryStream(), response.getOutputStream());
+            response.flushBuffer();
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return;
     }
 
     @GetMapping("/noauth/directors/prediction")

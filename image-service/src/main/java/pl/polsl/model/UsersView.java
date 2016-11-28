@@ -25,10 +25,6 @@ public class UsersView extends BaseEntity {
     private String userName;
 
     @Basic
-    @Column(name = "password", nullable = false)
-    private String password;
-
-    @Basic
     @Column(name = "name")
     private String name;
 
@@ -56,7 +52,6 @@ public class UsersView extends BaseEntity {
 
         if (!userId.equals(usersView.userId)) return false;
         if (!userName.equals(usersView.userName)) return false;
-        if (!password.equals(usersView.password)) return false;
         if (name != null ? !name.equals(usersView.name) : usersView.name != null) return false;
         if (surname != null ? !surname.equals(usersView.surname) : usersView.surname != null) return false;
         if (nationality != null ? !nationality.equals(usersView.nationality) : usersView.nationality != null)
@@ -69,7 +64,6 @@ public class UsersView extends BaseEntity {
     public int hashCode() {
         int result = userId.hashCode();
         result = 31 * result + userName.hashCode();
-        result = 31 * result + password.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (surname != null ? surname.hashCode() : 0);
         result = 31 * result + (nationality != null ? nationality.hashCode() : 0);
@@ -82,7 +76,6 @@ public class UsersView extends BaseEntity {
         return "UsersView{" +
                 "userId=" + userId +
                 ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
                 ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", nationality='" + nationality + '\'' +
@@ -104,14 +97,6 @@ public class UsersView extends BaseEntity {
 
     public void setUserName(String userName) {
         this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {

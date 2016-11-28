@@ -36,7 +36,7 @@ public class LiteraryGenre extends BaseEntity {
     @Column(name = "comments", length = -1)
     private String comments;
 
-    @OneToMany(mappedBy = "literaryGenreByGenreId")
+    @OneToMany(mappedBy = "literaryGenreByGenreId", cascade = CascadeType.ALL)
     private Collection<Ebook> ebooksByGenreId;
 
     public LiteraryGenre() {

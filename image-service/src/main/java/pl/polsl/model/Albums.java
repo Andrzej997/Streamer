@@ -44,7 +44,7 @@ public class Albums extends BaseEntity {
     @Transient
     private UsersView usersViewByUserId;
 
-    @OneToMany(mappedBy = "albumsByAlbumId")
+    @OneToMany(mappedBy = "albumsByAlbumId", cascade = CascadeType.ALL)
     private Collection<AlbumsImages> albumsImagesByAlbumId;
 
     public Albums() {
