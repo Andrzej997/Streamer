@@ -109,6 +109,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     @Override
     public UploadSongMetadataDTO saveMetadata(UploadSongMetadataDTO uploadSongMetadataDTO) {
+        if (uploadSongMetadataDTO == null || uploadSongMetadataDTO.getSongDTO() == null
+                || uploadSongMetadataDTO.getSongDTO().getFileId() == null) {
+            return null;
+        }
         UsersView user = usersRepository.findUsersByUserName(uploadSongMetadataDTO.getUsername());
         if (user == null) {
             return null;
@@ -118,21 +122,71 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             return null;
         }
         Songs songs = musicMapper.toSongs(songDTO);
-        List<MusicArtists> MusicArtistsList = musicMapper.toMusicArtistsList(songDTO.getAuthors());
-        if (songDTO.getGenre() != null && songDTO.getGenre().getMusicGenreId() == null) {
-            MusicGenres genre = musicGenresRepository.save(musicMapper.toMusicGenres(songDTO.getGenre()));
-            songs.setMusicGenresByMusicGenreId(genre);
-        }
-        if (songDTO.getAlbum() != null && songDTO.getAlbum().getAlbumId() == null) {
-            MusicAlbums album = musicAlbumsRepository.save(musicMapper.toMusicAlbums(songDTO.getAlbum()));
-            songs.setMusicAlbumsByAlbumId(album);
-        }
-        if (songDTO.getFileMetadata() != null) {
-            MusicFiles musicFiles = musicFilesRepository.save(musicMapper.toMusicFiles(songDTO.getFileMetadata()));
-            songs.setMusicFilesByFileId(musicFiles);
-        }
+        List<MusicArtists> musicArtistsList = musicMapper.toMusicArtistsList(songDTO.getAuthors());
+        saveMusicGenreForSong(songDTO, songs);
+        saveMusicAlbumForSong(songDTO, songs);
+        saveMusicFileMetadataForSong(songDTO, songs);
+        songs.setOwnerId(user.getUserId());
         songs = songsRepository.save(songs);
-        for (MusicArtists musicArtists : MusicArtistsList) {
+        saveMusicArtistsForSong(songs, musicArtistsList);
+
+        List<MusicAuthors> musicAuthors = musicAuthorsRepository.findBySongId(songs.getSongId());
+        songs.setMusicAuthorsesBySongId(musicAuthors);
+
+        songs = songsRepository.save(songs);
+
+        SongDTO toSongDTO = musicMapper.toSongDTO(songs);
+        UploadSongMetadataDTO result = new UploadSongMetadataDTO();
+        result.setSongDTO(toSongDTO);
+        result.setUsername(user.getUserName());
+        return result;
+    }
+
+    private void saveMusicGenreForSong(SongDTO songDTO, Songs songs) {
+        MusicGenres genre = null;
+        if (songDTO.getGenre() != null && songDTO.getGenre().getMusicGenreId() == null) {
+            genre = musicGenresRepository.save(musicMapper.toMusicGenres(songDTO.getGenre()));
+        } else if (songDTO.getGenre() != null) {
+            genre = musicMapper.toMusicGenres(songDTO.getGenre());
+        }
+        if (genre == null) {
+            return;
+        }
+        songs.setMusicGenresByMusicGenreId(genre);
+        songs.setMusicGenreId(genre.getMusicGenreId());
+    }
+
+    private void saveMusicAlbumForSong(SongDTO songDTO, Songs songs) {
+        MusicAlbums album = null;
+        if (songDTO.getAlbum() != null && songDTO.getAlbum().getAlbumId() == null) {
+            album = musicAlbumsRepository.save(musicMapper.toMusicAlbums(songDTO.getAlbum()));
+        } else if (songDTO.getAlbum() != null) {
+            album = musicMapper.toMusicAlbums(songDTO.getAlbum());
+        }
+        if (album == null) {
+            return;
+        }
+        songs.setMusicAlbumsByAlbumId(album);
+        songs.setAlbumId(album.getAlbumId());
+    }
+
+    private void saveMusicFileMetadataForSong(SongDTO songDTO, Songs songs) {
+        MusicFiles musicFiles = null;
+        if (songDTO.getFileMetadata() != null) {
+            musicFiles = musicFilesRepository.save(musicMapper.toMusicFiles(songDTO.getFileMetadata()));
+        }
+        if (musicFiles == null) {
+            return;
+        }
+        songs.setMusicFilesByFileId(musicFiles);
+        songs.setFileId(musicFiles.getMusicFileId());
+    }
+
+    private void saveMusicArtistsForSong(Songs songs, List<MusicArtists> musicArtistsList) {
+        if (musicArtistsList == null) {
+            return;
+        }
+        for (MusicArtists musicArtists : musicArtistsList) {
             if (musicArtists.getAuthorId() == null) {
                 musicArtists = musicArtistsRepository.save(musicArtists);
             }
@@ -143,16 +197,6 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             musicAuthors.setAuthorId(musicArtists.getAuthorId());
             musicAuthorsRepository.save(musicAuthors);
         }
-        List<MusicAuthors> musicAuthors = musicAuthorsRepository.findBySongId(songs.getSongId());
-        songs.setMusicAuthorsesBySongId(musicAuthors);
-
-        songsRepository.save(songs);
-
-        SongDTO toSongDTO = musicMapper.toSongDTO(songs);
-        UploadSongMetadataDTO result = new UploadSongMetadataDTO();
-        result.setSongDTO(toSongDTO);
-        result.setUsername(user.getUserName());
-        return result;
     }
 
 }

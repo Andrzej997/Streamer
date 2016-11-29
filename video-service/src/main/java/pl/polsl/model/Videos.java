@@ -37,8 +37,8 @@ public class Videos extends BaseEntity {
     private String title;
 
     @Basic
-    @Column(name = "director_id")
-    private Long directorId;
+    @Column(name = "rating_times")
+    private Long ratingTimes;
 
     @Basic
     @Column(name = "film_genre_id")
@@ -94,7 +94,7 @@ public class Videos extends BaseEntity {
         if (!videoId.equals(videos.videoId)) return false;
         if (!videoFileId.equals(videos.videoFileId)) return false;
         if (!title.equals(videos.title)) return false;
-        if (directorId != null ? !directorId.equals(videos.directorId) : videos.directorId != null) return false;
+        if (ratingTimes != null ? !ratingTimes.equals(videos.ratingTimes) : videos.ratingTimes != null) return false;
         if (filmGenreId != null ? !filmGenreId.equals(videos.filmGenreId) : videos.filmGenreId != null) return false;
         if (videoSerieId != null ? !videoSerieId.equals(videos.videoSerieId) : videos.videoSerieId != null)
             return false;
@@ -110,7 +110,7 @@ public class Videos extends BaseEntity {
         int result = videoId.hashCode();
         result = 31 * result + videoFileId.hashCode();
         result = 31 * result + title.hashCode();
-        result = 31 * result + (directorId != null ? directorId.hashCode() : 0);
+        result = 31 * result + (ratingTimes != null ? ratingTimes.hashCode() : 0);
         result = 31 * result + (filmGenreId != null ? filmGenreId.hashCode() : 0);
         result = 31 * result + (videoSerieId != null ? videoSerieId.hashCode() : 0);
         result = 31 * result + (rating != null ? rating.hashCode() : 0);
@@ -125,7 +125,7 @@ public class Videos extends BaseEntity {
                 "videoId=" + videoId +
                 ", videoFileId=" + videoFileId +
                 ", title='" + title + '\'' +
-                ", directorId=" + directorId +
+                ", ratingTimes=" + ratingTimes +
                 ", filmGenreId=" + filmGenreId +
                 ", videoSerieId=" + videoSerieId +
                 ", rating=" + rating +
@@ -158,12 +158,12 @@ public class Videos extends BaseEntity {
         this.title = title;
     }
 
-    public Long getDirectorId() {
-        return directorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setDirectorId(Long directorId) {
-        this.directorId = directorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getFilmGenreId() {

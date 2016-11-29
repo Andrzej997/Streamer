@@ -33,6 +33,8 @@ public class ImageDTO {
     private Short year;
     @JsonProperty("_ownerId")
     private Long ownerId;
+    @JsonProperty("_ratingTimes")
+    private Long ratingTimes;
     @JsonProperty("_artistDTOList")
     private List<ArtistDTO> artistDTOList;
     @JsonProperty("_imageFileDTO")
@@ -134,6 +136,15 @@ public class ImageDTO {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+
+    public Long getRatingTimes() {
+        return ratingTimes;
+    }
+
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public List<ArtistDTO> getArtistDTOList() {

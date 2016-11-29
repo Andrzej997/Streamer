@@ -101,15 +101,53 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         }
         Ebook ebook = ebookMapper.toEbook(ebookDTO);
         List<Writers> writersList = ebookMapper.toWritersList(ebookDTO.getWriterDTOList());
-        if (ebookDTO.getLiteraryGenreDTO() != null && ebookDTO.getLiteraryGenreDTO().getGenreId() == null) {
-            LiteraryGenre literaryGenre = literaryGenreRepository.save(ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO()));
-            ebook.setLiteraryGenreByGenreId(literaryGenre);
-        }
-        if (ebookDTO.getEbookFileMetadataDTO() != null) {
-            EbookFiles ebookFiles = ebookFilesRepository.save(ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO()));
-            ebook.setEbookFilesByEbookFileId(ebookFiles);
-        }
+        saveLiteraryGenreForEbook(ebookDTO, ebook);
+        saveEbookFileMetadataForEbook(ebookDTO, ebook);
         ebook = ebookRepository.save(ebook);
+
+        saveWritersForEbook(ebook, writersList);
+        List<EbookAuthors> imageAuthorsList = ebookAuthorsRepository.findByEbookId(ebook.getEbookId());
+        ebook.setEbookAuthorsesByEbookId(imageAuthorsList);
+
+        ebook = ebookRepository.save(ebook);
+
+        EbookDTO toEbookDTO = ebookMapper.toEbookDTO(ebook);
+        UploadEbookMetadataDTO result = new UploadEbookMetadataDTO();
+        result.setEbookDTO(ebookDTO);
+        result.setUsername(user.getUserName());
+        return result;
+    }
+
+    private void saveLiteraryGenreForEbook(EbookDTO ebookDTO, Ebook ebook) {
+        LiteraryGenre literaryGenre = null;
+        if (ebookDTO.getLiteraryGenreDTO() != null && ebookDTO.getLiteraryGenreDTO().getGenreId() == null) {
+            literaryGenre = literaryGenreRepository.save(ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO()));
+        } else if (ebookDTO.getLiteraryGenreDTO() != null) {
+            literaryGenre = ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO());
+        }
+        if (literaryGenre == null) {
+            return;
+        }
+        ebook.setLiteraryGenreByGenreId(literaryGenre);
+        ebook.setGenreId(literaryGenre.getGenreId());
+    }
+
+    private void saveEbookFileMetadataForEbook(EbookDTO ebookDTO, Ebook ebook) {
+        EbookFiles ebookFiles = null;
+        if (ebookDTO.getEbookFileMetadataDTO() != null) {
+            ebookFiles = ebookFilesRepository.save(ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO()));
+        }
+        if (ebookFiles == null) {
+            return;
+        }
+        ebook.setEbookFilesByEbookFileId(ebookFiles);
+        ebook.setEbookFileId(ebookFiles.getEbookFileId());
+    }
+
+    private void saveWritersForEbook(Ebook ebook, List<Writers> writersList) {
+        if (writersList == null) {
+            return;
+        }
         for (Writers writers : writersList) {
             if (writers.getWriterId() == null) {
                 writers = writersRepository.save(writers);
@@ -121,16 +159,6 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             ebookAuthors.setEbookByEbookId(ebook);
             ebookAuthorsRepository.save(ebookAuthors);
         }
-        List<EbookAuthors> imageAuthorsList = ebookAuthorsRepository.findByEbookId(ebook.getEbookId());
-        ebook.setEbookAuthorsesByEbookId(imageAuthorsList);
-
-        ebook = ebookRepository.save(ebook);
-
-        EbookDTO toEbookDTO = ebookMapper.toEbookDTO(ebook);
-        UploadEbookMetadataDTO result = new UploadEbookMetadataDTO();
-        result.setEbookDTO(ebookDTO);
-        result.setUsername(user.getUserName());
-        return result;
     }
 }
 

@@ -72,6 +72,10 @@ public class Images extends BaseEntity {
     @Column(name = "owner_id")
     private Long ownerId;
 
+    @Basic
+    @Column(name = "rating_times")
+    private Long ratingTimes;
+
     @OneToMany(mappedBy = "imagesByImageId", cascade = CascadeType.ALL)
     private Collection<AlbumsImages> albumsImagesByImageId;
 
@@ -243,6 +247,14 @@ public class Images extends BaseEntity {
 
     public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
+    }
+
+    public Long getRatingTimes() {
+        return ratingTimes;
+    }
+
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Collection<AlbumsImages> getAlbumsImagesByImageId() {

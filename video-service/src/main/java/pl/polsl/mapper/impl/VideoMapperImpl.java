@@ -172,7 +172,7 @@ public class VideoMapperImpl implements VideoMapper {
         VideoSeries videoSerie = videos.getVideoSeriesByVideoSerieId();
         Collection<VideosAuthors> authorsCollection = videos.getVideosAuthorsesByVideoId();
         VideoDTO videoDTO = new VideoDTO();
-        videoDTO.setDirectorId(videos.getDirectorId());
+        videoDTO.setRatingTimes(videos.getRatingTimes());
         videoDTO.setFilmGenre(this.toFilmGenreDTO(filmGenre));
         videoDTO.setFilmGenreId(videos.getFilmGenreId());
         videoDTO.setOwnerId(videos.getOwnerId());
@@ -217,7 +217,7 @@ public class VideoMapperImpl implements VideoMapper {
         videos.setVideoId(videoDTO.getVideoId());
         videos.setVideoSerieId(videoDTO.getVideoSerieId());
         videos.setRating(videoDTO.getRating());
-        videos.setDirectorId(videoDTO.getDirectorId());
+        videos.setRatingTimes(videoDTO.getRatingTimes());
         videos.setFilmGenreId(videoDTO.getFilmGenreId());
         videos.setOwnerId(videoDTO.getOwnerId());
         videos.setTitle(videoDTO.getTitle());

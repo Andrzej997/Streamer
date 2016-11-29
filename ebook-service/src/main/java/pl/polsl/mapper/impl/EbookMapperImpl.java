@@ -145,7 +145,7 @@ public class EbookMapperImpl implements EbookMapper {
         ebookDTO.setRating(ebook.getRating());
         ebookDTO.setGenreId(ebook.getGenreId());
         ebookDTO.setComments(ebook.getComments());
-        ebookDTO.setAuthorId(ebook.getAuthorId());
+        ebookDTO.setRatingTimes(ebook.getRatingTimes());
         ebookDTO.setOwnerId(ebook.getOwnerId());
         ebookDTO.setEbookFileId(ebook.getEbookFileId());
         ebookDTO.setEbookFileMetadataDTO(toEbookFileMetadataDTO(ebookFiles));
@@ -185,7 +185,7 @@ public class EbookMapperImpl implements EbookMapper {
         ebook.setRating(ebookDTO.getRating());
         ebook.setGenreId(ebookDTO.getGenreId());
         ebook.setComments(ebookDTO.getComments());
-        ebook.setAuthorId(ebookDTO.getAuthorId());
+        ebook.setRatingTimes(ebook.getRatingTimes());
         ebook.setOwnerId(ebookDTO.getOwnerId());
         ebook.setEbookFileId(ebookDTO.getEbookFileId());
         ebook.setEbookFilesByEbookFileId(toEbookFiles(ebookFileMetadataDTO));

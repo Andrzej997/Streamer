@@ -17,8 +17,8 @@ public class SongDTO {
     private String title;
     @JsonProperty(value = "_fileId")
     private Long fileId;
-    @JsonProperty(value = "_authorId")
-    private Long authorId;
+    @JsonProperty(value = "_ratingTimes")
+    private Long ratingTimes;
     @JsonProperty(value = "_albumId")
     private Long albumId;
     @JsonProperty(value = "_musicGenreId")
@@ -62,12 +62,12 @@ public class SongDTO {
         this.fileId = fileId;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getAlbumId() {

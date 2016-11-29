@@ -147,6 +147,7 @@ public class ImageMapperImpl implements ImageMapper {
         imageDTO.setDepth(images.getDepth());
         imageDTO.setComments(images.getComments());
         imageDTO.setRating(images.getRating());
+        imageDTO.setRatingTimes(images.getRatingTimes());
         imageDTO.setTypeId(images.getTypeId());
         imageDTO.setYear(images.getYear());
         imageDTO.setOwnerId(images.getOwnerId());
@@ -189,6 +190,7 @@ public class ImageMapperImpl implements ImageMapper {
         images.setDepth(imageDTO.getDepth());
         images.setComments(imageDTO.getComments());
         images.setRating(imageDTO.getRating());
+        images.setRatingTimes(imageDTO.getRatingTimes());
         images.setTypeId(imageDTO.getTypeId());
         images.setYear(imageDTO.getYear());
         images.setOwnerId(imageDTO.getOwnerId());

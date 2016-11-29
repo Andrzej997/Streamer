@@ -23,8 +23,8 @@ public class EbookDTO {
     private Long genreId;
     @JsonProperty("_comments")
     private String comments;
-    @JsonProperty("_authorId")
-    private Long authorId;
+    @JsonProperty("_ratingTimes")
+    private Long ratingTimes;
     @JsonProperty("_ownerId")
     private Long ownerId;
     @JsonProperty("_ebookFileId")
@@ -92,12 +92,12 @@ public class EbookDTO {
         this.comments = comments;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getOwnerId() {

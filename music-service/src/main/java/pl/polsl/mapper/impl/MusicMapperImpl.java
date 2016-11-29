@@ -175,6 +175,7 @@ public class MusicMapperImpl implements MusicMapper {
         songs.setMusicFilesByFileId(this.toMusicFiles(musicFileMetadataDTO));
         songs.setMusicGenresByMusicGenreId(this.toMusicGenres(musicGenreDTO));
         songs.setTitle(songDTO.getTitle());
+        songs.setRatingTimes(songDTO.getRatingTimes());
         songs.setAlbumId(musicAlbumDTO != null ? musicAlbumDTO.getAlbumId() : null);
         songs.setFileId(musicFileMetadataDTO != null ? musicFileMetadataDTO.getMusicFileId() : null);
         songs.setMusicGenreId(musicGenreDTO != null ? musicGenreDTO.getMusicGenreId() : null);
@@ -194,7 +195,7 @@ public class MusicMapperImpl implements MusicMapper {
         songDTO.setSongId(songs.getSongId());
         songDTO.setTitle(songs.getTitle());
         songDTO.setFileId(songs.getFileId());
-        songDTO.setAuthorId(songs.getAuthorId());
+        songDTO.setRatingTimes(songs.getRatingTimes());
         songDTO.setAlbumId(songs.getAlbumId());
         songDTO.setMusicGenreId(songs.getMusicGenreId());
         songDTO.setRating(songs.getRating());

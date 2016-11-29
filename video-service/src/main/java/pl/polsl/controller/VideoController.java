@@ -44,7 +44,7 @@ public class VideoController {
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + videoFile.getFileName() + "\"");
-            response.setContentType("audio/" + videoFile.getExtension());
+            response.setContentType("video/" + videoFile.getExtension());
             IOUtils.copy(videoFile.getFile().getBinaryStream(), response.getOutputStream());
             response.flushBuffer();
         } catch (IOException | SQLException e) {

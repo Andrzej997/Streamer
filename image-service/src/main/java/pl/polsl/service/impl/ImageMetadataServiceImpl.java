@@ -101,15 +101,53 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         }
         Images images = imageMapper.toImages(imageDTO);
         List<Artists> artistsList = imageMapper.toArtistsList(imageDTO.getArtistDTOList());
-        if (imageDTO.getImageTypeDTO() != null && imageDTO.getImageTypeDTO().getTypeId() == null) {
-            ImageTypes imageTypes = imageTypesRepository.save(imageMapper.toImageTypes(imageDTO.getImageTypeDTO()));
-            images.setImageTypesByTypeId(imageTypes);
-        }
-        if (imageDTO.getImageFileDTO() != null) {
-            ImageFiles imageFiles = imageFilesRepository.save(imageMapper.toImageFiles(imageDTO.getImageFileDTO()));
-            images.setImageFilesByImageFileId(imageFiles);
-        }
+        saveImageTypeForImage(imageDTO, images);
+        saveImageFileMetadataForImage(imageDTO, images);
         images = imagesRepository.save(images);
+
+        saveImageArtistsForImage(images, artistsList);
+        List<ImageAuthors> imageAuthorsList = imageAuthorsRepository.findByImageId(images.getImageId());
+        images.setImageAuthorsesByImageId(imageAuthorsList);
+
+        images = imagesRepository.save(images);
+
+        ImageDTO toImageDTO = imageMapper.toImageDTO(images);
+        UploadImageMetadataDTO result = new UploadImageMetadataDTO();
+        result.setImageDTO(imageDTO);
+        result.setUsername(user.getUserName());
+        return result;
+    }
+
+    private void saveImageTypeForImage(ImageDTO imageDTO, Images images) {
+        ImageTypes imageTypes = null;
+        if (imageDTO.getImageTypeDTO() != null && imageDTO.getImageTypeDTO().getTypeId() == null) {
+            imageTypes = imageTypesRepository.save(imageMapper.toImageTypes(imageDTO.getImageTypeDTO()));
+        } else if (imageDTO.getImageTypeDTO() != null) {
+            imageTypes = imageMapper.toImageTypes(imageDTO.getImageTypeDTO());
+        }
+        if (imageTypes == null) {
+            return;
+        }
+        images.setImageTypesByTypeId(imageTypes);
+        images.setTypeId(imageTypes.getTypeId());
+    }
+
+    private void saveImageFileMetadataForImage(ImageDTO imageDTO, Images images) {
+        ImageFiles imageFiles = null;
+        if (imageDTO.getImageFileDTO() != null) {
+            imageFiles = imageFilesRepository.save(imageMapper.toImageFiles(imageDTO.getImageFileDTO()));
+        }
+        if (imageFiles == null) {
+            return;
+        }
+        images.setImageFilesByImageFileId(imageFiles);
+        images.setImageFileId(imageFiles.getImageFileId());
+    }
+
+    private void saveImageArtistsForImage(Images images, List<Artists> artistsList) {
+        if (artistsList == null) {
+            return;
+        }
         for (Artists artist : artistsList) {
             if (artist.getArtistId() == null) {
                 artist = artistsRepository.save(artist);
@@ -121,15 +159,5 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             imageAuthors.setImagesByImageId(images);
             imageAuthorsRepository.save(imageAuthors);
         }
-        List<ImageAuthors> imageAuthorsList = imageAuthorsRepository.findByImageId(images.getImageId());
-        images.setImageAuthorsesByImageId(imageAuthorsList);
-
-        images = imagesRepository.save(images);
-
-        ImageDTO toImageDTO = imageMapper.toImageDTO(images);
-        UploadImageMetadataDTO result = new UploadImageMetadataDTO();
-        result.setImageDTO(imageDTO);
-        result.setUsername(user.getUserName());
-        return result;
     }
 }

@@ -53,8 +53,8 @@ public class Ebook extends BaseEntity {
     private String comments;
 
     @Basic
-    @Column(name = "author_id")
-    private Long authorId;
+    @Column(name = "rating_times")
+    private Long ratingTimes;
 
     @Basic
     @Column(name = "owner_id")
@@ -99,7 +99,7 @@ public class Ebook extends BaseEntity {
         if (rating != null ? !rating.equals(ebook.rating) : ebook.rating != null) return false;
         if (genreId != null ? !genreId.equals(ebook.genreId) : ebook.genreId != null) return false;
         if (comments != null ? !comments.equals(ebook.comments) : ebook.comments != null) return false;
-        if (authorId != null ? !authorId.equals(ebook.authorId) : ebook.authorId != null) return false;
+        if (ratingTimes != null ? !ratingTimes.equals(ebook.ratingTimes) : ebook.ratingTimes != null) return false;
         if (ownerId != null ? !ownerId.equals(ebook.ownerId) : ebook.ownerId != null) return false;
         return ebookFileId.equals(ebook.ebookFileId);
 
@@ -114,7 +114,7 @@ public class Ebook extends BaseEntity {
         result = 31 * result + (rating != null ? rating.hashCode() : 0);
         result = 31 * result + (genreId != null ? genreId.hashCode() : 0);
         result = 31 * result + (comments != null ? comments.hashCode() : 0);
-        result = 31 * result + (authorId != null ? authorId.hashCode() : 0);
+        result = 31 * result + (ratingTimes != null ? ratingTimes.hashCode() : 0);
         result = 31 * result + (ownerId != null ? ownerId.hashCode() : 0);
         result = 31 * result + ebookFileId.hashCode();
         return result;
@@ -130,7 +130,7 @@ public class Ebook extends BaseEntity {
                 ", rating=" + rating +
                 ", genreId=" + genreId +
                 ", comments='" + comments + '\'' +
-                ", authorId=" + authorId +
+                ", ratingTimes=" + ratingTimes +
                 ", ownerId=" + ownerId +
                 ", ebookFileId=" + ebookFileId +
                 '}';
@@ -192,12 +192,12 @@ public class Ebook extends BaseEntity {
         this.comments = comments;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getOwnerId() {

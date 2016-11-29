@@ -37,8 +37,8 @@ public class Songs extends BaseEntity {
     private Long fileId;
 
     @Basic
-    @Column(name = "author_id")
-    private Long authorId;
+    @Column(name = "rating_times")
+    private Long ratingTimes;
 
     @Basic
     @Column(name = "album_id")
@@ -106,12 +106,12 @@ public class Songs extends BaseEntity {
         this.fileId = fileId;
     }
 
-    public Long getAuthorId() {
-        return authorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getAlbumId() {

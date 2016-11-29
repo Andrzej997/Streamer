@@ -15,8 +15,8 @@ public class VideoDTO {
     private Long videoFileId;
     @JsonProperty("_title")
     private String title;
-    @JsonProperty("_directorId")
-    private Long directorId;
+    @JsonProperty("_ratingTimes")
+    private Long ratingTimes;
     @JsonProperty("_filmGenreId")
     private Long filmGenreId;
     @JsonProperty("_videoSerieId")
@@ -60,12 +60,12 @@ public class VideoDTO {
         this.title = title;
     }
 
-    public Long getDirectorId() {
-        return directorId;
+    public Long getRatingTimes() {
+        return ratingTimes;
     }
 
-    public void setDirectorId(Long directorId) {
-        this.directorId = directorId;
+    public void setRatingTimes(Long ratingTimes) {
+        this.ratingTimes = ratingTimes;
     }
 
     public Long getFilmGenreId() {

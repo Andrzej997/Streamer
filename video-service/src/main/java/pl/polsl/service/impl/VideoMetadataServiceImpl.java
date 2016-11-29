@@ -110,6 +110,10 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     @Override
     public UploadVideoMetadataDTO saveMetadata(UploadVideoMetadataDTO uploadVideoMetadataDTO) {
+        if (uploadVideoMetadataDTO == null || uploadVideoMetadataDTO.getVideo() == null
+                || uploadVideoMetadataDTO.getVideo().getVideoFileId() == null) {
+            return null;
+        }
         UsersView user = usersRepository.findUsersByUserName(uploadVideoMetadataDTO.getUsername());
         if (user == null) {
             return null;
@@ -120,19 +124,66 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         Videos videos = videoMapper.toVideos(videoDTO);
         List<Directors> directorsList = videoMapper.toDirectorsList(videoDTO.getDirectorList());
-        if (videoDTO.getFilmGenre() != null && videoDTO.getFilmGenre().getFilmGenreId() == null) {
-            FilmGenres genre = filmGenresRepository.save(videoMapper.toFilmGenres(videoDTO.getFilmGenre()));
-            videos.setFilmGenresByFilmGenreId(genre);
-        }
-        if (videoDTO.getVideoSerie() != null && videoDTO.getVideoSerie().getVideoSerieId() == null) {
-            VideoSeries videoSeries = videoSeriesRepository.save(videoMapper.toVideoSeries(videoDTO.getVideoSerie()));
-            videos.setVideoSeriesByVideoSerieId(videoSeries);
-        }
-        if (videoDTO.getVideoFileMetadata() != null) {
-            VideoFiles videoFiles = videoFilesRepository.save(videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata()));
-            videos.setVideoFilesByVideoFileId(videoFiles);
-        }
+        saveFilmGenreForVideo(videoDTO, videos);
+        saveVideoSerieForVideo(videoDTO, videos);
+        saveVideoFileMetadataForVideo(videoDTO, videos);
+
         videos = videosRepository.save(videos);
+
+        saveVideoDirectors(videos, directorsList);
+        List<VideosAuthors> videosAuthorsList = videoAuthorsRepository.findByVideoId(videos.getVideoId());
+        videos.setVideosAuthorsesByVideoId(videosAuthorsList);
+
+        videos = videosRepository.save(videos);
+
+        VideoDTO toVideoDTO = videoMapper.toVideoDTO(videos);
+        UploadVideoMetadataDTO result = new UploadVideoMetadataDTO();
+        result.setVideo(toVideoDTO);
+        result.setUsername(user.getUserName());
+        return result;
+    }
+
+    private void saveFilmGenreForVideo(VideoDTO videoDTO, Videos videos) {
+        FilmGenres genre = null;
+        if (videoDTO.getFilmGenre() != null && videoDTO.getFilmGenre().getFilmGenreId() == null) {
+            genre = filmGenresRepository.save(videoMapper.toFilmGenres(videoDTO.getFilmGenre()));
+        } else if (videoDTO.getFilmGenre() != null) {
+            genre = videoMapper.toFilmGenres(videoDTO.getFilmGenre());
+        }
+        if (genre == null) {
+            return;
+        }
+        videos.setFilmGenresByFilmGenreId(genre);
+        videos.setFilmGenreId(genre.getFilmGenreId());
+    }
+
+    private void saveVideoSerieForVideo(VideoDTO videoDTO, Videos videos) {
+        VideoSeries videoSeries = null;
+        if (videoDTO.getVideoSerie() != null && videoDTO.getVideoSerie().getVideoSerieId() == null) {
+            videoSeries = videoSeriesRepository.save(videoMapper.toVideoSeries(videoDTO.getVideoSerie()));
+        } else if (videoDTO.getVideoSerie() != null) {
+            videoSeries = videoMapper.toVideoSeries(videoDTO.getVideoSerie());
+        }
+        if (videoSeries == null) {
+            return;
+        }
+        videos.setVideoSeriesByVideoSerieId(videoSeries);
+        videos.setVideoSerieId(videoSeries.getVideoSerieId());
+    }
+
+    private void saveVideoFileMetadataForVideo(VideoDTO videoDTO, Videos videos) {
+        VideoFiles videoFiles = null;
+        if (videoDTO.getVideoFileMetadata() != null) {
+            videoFiles = videoFilesRepository.save(videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata()));
+        }
+        if (videoFiles == null) {
+            return;
+        }
+        videos.setVideoFilesByVideoFileId(videoFiles);
+        videos.setVideoFileId(videoFiles.getVideoFileId());
+    }
+
+    private void saveVideoDirectors(Videos videos, List<Directors> directorsList) {
         for (Directors director : directorsList) {
             if (director.getDirectorId() == null) {
                 director = directorsRepository.save(director);
@@ -144,15 +195,5 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             videosAuthors.setVideosByVideoId(videos);
             videoAuthorsRepository.save(videosAuthors);
         }
-        List<VideosAuthors> videosAuthorsList = videoAuthorsRepository.findByVideoId(videos.getVideoId());
-        videos.setVideosAuthorsesByVideoId(videosAuthorsList);
-
-        videos = videosRepository.save(videos);
-
-        VideoDTO toVideoDTO = videoMapper.toVideoDTO(videos);
-        UploadVideoMetadataDTO result = new UploadVideoMetadataDTO();
-        result.setVideo(toVideoDTO);
-        result.setUsername(user.getUserName());
-        return result;
     }
 }
