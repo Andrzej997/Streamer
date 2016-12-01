@@ -1,9 +1,6 @@
 package pl.polsl.service;
 
-import pl.polsl.dto.DirectorDTO;
-import pl.polsl.dto.FilmGenreDTO;
-import pl.polsl.dto.UploadVideoMetadataDTO;
-import pl.polsl.dto.VideoSerieDTO;
+import pl.polsl.dto.*;
 
 import java.util.List;
 
@@ -19,4 +16,10 @@ public interface VideoMetadataService {
     List<VideoSerieDTO> getVideoSeriesByPrediction(String serieTitle, String videoTitle);
 
     UploadVideoMetadataDTO saveMetadata(UploadVideoMetadataDTO uploadVideoMetadataDTO);
+
+    List<VideoDTO> getTop10Videos(String username, String title);
+
+    List<VideoDTO> getAllUserVideos(String username);
+
+    List<VideoDTO> searchVideosByCriteria(SearchVideoCriteriaDTO searchVideoCriteriaDTO);
 }

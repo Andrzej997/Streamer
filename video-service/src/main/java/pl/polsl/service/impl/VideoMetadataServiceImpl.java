@@ -1,5 +1,6 @@
 package pl.polsl.service.impl;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -195,5 +196,159 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             videosAuthors.setVideosByVideoId(videos);
             videoAuthorsRepository.save(videosAuthors);
         }
+    }
+
+    @Override
+    public List<VideoDTO> getTop10Videos(String username, String title) {
+        List<Videos> videosList = null;
+        UsersView user = null;
+        if (!StringUtils.isEmpty(username)) {
+            user = usersRepository.findUsersByUserName(username);
+        }
+        if (user == null) {
+            if (StringUtils.isEmpty(title)) {
+                videosList = videosRepository.findTop10ByIsPublicOrderByRatingDesc(true);
+            } else {
+                title = "%" + title + "%";
+                videosList = videosRepository.findTop10ByIsPublicAndTitleLikeOrderByRatingDesc(true, title);
+            }
+        } else {
+            if (StringUtils.isEmpty(title)) {
+                videosList = videosRepository.findTop10ByIsPublicAndOwnerIdOrderByRatingDesc(false, user.getUserId());
+            } else {
+                title = "%" + title + "%";
+                videosList = videosRepository.findTop10ByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(false, user.getUserId(), title);
+            }
+        }
+        if (videosList == null) {
+            return null;
+        }
+        List<VideoDTO> videoDTOList = videoMapper.toVideoDTOList(videosList);
+        if (videoDTOList == null || videoDTOList.isEmpty()) {
+            return null;
+        } else {
+            return videoDTOList.subList(0, videoDTOList.size() > 9 ? 9 : videoDTOList.size());
+        }
+    }
+
+    @Override
+    public List<VideoDTO> getAllUserVideos(String username) {
+        UsersView user = null;
+        user = usersRepository.findUsersByUserName(username);
+        if (user == null) {
+            return null;
+        }
+        List<Videos> videosList = videosRepository.findByOwnerId(user.getUserId());
+        return videoMapper.toVideoDTOList(videosList);
+    }
+
+    @Override
+    public List<VideoDTO> searchVideosByCriteria(SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+        if (searchVideoCriteriaDTO == null || StringUtils.isEmpty(searchVideoCriteriaDTO.getCriteria())) {
+            return null;
+        }
+        String criteria = searchVideoCriteriaDTO.getCriteria();
+        String textSearched = searchVideoCriteriaDTO.getTextSearched();
+        switch (criteria) {
+            case "T":
+                return getVideosByTitle(textSearched);
+            case "A":
+                return getVideosByAuthor(textSearched);
+            case "G":
+                return getVideosByGenreName(textSearched);
+            case "Y":
+                return getVideosByYear(textSearched);
+            case "ALL":
+                return getVideosByAllCriteria(textSearched);
+        }
+        return null;
+    }
+
+    private List<VideoDTO> getVideosByTitle(String title) {
+        if (title == null || "undefined".equals(title)) {
+            return null;
+        }
+        List<Videos> videosList = videosRepository.findByTitleOrderByRating(title);
+        if (videosList == null) {
+            videosList = new ArrayList<>();
+        }
+        title += "%";
+        videosList.addAll(videosRepository.findByTitleLikeOrderByRating(title));
+        return videoMapper.toVideoDTOList(videosList);
+    }
+
+    private List<VideoDTO> getVideosByAuthor(String authorData) {
+        if (authorData == null || "undefined".equals(authorData)) {
+            return null;
+        }
+        String[] data = authorData.split(" ");
+        if (data == null || data.length <= 0) {
+            return null;
+        }
+        String name = data[0];
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        List<Videos> result = null;
+        switch (data.length) {
+            case 1:
+                result = videosRepository.findByDirectorNameLikeOrderByRating(name);
+                break;
+            case 2:
+                result = videosRepository.findByDirectorNameLikeAndSurnameLikeOrderByRating(name, data[1]);
+                break;
+            case 3:
+                result = videosRepository.findByDirectorNameLikeAndSurnameLikeAndName2LikeOrderByRating(name, data[1], data[2]);
+                break;
+            default:
+                break;
+        }
+        return videoMapper.toVideoDTOList(result);
+    }
+
+    private List<VideoDTO> getVideosByGenreName(String name) {
+        if (name == null || "undefined".equals(name)) {
+            return null;
+        }
+        List<Videos> videosList = videosRepository.findByGenreNameOrderByRating(name);
+        if (videosList == null) {
+            videosList = new ArrayList<>();
+        }
+        name += "%";
+        videosList.addAll(videosRepository.findByGenreNameLikeOrderByRating(name));
+        return videoMapper.toVideoDTOList(videosList);
+    }
+
+    private List<VideoDTO> getVideosByYear(String year) {
+        if (year == null || "undefined".equals(year) || !NumberUtils.isNumber(year)) {
+            return null;
+        }
+        Short yearNumber = Short.parseShort(year);
+        List<Videos> videosList = videosRepository.findByProductionYearOrderByRating(yearNumber);
+        return videoMapper.toVideoDTOList(videosList);
+    }
+
+    private List<VideoDTO> getVideosByAllCriteria(String searchText) {
+        if (StringUtils.isEmpty(searchText)) {
+            return null;
+        }
+        List<VideoDTO> result = new ArrayList<>();
+        List<VideoDTO> videosByTitle = getVideosByTitle(searchText);
+        List<VideoDTO> videosByYear = getVideosByYear(searchText);
+        List<VideoDTO> videosByAuthor = getVideosByAuthor(searchText);
+        List<VideoDTO> videosByGenreName = getVideosByGenreName(searchText);
+        if (videosByTitle != null && !videosByTitle.isEmpty()) {
+            result.addAll(videosByTitle);
+        }
+        if (videosByYear != null && !videosByYear.isEmpty()) {
+            result.addAll(videosByYear);
+        }
+        if (videosByAuthor != null && !videosByAuthor.isEmpty()) {
+            result.addAll(videosByAuthor);
+        }
+        if (videosByGenreName != null && !videosByGenreName.isEmpty()) {
+            result.addAll(videosByGenreName);
+        }
+        return result;
     }
 }

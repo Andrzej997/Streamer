@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.dto.MusicAlbumDTO;
-import pl.polsl.dto.MusicArtistDTO;
-import pl.polsl.dto.MusicGenreDTO;
-import pl.polsl.dto.UploadSongMetadataDTO;
+import pl.polsl.dto.*;
 import pl.polsl.model.MusicFiles;
 import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
@@ -58,8 +55,8 @@ public class MusicController {
     public
     @ResponseBody
     ResponseEntity<List<MusicArtistDTO>> getArtistsPredictionList(@RequestParam("name") String name,
-                                                                  @RequestParam("name2") String name2,
-                                                                  @RequestParam("surname") String surname) {
+                                                                  @RequestParam(value = "name2", required = false) String name2,
+                                                                  @RequestParam(value = "surname", required = false) String surname) {
         List<MusicArtistDTO> artistsByPrediction = musicMetadataService.getArtistsByPrediction(name, name2, surname);
         return new ResponseEntity<List<MusicArtistDTO>>(artistsByPrediction, HttpStatus.OK);
     }
@@ -87,5 +84,39 @@ public class MusicController {
     ResponseEntity<UploadSongMetadataDTO> saveMusicFileMetadata(@RequestBody UploadSongMetadataDTO uploadSongMetadataDTO) {
         UploadSongMetadataDTO result = musicMetadataService.saveMetadata(uploadSongMetadataDTO);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/noauth/top10/songs")
+    public
+    @ResponseBody
+    ResponseEntity<List<SongDTO>> getTop10Songs(@RequestParam(value = "title", required = false) String title) {
+        List<SongDTO> top10Songs = musicMetadataService.getTop10Songs(null, title);
+        return ResponseEntity.ok(top10Songs);
+    }
+
+    @GetMapping("/auth/top10/songs")
+    public
+    @ResponseBody
+    ResponseEntity<List<SongDTO>> getTop10SongsOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                                                            @RequestParam("username") String username) {
+        List<SongDTO> top10Songs = musicMetadataService.getTop10Songs(username, title);
+        return ResponseEntity.ok(top10Songs);
+    }
+
+    @GetMapping("/auth/user/songs")
+    public
+    @ResponseBody
+    ResponseEntity<List<SongDTO>> getAllUserSongs(@RequestParam("username") String username) {
+        List<SongDTO> allUserSongs = musicMetadataService.getAllUserSongs(username);
+        return ResponseEntity.ok(allUserSongs);
+    }
+
+
+    @GetMapping("/noauth/public/songs")
+    public
+    @ResponseBody
+    ResponseEntity<List<SongDTO>> searchSongsByCriteria(@RequestParam("criteria") SearchSongCriteriaDTO searchSongCriteriaDTO) {
+        List<SongDTO> songDTOList = musicMetadataService.searchSongsByCriteria(searchSongCriteriaDTO);
+        return ResponseEntity.ok(songDTOList);
     }
 }

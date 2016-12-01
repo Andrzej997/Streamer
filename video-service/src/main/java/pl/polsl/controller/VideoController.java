@@ -6,10 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.dto.DirectorDTO;
-import pl.polsl.dto.FilmGenreDTO;
-import pl.polsl.dto.UploadVideoMetadataDTO;
-import pl.polsl.dto.VideoSerieDTO;
+import pl.polsl.dto.*;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoMetadataService;
@@ -87,4 +84,39 @@ public class VideoController {
         UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/noauth/top10/videos")
+    public
+    @ResponseBody
+    ResponseEntity<List<VideoDTO>> getTop10Videos(@RequestParam(value = "title", required = false) String title) {
+        List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(null, title);
+        return ResponseEntity.ok(top10Videos);
+    }
+
+    @GetMapping("/auth/top10/videos")
+    public
+    @ResponseBody
+    ResponseEntity<List<VideoDTO>> getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                                                              @RequestParam("username") String username) {
+        List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(username, title);
+        return ResponseEntity.ok(top10Videos);
+    }
+
+    @GetMapping("/auth/user/videos")
+    public
+    @ResponseBody
+    ResponseEntity<List<VideoDTO>> getAllUserVideos(@RequestParam("username") String username) {
+        List<VideoDTO> allUserVideos = videoMetadataService.getAllUserVideos(username);
+        return ResponseEntity.ok(allUserVideos);
+    }
+
+
+    @GetMapping("/noauth/public/videos")
+    public
+    @ResponseBody
+    ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestParam("criteria") SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+        List<VideoDTO> videoDTOList = videoMetadataService.searchVideosByCriteria(searchVideoCriteriaDTO);
+        return ResponseEntity.ok(videoDTOList);
+    }
+
 }

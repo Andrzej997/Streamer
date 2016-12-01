@@ -1,9 +1,6 @@
 package pl.polsl.service;
 
-import pl.polsl.dto.MusicAlbumDTO;
-import pl.polsl.dto.MusicArtistDTO;
-import pl.polsl.dto.MusicGenreDTO;
-import pl.polsl.dto.UploadSongMetadataDTO;
+import pl.polsl.dto.*;
 
 import java.util.List;
 
@@ -19,4 +16,10 @@ public interface MusicMetadataService {
     List<MusicGenreDTO> getGenresByPrediction(String genreName);
 
     UploadSongMetadataDTO saveMetadata(UploadSongMetadataDTO uploadSongMetadataDTO);
+
+    List<SongDTO> getTop10Songs(String username, String title);
+
+    List<SongDTO> getAllUserSongs(String username);
+
+    List<SongDTO> searchSongsByCriteria(SearchSongCriteriaDTO searchSongCriteriaDTO);
 }

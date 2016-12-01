@@ -213,4 +213,24 @@ public class MusicMapperImpl implements MusicMapper {
         return songDTO;
     }
 
+    @Override
+    public List<Songs> toSongsList(List<SongDTO> songDTOList) {
+        if (songDTOList == null) {
+            return null;
+        }
+        List<Songs> result = new ArrayList<>();
+        songDTOList.forEach(songDTO -> result.add(toSongs(songDTO)));
+        return result;
+    }
+
+    @Override
+    public List<SongDTO> toSongDTOList(List<Songs> songsList) {
+        if (songsList == null) {
+            return null;
+        }
+        List<SongDTO> result = new ArrayList<>();
+        songsList.forEach(songs -> result.add(toSongDTO(songs)));
+        return result;
+    }
+
 }

@@ -1,8 +1,6 @@
 package pl.polsl.service;
 
-import pl.polsl.dto.LiteraryGenreDTO;
-import pl.polsl.dto.UploadEbookMetadataDTO;
-import pl.polsl.dto.WriterDTO;
+import pl.polsl.dto.*;
 
 import java.util.List;
 
@@ -15,4 +13,10 @@ public interface EbookMetadataService {
     List<LiteraryGenreDTO> getLiteraryGenresByPrediction(String name);
 
     UploadEbookMetadataDTO saveMetadata(UploadEbookMetadataDTO uploadEbookMetadataDTO);
+
+    List<EbookDTO> getTop10Ebooks(String username, String title);
+
+    List<EbookDTO> getAllUserImages(String username);
+
+    List<EbookDTO> searchEbooksByCriteria(SearchEbookCriteriaDTO searchEbookCriteriaDTO);
 }

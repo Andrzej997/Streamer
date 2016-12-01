@@ -1,8 +1,6 @@
 package pl.polsl.service;
 
-import pl.polsl.dto.ArtistDTO;
-import pl.polsl.dto.ImageTypeDTO;
-import pl.polsl.dto.UploadImageMetadataDTO;
+import pl.polsl.dto.*;
 
 import java.util.List;
 
@@ -16,4 +14,10 @@ public interface ImageMetadataService {
     List<ImageTypeDTO> getImageTypesByPrediction(String name);
 
     UploadImageMetadataDTO saveMetadata(UploadImageMetadataDTO uploadImageMetadataDTO);
+
+    List<ImageDTO> getTop10Images(String username, String title);
+
+    List<ImageDTO> getAllUserImages(String username);
+
+    List<ImageDTO> searchImagesByCriteria(SearchImageCriteriaDTO searchImageCriteriaDTO);
 }

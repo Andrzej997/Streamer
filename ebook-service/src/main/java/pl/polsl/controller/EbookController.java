@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.dto.LiteraryGenreDTO;
-import pl.polsl.dto.UploadEbookMetadataDTO;
-import pl.polsl.dto.WriterDTO;
+import pl.polsl.dto.*;
 import pl.polsl.model.EbookFiles;
 import pl.polsl.service.EbookMetadataService;
 import pl.polsl.service.StorageService;
@@ -77,6 +75,40 @@ public class EbookController {
     ResponseEntity<UploadEbookMetadataDTO> saveEbookFileMetadata(@RequestBody UploadEbookMetadataDTO uploadEbookMetadataDTO) {
         UploadEbookMetadataDTO result = ebookMetadataService.saveMetadata(uploadEbookMetadataDTO);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/noauth/top10/ebooks")
+    public
+    @ResponseBody
+    ResponseEntity<List<EbookDTO>> getTop10Ebooks(@RequestParam(value = "title", required = false) String title) {
+        List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(null, title);
+        return ResponseEntity.ok(top10Ebooks);
+    }
+
+    @GetMapping("/auth/top10/ebooks")
+    public
+    @ResponseBody
+    ResponseEntity<List<EbookDTO>> getTop10EbooksOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                                                              @RequestParam("username") String username) {
+        List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(username, title);
+        return ResponseEntity.ok(top10Ebooks);
+    }
+
+    @GetMapping("/auth/user/ebooks")
+    public
+    @ResponseBody
+    ResponseEntity<List<EbookDTO>> getAllUserEbooks(@RequestParam("username") String username) {
+        List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserImages(username);
+        return ResponseEntity.ok(allUserEbooks);
+    }
+
+
+    @GetMapping("/noauth/public/ebooks")
+    public
+    @ResponseBody
+    ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestParam("criteria") SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
+        List<EbookDTO> ebookDTOList = ebookMetadataService.searchEbooksByCriteria(searchEbookCriteriaDTO);
+        return ResponseEntity.ok(ebookDTOList);
     }
 
 }

@@ -1,13 +1,11 @@
 package pl.polsl.service.impl;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import pl.polsl.dto.EbookDTO;
-import pl.polsl.dto.LiteraryGenreDTO;
-import pl.polsl.dto.UploadEbookMetadataDTO;
-import pl.polsl.dto.WriterDTO;
+import pl.polsl.dto.*;
 import pl.polsl.mapper.EbookMapper;
 import pl.polsl.model.*;
 import pl.polsl.repository.*;
@@ -159,6 +157,160 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             ebookAuthors.setEbookByEbookId(ebook);
             ebookAuthorsRepository.save(ebookAuthors);
         }
+    }
+
+    @Override
+    public List<EbookDTO> getTop10Ebooks(String username, String title) {
+        List<Ebook> ebookList = null;
+        UsersView user = null;
+        if (!StringUtils.isEmpty(username)) {
+            user = usersRepository.findUsersByUserName(username);
+        }
+        if (user == null) {
+            if (StringUtils.isEmpty(title)) {
+                ebookList = ebookRepository.findTop10ByIsPublicOrderByRatingDesc(true);
+            } else {
+                title = "%" + title + "%";
+                ebookList = ebookRepository.findTop10ByIsPublicAndTitleLikeOrderByRatingDesc(true, title);
+            }
+        } else {
+            if (StringUtils.isEmpty(title)) {
+                ebookList = ebookRepository.findTop10ByIsPublicAndOwnerIdOrderByRatingDesc(false, user.getUserId());
+            } else {
+                title = "%" + title + "%";
+                ebookList = ebookRepository.findTop10ByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(false, user.getUserId(), title);
+            }
+        }
+        if (ebookList == null) {
+            return null;
+        }
+        List<EbookDTO> ebookDTOList = ebookMapper.toEbookDTOList(ebookList);
+        if (ebookDTOList == null || ebookDTOList.isEmpty()) {
+            return null;
+        } else {
+            return ebookDTOList.subList(0, ebookDTOList.size() > 9 ? 9 : ebookDTOList.size());
+        }
+    }
+
+    @Override
+    public List<EbookDTO> getAllUserImages(String username) {
+        UsersView user = null;
+        user = usersRepository.findUsersByUserName(username);
+        if (user == null) {
+            return null;
+        }
+        List<Ebook> ebookList = ebookRepository.findByOwnerId(user.getUserId());
+        return ebookMapper.toEbookDTOList(ebookList);
+    }
+
+    @Override
+    public List<EbookDTO> searchEbooksByCriteria(SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
+        if (searchEbookCriteriaDTO == null || StringUtils.isEmpty(searchEbookCriteriaDTO.getCriteria())) {
+            return null;
+        }
+        String criteria = searchEbookCriteriaDTO.getCriteria();
+        String textSearched = searchEbookCriteriaDTO.getTextSearched();
+        switch (criteria) {
+            case "T":
+                return getEbooksByTitle(textSearched);
+            case "A":
+                return getEbooksByAuthor(textSearched);
+            case "G":
+                return getEbooksByLiteraryGenreName(textSearched);
+            case "Y":
+                return getEbooksByYear(textSearched);
+            case "ALL":
+                return getEbooksByAllCriteria(textSearched);
+        }
+        return null;
+    }
+
+    private List<EbookDTO> getEbooksByTitle(String title) {
+        if (title == null || "undefined".equals(title)) {
+            return null;
+        }
+        List<Ebook> ebookList = ebookRepository.findByTitleOrderByRating(title);
+        if (ebookList == null) {
+            ebookList = new ArrayList<>();
+        }
+        title += "%";
+        ebookList.addAll(ebookRepository.findByTitleLikeOrderByRating(title));
+        return ebookMapper.toEbookDTOList(ebookList);
+    }
+
+    private List<EbookDTO> getEbooksByAuthor(String authorData) {
+        if (authorData == null || "undefined".equals(authorData)) {
+            return null;
+        }
+        String[] data = authorData.split(" ");
+        if (data == null || data.length <= 0) {
+            return null;
+        }
+        String name = data[0];
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        List<Ebook> result = null;
+        switch (data.length) {
+            case 1:
+                result = ebookRepository.findByWriterNameLikeOrderByRating(name);
+                break;
+            case 2:
+                result = ebookRepository.findByWriterNameLikeAndSurnameLikeOrderByRating(name, data[1]);
+                break;
+            case 3:
+                result = ebookRepository.findByWriterNameLikeAndSurnameLikeAndName2LikeOrderByRating(name, data[1], data[2]);
+                break;
+            default:
+                break;
+        }
+        return ebookMapper.toEbookDTOList(result);
+    }
+
+    private List<EbookDTO> getEbooksByLiteraryGenreName(String name) {
+        if (name == null || "undefined".equals(name)) {
+            return null;
+        }
+        List<Ebook> ebookList = ebookRepository.findByTypeNameOrderByRating(name);
+        if (ebookList == null) {
+            ebookList = new ArrayList<>();
+        }
+        name += "%";
+        ebookList.addAll(ebookRepository.findByTypeNameLikeOrderByRating(name));
+        return ebookMapper.toEbookDTOList(ebookList);
+    }
+
+    private List<EbookDTO> getEbooksByYear(String year) {
+        if (year == null || "undefined".equals(year) || !NumberUtils.isNumber(year)) {
+            return null;
+        }
+        Short yearNumber = Short.parseShort(year);
+        List<Ebook> ebookList = ebookRepository.findByYearOrderByRating(yearNumber);
+        return ebookMapper.toEbookDTOList(ebookList);
+    }
+
+    private List<EbookDTO> getEbooksByAllCriteria(String searchText) {
+        if (StringUtils.isEmpty(searchText)) {
+            return null;
+        }
+        List<EbookDTO> result = new ArrayList<>();
+        List<EbookDTO> ebooksByTitle = getEbooksByTitle(searchText);
+        List<EbookDTO> ebooksByYear = getEbooksByYear(searchText);
+        List<EbookDTO> ebooksByAuthor = getEbooksByAuthor(searchText);
+        List<EbookDTO> ebooksByLiteraryGenreName = getEbooksByLiteraryGenreName(searchText);
+        if (ebooksByTitle != null && !ebooksByTitle.isEmpty()) {
+            result.addAll(ebooksByTitle);
+        }
+        if (ebooksByYear != null && !ebooksByYear.isEmpty()) {
+            result.addAll(ebooksByYear);
+        }
+        if (ebooksByAuthor != null && !ebooksByAuthor.isEmpty()) {
+            result.addAll(ebooksByAuthor);
+        }
+        if (ebooksByLiteraryGenreName != null && !ebooksByLiteraryGenreName.isEmpty()) {
+            result.addAll(ebooksByLiteraryGenreName);
+        }
+        return result;
     }
 }
 

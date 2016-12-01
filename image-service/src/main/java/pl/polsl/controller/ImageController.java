@@ -6,9 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.dto.ArtistDTO;
-import pl.polsl.dto.ImageTypeDTO;
-import pl.polsl.dto.UploadImageMetadataDTO;
+import pl.polsl.dto.*;
 import pl.polsl.model.ImageFiles;
 import pl.polsl.service.ImageMetadataService;
 import pl.polsl.service.StorageService;
@@ -77,5 +75,39 @@ public class ImageController {
     ResponseEntity<UploadImageMetadataDTO> saveImageFileMetadata(@RequestBody UploadImageMetadataDTO uploadImageMetadataDTO) {
         UploadImageMetadataDTO result = imageMetadataService.saveMetadata(uploadImageMetadataDTO);
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/noauth/top10/images")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>> getTop10Images(@RequestParam(value = "title", required = false) String title) {
+        List<ImageDTO> top10Images = imageMetadataService.getTop10Images(null, title);
+        return ResponseEntity.ok(top10Images);
+    }
+
+    @GetMapping("/auth/top10/images")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>> getTop10ImagesOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                                                              @RequestParam("username") String username) {
+        List<ImageDTO> top10Images = imageMetadataService.getTop10Images(username, title);
+        return ResponseEntity.ok(top10Images);
+    }
+
+    @GetMapping("/auth/user/images")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>> getAllUserImages(@RequestParam("username") String username) {
+        List<ImageDTO> allUserImages = imageMetadataService.getAllUserImages(username);
+        return ResponseEntity.ok(allUserImages);
+    }
+
+
+    @GetMapping("/noauth/public/images")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>> searchImagesByCriteria(@RequestParam("criteria") SearchImageCriteriaDTO searchImageCriteriaDTO) {
+        List<ImageDTO> imageDTOList = imageMetadataService.searchImagesByCriteria(searchImageCriteriaDTO);
+        return ResponseEntity.ok(imageDTOList);
     }
 }

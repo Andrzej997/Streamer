@@ -1,5 +1,6 @@
 package pl.polsl.service.impl;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -197,6 +198,160 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             musicAuthors.setAuthorId(musicArtists.getAuthorId());
             musicAuthorsRepository.save(musicAuthors);
         }
+    }
+
+    @Override
+    public List<SongDTO> getTop10Songs(String username, String title) {
+        List<Songs> songsList = null;
+        UsersView user = null;
+        if (!StringUtils.isEmpty(username)) {
+            user = usersRepository.findUsersByUserName(username);
+        }
+        if (user == null) {
+            if (StringUtils.isEmpty(title)) {
+                songsList = songsRepository.findTop10ByIsPublicOrderByRatingDesc(true);
+            } else {
+                title = "%" + title + "%";
+                songsList = songsRepository.findTop10ByIsPublicAndTitleLikeOrderByRatingDesc(true, title);
+            }
+        } else {
+            if (StringUtils.isEmpty(title)) {
+                songsList = songsRepository.findTop10ByIsPublicAndOwnerIdOrderByRatingDesc(false, user.getUserId());
+            } else {
+                title = "%" + title + "%";
+                songsList = songsRepository.findTop10ByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(false, user.getUserId(), title);
+            }
+        }
+        if (songsList == null) {
+            return null;
+        }
+        List<SongDTO> songDTOList = musicMapper.toSongDTOList(songsList);
+        if (songDTOList == null || songDTOList.isEmpty()) {
+            return null;
+        } else {
+            return songDTOList.subList(0, songDTOList.size() > 9 ? 9 : songDTOList.size());
+        }
+    }
+
+    @Override
+    public List<SongDTO> getAllUserSongs(String username) {
+        UsersView user = null;
+        user = usersRepository.findUsersByUserName(username);
+        if (user == null) {
+            return null;
+        }
+        List<Songs> songsList = songsRepository.findByOwnerId(user.getUserId());
+        return musicMapper.toSongDTOList(songsList);
+    }
+
+    @Override
+    public List<SongDTO> searchSongsByCriteria(SearchSongCriteriaDTO searchSongCriteriaDTO) {
+        if (searchSongCriteriaDTO == null || StringUtils.isEmpty(searchSongCriteriaDTO.getCriteria())) {
+            return null;
+        }
+        String criteria = searchSongCriteriaDTO.getCriteria();
+        String textSearched = searchSongCriteriaDTO.getTextSearched();
+        switch (criteria) {
+            case "T":
+                return getSongsByTitle(textSearched);
+            case "A":
+                return getSongsByAuthor(textSearched);
+            case "G":
+                return getSongsByGenreName(textSearched);
+            case "Y":
+                return getSongsByYear(textSearched);
+            case "ALL":
+                return getSongsByAllCriteria(textSearched);
+        }
+        return null;
+    }
+
+    private List<SongDTO> getSongsByTitle(String title) {
+        if (title == null || "undefined".equals(title)) {
+            return null;
+        }
+        List<Songs> songsList = songsRepository.findByTitleOrderByRating(title);
+        if (songsList == null) {
+            songsList = new ArrayList<>();
+        }
+        title += "%";
+        songsList.addAll(songsRepository.findByTitleLikeOrderByRating(title));
+        return musicMapper.toSongDTOList(songsList);
+    }
+
+    private List<SongDTO> getSongsByAuthor(String authorData) {
+        if (authorData == null || "undefined".equals(authorData)) {
+            return null;
+        }
+        String[] data = authorData.split(" ");
+        if (data == null || data.length <= 0) {
+            return null;
+        }
+        String name = data[0];
+        if (StringUtils.isEmpty(name)) {
+            return null;
+        }
+        List<Songs> result = null;
+        switch (data.length) {
+            case 1:
+                result = songsRepository.findByArtistNameLikeOrderByRating(name);
+                break;
+            case 2:
+                result = songsRepository.findByArtistNameLikeAndSurnameLikeOrderByRating(name, data[1]);
+                break;
+            case 3:
+                result = songsRepository.findByArtistNameLikeAndSurnameLikeAndName2LikeOrderByRating(name, data[1], data[2]);
+                break;
+            default:
+                break;
+        }
+        return musicMapper.toSongDTOList(result);
+    }
+
+    private List<SongDTO> getSongsByGenreName(String name) {
+        if (name == null || "undefined".equals(name)) {
+            return null;
+        }
+        List<Songs> songsList = songsRepository.findByGenreNameOrderByRating(name);
+        if (songsList == null) {
+            songsList = new ArrayList<>();
+        }
+        name += "%";
+        songsList = songsRepository.findByGenreNameLikeOrderByRating(name);
+        return musicMapper.toSongDTOList(songsList);
+    }
+
+    private List<SongDTO> getSongsByYear(String year) {
+        if (year == null || "undefined".equals(year) || !NumberUtils.isNumber(year)) {
+            return null;
+        }
+        Short yearNumber = Short.parseShort(year);
+        List<Songs> songsList = songsRepository.findByProductionYearOrderByRating(yearNumber);
+        return musicMapper.toSongDTOList(songsList);
+    }
+
+    private List<SongDTO> getSongsByAllCriteria(String searchText) {
+        if (StringUtils.isEmpty(searchText)) {
+            return null;
+        }
+        List<SongDTO> result = new ArrayList<>();
+        List<SongDTO> songsByTitle = getSongsByTitle(searchText);
+        List<SongDTO> songsByYear = getSongsByYear(searchText);
+        List<SongDTO> songsByAuthor = getSongsByAuthor(searchText);
+        List<SongDTO> songsByGenreName = getSongsByGenreName(searchText);
+        if (songsByTitle != null && !songsByTitle.isEmpty()) {
+            result.addAll(songsByTitle);
+        }
+        if (songsByYear != null && !songsByYear.isEmpty()) {
+            result.addAll(songsByYear);
+        }
+        if (songsByAuthor != null && !songsByAuthor.isEmpty()) {
+            result.addAll(songsByAuthor);
+        }
+        if (songsByGenreName != null && !songsByGenreName.isEmpty()) {
+            result.addAll(songsByGenreName);
+        }
+        return result;
     }
 
 }

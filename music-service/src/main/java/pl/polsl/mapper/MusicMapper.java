@@ -45,4 +45,8 @@ public interface MusicMapper {
     Songs toSongs(SongDTO songDTO);
 
     SongDTO toSongDTO(Songs songs);
+
+    List<Songs> toSongsList(List<SongDTO> songDTOList);
+
+    List<SongDTO> toSongDTOList(List<Songs> songsList);
 }
