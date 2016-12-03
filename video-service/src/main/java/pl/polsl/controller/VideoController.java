@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.*;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
+import pl.polsl.service.VideoManagementService;
 import pl.polsl.service.VideoMetadataService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +29,9 @@ public class VideoController {
 
     @Autowired
     private VideoMetadataService videoMetadataService;
+
+    @Autowired
+    private VideoManagementService videoManagementService;
 
     @PostMapping("/auth/upload")
     public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -117,6 +121,14 @@ public class VideoController {
     ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestParam("criteria") SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
         List<VideoDTO> videoDTOList = videoMetadataService.searchVideosByCriteria(searchVideoCriteriaDTO);
         return ResponseEntity.ok(videoDTOList);
+    }
+
+    @DeleteMapping("/auth/delete/video")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+        Boolean success = videoManagementService.removeFileAndMetadata(id, username);
+        return ResponseEntity.ok(success);
     }
 
 }

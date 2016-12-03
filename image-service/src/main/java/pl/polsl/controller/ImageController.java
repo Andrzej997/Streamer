@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.*;
 import pl.polsl.model.ImageFiles;
+import pl.polsl.service.ImageManagementService;
 import pl.polsl.service.ImageMetadataService;
 import pl.polsl.service.StorageService;
 
@@ -28,6 +29,9 @@ public class ImageController {
 
     @Autowired
     private ImageMetadataService imageMetadataService;
+
+    @Autowired
+    private ImageManagementService imageManagementService;
 
     @PostMapping("/auth/upload")
     public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -109,5 +113,13 @@ public class ImageController {
     ResponseEntity<List<ImageDTO>> searchImagesByCriteria(@RequestParam("criteria") SearchImageCriteriaDTO searchImageCriteriaDTO) {
         List<ImageDTO> imageDTOList = imageMetadataService.searchImagesByCriteria(searchImageCriteriaDTO);
         return ResponseEntity.ok(imageDTOList);
+    }
+
+    @DeleteMapping("/auth/delete/image")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+        Boolean success = imageManagementService.removeFileAndMetadata(id, username);
+        return ResponseEntity.ok(success);
     }
 }

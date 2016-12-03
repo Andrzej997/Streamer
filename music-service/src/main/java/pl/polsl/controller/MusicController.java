@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.*;
 import pl.polsl.model.MusicFiles;
+import pl.polsl.service.MusicManagementService;
 import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
 
@@ -29,6 +30,9 @@ public class MusicController {
 
     @Autowired
     private MusicMetadataService musicMetadataService;
+
+    @Autowired
+    private MusicManagementService musicManagementService;
 
     @PostMapping("/auth/upload")
     public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -118,5 +122,13 @@ public class MusicController {
     ResponseEntity<List<SongDTO>> searchSongsByCriteria(@RequestParam("criteria") SearchSongCriteriaDTO searchSongCriteriaDTO) {
         List<SongDTO> songDTOList = musicMetadataService.searchSongsByCriteria(searchSongCriteriaDTO);
         return ResponseEntity.ok(songDTOList);
+    }
+
+    @DeleteMapping("/auth/delete/song")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+        Boolean success = musicManagementService.removeFileAndMetadata(id, username);
+        return ResponseEntity.ok(success);
     }
 }

@@ -53,9 +53,11 @@ public class AuthFilter implements Filter {
             }
             if (entity != null && entity.getStatusCode() == HttpStatus.OK) {
                 chain.doFilter(request, response);
+                return;
             } else if (exception != null) {
                 httpResponse.sendError(exception.getRawStatusCode(), exception.getLocalizedMessage());
                 chain.doFilter(request, httpResponse);
+                return;
             }
         }
         chain.doFilter(request, httpResponse);

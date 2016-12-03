@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.*;
 import pl.polsl.model.EbookFiles;
+import pl.polsl.service.EbookManagementService;
 import pl.polsl.service.EbookMetadataService;
 import pl.polsl.service.StorageService;
 
@@ -29,6 +30,9 @@ public class EbookController {
 
     @Autowired
     private EbookMetadataService ebookMetadataService;
+
+    @Autowired
+    private EbookManagementService ebookManagementService;
 
     @PostMapping("/auth/upload")
     public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -109,6 +113,14 @@ public class EbookController {
     ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestParam("criteria") SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
         List<EbookDTO> ebookDTOList = ebookMetadataService.searchEbooksByCriteria(searchEbookCriteriaDTO);
         return ResponseEntity.ok(ebookDTOList);
+    }
+
+    @DeleteMapping("/auth/delete/ebook")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+        Boolean success = ebookManagementService.removeFileAndMetadata(id, username);
+        return ResponseEntity.ok(success);
     }
 
 }
