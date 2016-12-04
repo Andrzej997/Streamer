@@ -145,10 +145,8 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicGenreForSong(SongDTO songDTO, Songs songs) {
         MusicGenres genre = null;
-        if (songDTO.getGenre() != null && songDTO.getGenre().getMusicGenreId() == null) {
+        if (songDTO.getGenre() != null) {
             genre = musicGenresRepository.save(musicMapper.toMusicGenres(songDTO.getGenre()));
-        } else if (songDTO.getGenre() != null) {
-            genre = musicMapper.toMusicGenres(songDTO.getGenre());
         }
         if (genre == null) {
             return;
@@ -159,10 +157,8 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicAlbumForSong(SongDTO songDTO, Songs songs) {
         MusicAlbums album = null;
-        if (songDTO.getAlbum() != null && songDTO.getAlbum().getAlbumId() == null) {
+        if (songDTO.getAlbum() != null) {
             album = musicAlbumsRepository.save(musicMapper.toMusicAlbums(songDTO.getAlbum()));
-        } else if (songDTO.getAlbum() != null) {
-            album = musicMapper.toMusicAlbums(songDTO.getAlbum());
         }
         if (album == null) {
             return;
@@ -188,9 +184,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             return;
         }
         for (MusicArtists musicArtists : musicArtistsList) {
-            if (musicArtists.getAuthorId() == null) {
-                musicArtists = musicArtistsRepository.save(musicArtists);
-            }
+
+            musicArtists = musicArtistsRepository.save(musicArtists);
+
             MusicAuthors musicAuthors = new MusicAuthors();
             musicAuthors.setSongsBySongId(songs);
             musicAuthors.setSongId(songs.getSongId());
@@ -351,6 +347,25 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         if (songsByGenreName != null && !songsByGenreName.isEmpty()) {
             result.addAll(songsByGenreName);
         }
+        return result;
+    }
+
+    @Override
+    public SongDTO updateSongMetadata(SongDTO songDTO) {
+        Songs songs = musicMapper.toSongs(songDTO);
+        List<MusicArtists> musicArtistsList = musicMapper.toMusicArtistsList(songDTO.getAuthors());
+        saveMusicGenreForSong(songDTO, songs);
+        saveMusicAlbumForSong(songDTO, songs);
+        saveMusicFileMetadataForSong(songDTO, songs);
+        songs = songsRepository.save(songs);
+        saveMusicArtistsForSong(songs, musicArtistsList);
+
+        List<MusicAuthors> musicAuthors = musicAuthorsRepository.findBySongId(songs.getSongId());
+        songs.setMusicAuthorsesBySongId(musicAuthors);
+
+        songs = songsRepository.save(songs);
+
+        SongDTO result = musicMapper.toSongDTO(songs);
         return result;
     }
 

@@ -22,4 +22,6 @@ public interface VideoMetadataService {
     List<VideoDTO> getAllUserVideos(String username);
 
     List<VideoDTO> searchVideosByCriteria(SearchVideoCriteriaDTO searchVideoCriteriaDTO);
+
+    VideoDTO updateVideoMetadata(VideoDTO videoDTO);
 }

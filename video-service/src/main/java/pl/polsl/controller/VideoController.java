@@ -131,4 +131,12 @@ public class VideoController {
         return ResponseEntity.ok(success);
     }
 
+    @PutMapping("/auth/update/video")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
+        Boolean success = videoMetadataService.updateVideoMetadata(videoDTO) != null;
+        return ResponseEntity.ok(success);
+    }
+
 }

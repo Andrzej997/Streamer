@@ -123,4 +123,12 @@ public class EbookController {
         return ResponseEntity.ok(success);
     }
 
+    @PutMapping("/auth/update/ebook")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
+        Boolean success = ebookMetadataService.updateEbookMetadata(ebookDTO) != null;
+        return ResponseEntity.ok(success);
+    }
+
 }

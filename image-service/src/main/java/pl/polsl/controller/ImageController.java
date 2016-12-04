@@ -122,4 +122,12 @@ public class ImageController {
         Boolean success = imageManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
+
+    @PutMapping("/auth/update/image")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> updateImageMetadata(@RequestBody ImageDTO imageDTO) {
+        Boolean success = imageMetadataService.updateImageMetadata(imageDTO) != null;
+        return ResponseEntity.ok(success);
+    }
 }

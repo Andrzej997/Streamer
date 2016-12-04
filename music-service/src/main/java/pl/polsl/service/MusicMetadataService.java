@@ -22,4 +22,6 @@ public interface MusicMetadataService {
     List<SongDTO> getAllUserSongs(String username);
 
     List<SongDTO> searchSongsByCriteria(SearchSongCriteriaDTO searchSongCriteriaDTO);
+
+    SongDTO updateSongMetadata(SongDTO songDTO);
 }

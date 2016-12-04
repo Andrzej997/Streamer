@@ -131,4 +131,12 @@ public class MusicController {
         Boolean success = musicManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
+
+    @PutMapping("/auth/update/song")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> updateSongMetadata(@RequestBody SongDTO songDTO) {
+        Boolean success = musicMetadataService.updateSongMetadata(songDTO) != null;
+        return ResponseEntity.ok(success);
+    }
 }

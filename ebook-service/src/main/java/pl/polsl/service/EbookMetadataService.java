@@ -19,4 +19,6 @@ public interface EbookMetadataService {
     List<EbookDTO> getAllUserImages(String username);
 
     List<EbookDTO> searchEbooksByCriteria(SearchEbookCriteriaDTO searchEbookCriteriaDTO);
+
+    EbookDTO updateEbookMetadata(EbookDTO ebookDTO);
 }

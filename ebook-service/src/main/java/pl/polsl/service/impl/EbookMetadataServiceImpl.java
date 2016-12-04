@@ -118,10 +118,8 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     private void saveLiteraryGenreForEbook(EbookDTO ebookDTO, Ebook ebook) {
         LiteraryGenre literaryGenre = null;
-        if (ebookDTO.getLiteraryGenreDTO() != null && ebookDTO.getLiteraryGenreDTO().getGenreId() == null) {
+        if (ebookDTO.getLiteraryGenreDTO() != null) {
             literaryGenre = literaryGenreRepository.save(ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO()));
-        } else if (ebookDTO.getLiteraryGenreDTO() != null) {
-            literaryGenre = ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO());
         }
         if (literaryGenre == null) {
             return;
@@ -147,9 +145,8 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             return;
         }
         for (Writers writers : writersList) {
-            if (writers.getWriterId() == null) {
-                writers = writersRepository.save(writers);
-            }
+            writers = writersRepository.save(writers);
+
             EbookAuthors ebookAuthors = new EbookAuthors();
             ebookAuthors.setAuthorId(writers.getWriterId());
             ebookAuthors.setWritersByAuthorId(writers);
@@ -310,6 +307,25 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         if (ebooksByLiteraryGenreName != null && !ebooksByLiteraryGenreName.isEmpty()) {
             result.addAll(ebooksByLiteraryGenreName);
         }
+        return result;
+    }
+
+    @Override
+    public EbookDTO updateEbookMetadata(EbookDTO ebookDTO) {
+
+        Ebook ebook = ebookMapper.toEbook(ebookDTO);
+        List<Writers> writersList = ebookMapper.toWritersList(ebookDTO.getWriterDTOList());
+        saveLiteraryGenreForEbook(ebookDTO, ebook);
+        saveEbookFileMetadataForEbook(ebookDTO, ebook);
+        ebook = ebookRepository.save(ebook);
+
+        saveWritersForEbook(ebook, writersList);
+        List<EbookAuthors> imageAuthorsList = ebookAuthorsRepository.findByEbookId(ebook.getEbookId());
+        ebook.setEbookAuthorsesByEbookId(imageAuthorsList);
+
+        ebook = ebookRepository.save(ebook);
+
+        EbookDTO result = ebookMapper.toEbookDTO(ebook);
         return result;
     }
 }

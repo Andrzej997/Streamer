@@ -118,10 +118,8 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     private void saveImageTypeForImage(ImageDTO imageDTO, Images images) {
         ImageTypes imageTypes = null;
-        if (imageDTO.getImageTypeDTO() != null && imageDTO.getImageTypeDTO().getTypeId() == null) {
+        if (imageDTO.getImageTypeDTO() != null) {
             imageTypes = imageTypesRepository.save(imageMapper.toImageTypes(imageDTO.getImageTypeDTO()));
-        } else if (imageDTO.getImageTypeDTO() != null) {
-            imageTypes = imageMapper.toImageTypes(imageDTO.getImageTypeDTO());
         }
         if (imageTypes == null) {
             return;
@@ -147,9 +145,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             return;
         }
         for (Artists artist : artistsList) {
-            if (artist.getArtistId() == null) {
-                artist = artistsRepository.save(artist);
-            }
+
+            artist = artistsRepository.save(artist);
+
             ImageAuthors imageAuthors = new ImageAuthors();
             imageAuthors.setAuthorId(artist.getArtistId());
             imageAuthors.setArtistsByAuthorId(artist);
@@ -310,6 +308,25 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         if (imagesByTypeName != null && !imagesByTypeName.isEmpty()) {
             result.addAll(imagesByTypeName);
         }
+        return result;
+    }
+
+    @Override
+    public ImageDTO updateImageMetadata(ImageDTO imageDTO) {
+
+        Images images = imageMapper.toImages(imageDTO);
+        List<Artists> artistsList = imageMapper.toArtistsList(imageDTO.getArtistDTOList());
+        saveImageTypeForImage(imageDTO, images);
+        saveImageFileMetadataForImage(imageDTO, images);
+        images = imagesRepository.save(images);
+
+        saveImageArtistsForImage(images, artistsList);
+        List<ImageAuthors> imageAuthorsList = imageAuthorsRepository.findByImageId(images.getImageId());
+        images.setImageAuthorsesByImageId(imageAuthorsList);
+
+        images = imagesRepository.save(images);
+
+        ImageDTO result = imageMapper.toImageDTO(images);
         return result;
     }
 }
