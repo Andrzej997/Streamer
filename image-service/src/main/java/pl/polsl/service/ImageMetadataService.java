@@ -22,4 +22,6 @@ public interface ImageMetadataService {
     List<ImageDTO> searchImagesByCriteria(SearchImageCriteriaDTO searchImageCriteriaDTO);
 
     ImageDTO updateImageMetadata(ImageDTO imageDTO);
+
+    List<ImageDTO> getImagesTop50();
 }

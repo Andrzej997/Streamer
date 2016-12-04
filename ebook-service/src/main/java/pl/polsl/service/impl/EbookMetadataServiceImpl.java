@@ -328,5 +328,22 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         EbookDTO result = ebookMapper.toEbookDTO(ebook);
         return result;
     }
+
+    @Override
+    public List<EbookDTO> getEbooksTop50() {
+        Iterable<Ebook> all = ebookRepository.findAll();
+        if (all == null) {
+            return null;
+        }
+        List<Ebook> allEbooks = new ArrayList<>();
+        all.forEach(allEbooks::add);
+        List<EbookDTO> result = ebookMapper.toEbookDTOList(allEbooks);
+        if (result == null || result.isEmpty()) {
+            return null;
+        } else {
+            return result.subList(0, result.size() > 49 ? 49 : result.size());
+        }
+    }
+
 }
 

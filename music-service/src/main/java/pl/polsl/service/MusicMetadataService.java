@@ -24,4 +24,6 @@ public interface MusicMetadataService {
     List<SongDTO> searchSongsByCriteria(SearchSongCriteriaDTO searchSongCriteriaDTO);
 
     SongDTO updateSongMetadata(SongDTO songDTO);
+
+    List<SongDTO> getSongsTop50();
 }

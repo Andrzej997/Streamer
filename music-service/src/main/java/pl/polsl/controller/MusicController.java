@@ -135,8 +135,14 @@ public class MusicController {
     @PutMapping("/auth/update/song")
     public
     @ResponseBody
-    ResponseEntity<Boolean> updateSongMetadata(@RequestBody SongDTO songDTO) {
-        Boolean success = musicMetadataService.updateSongMetadata(songDTO) != null;
-        return ResponseEntity.ok(success);
+    ResponseEntity<SongDTO> updateSongMetadata(@RequestBody SongDTO songDTO) {
+        return ResponseEntity.ok(musicMetadataService.updateSongMetadata(songDTO));
+    }
+
+    @GetMapping("/noauth/song/top50")
+    public
+    @ResponseBody
+    ResponseEntity<List<SongDTO>> getSongsTop50() {
+        return ResponseEntity.ok(musicMetadataService.getSongsTop50());
     }
 }

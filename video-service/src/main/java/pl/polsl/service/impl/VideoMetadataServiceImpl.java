@@ -363,4 +363,21 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         VideoDTO result = videoMapper.toVideoDTO(videos);
         return result;
     }
+
+    @Override
+    public List<VideoDTO> getVideosTop50() {
+        Iterable<Videos> all = videosRepository.findAll();
+        if (all == null) {
+            return null;
+        }
+        List<Videos> allVideos = new ArrayList<>();
+        all.forEach(allVideos::add);
+        List<VideoDTO> result = videoMapper.toVideoDTOList(allVideos);
+        if (result == null || result.isEmpty()) {
+            return null;
+        } else {
+            return result.subList(0, result.size() > 49 ? 49 : result.size());
+        }
+    }
+
 }

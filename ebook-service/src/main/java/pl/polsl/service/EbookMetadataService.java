@@ -21,4 +21,6 @@ public interface EbookMetadataService {
     List<EbookDTO> searchEbooksByCriteria(SearchEbookCriteriaDTO searchEbookCriteriaDTO);
 
     EbookDTO updateEbookMetadata(EbookDTO ebookDTO);
+
+    List<EbookDTO> getEbooksTop50();
 }

@@ -329,4 +329,21 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         ImageDTO result = imageMapper.toImageDTO(images);
         return result;
     }
+
+    @Override
+    public List<ImageDTO> getImagesTop50() {
+        Iterable<Images> all = imagesRepository.findAll();
+        if (all == null) {
+            return null;
+        }
+        List<Images> allImages = new ArrayList<>();
+        all.forEach(allImages::add);
+        List<ImageDTO> result = imageMapper.toImageDTOList(allImages);
+        if (result == null || result.isEmpty()) {
+            return null;
+        } else {
+            return result.subList(0, result.size() > 49 ? 49 : result.size());
+        }
+    }
+
 }

@@ -19,19 +19,19 @@ public interface SongsRepository extends CrudRepository<Songs, Long> {
 
     @Query("SELECT s FROM Songs s where s.rating is not null and s.fileId in " +
             "(select f.musicFileId from MusicFiles f where f.isPublic = ?1) order by s.rating desc")
-    List<Songs> findTop10ByIsPublicOrderByRatingDesc(Boolean isPublic);
+    List<Songs> findByIsPublicOrderByRatingDesc(Boolean isPublic);
 
     @Query("SELECT s FROM Songs s where s.rating is not null and s.title like ?2 and s.fileId in " +
             "(select f.musicFileId from MusicFiles f where f.isPublic = ?1) order by s.rating desc")
-    List<Songs> findTop10ByIsPublicAndTitleLikeOrderByRatingDesc(Boolean isPublic, String title);
+    List<Songs> findByIsPublicAndTitleLikeOrderByRatingDesc(Boolean isPublic, String title);
 
     @Query("SELECT s FROM Songs s where s.rating is not null and s.ownerId = ?2 and s.fileId in " +
             "(select f.musicFileId from MusicFiles f where f.isPublic = ?1) order by s.rating desc")
-    List<Songs> findTop10ByIsPublicAndOwnerIdOrderByRatingDesc(Boolean isPublic, Long ownerId);
+    List<Songs> findByIsPublicAndOwnerIdOrderByRatingDesc(Boolean isPublic, Long ownerId);
 
     @Query("SELECT s FROM Songs s where s.rating is not null and s.title like ?3 and s.ownerId = ?2 and s.fileId in " +
             "(select f.musicFileId from MusicFiles f where f.isPublic = ?1) order by s.rating desc")
-    List<Songs> findTop10ByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(Boolean isPublic, Long ownerId, String title);
+    List<Songs> findByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(Boolean isPublic, Long ownerId, String title);
 
     List<Songs> findByOwnerId(Long ownerId);
 

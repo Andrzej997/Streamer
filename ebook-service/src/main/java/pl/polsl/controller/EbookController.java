@@ -126,9 +126,15 @@ public class EbookController {
     @PutMapping("/auth/update/ebook")
     public
     @ResponseBody
-    ResponseEntity<Boolean> updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
-        Boolean success = ebookMetadataService.updateEbookMetadata(ebookDTO) != null;
-        return ResponseEntity.ok(success);
+    ResponseEntity<EbookDTO> updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
+        return ResponseEntity.ok(ebookMetadataService.updateEbookMetadata(ebookDTO));
+    }
+
+    @GetMapping("/noauth/ebook/top50")
+    public
+    @ResponseBody
+    ResponseEntity<List<EbookDTO>> getEbooksTop50() {
+        return ResponseEntity.ok(ebookMetadataService.getEbooksTop50());
     }
 
 }

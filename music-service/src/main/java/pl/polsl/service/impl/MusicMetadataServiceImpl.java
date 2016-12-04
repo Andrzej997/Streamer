@@ -205,17 +205,17 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         }
         if (user == null) {
             if (StringUtils.isEmpty(title)) {
-                songsList = songsRepository.findTop10ByIsPublicOrderByRatingDesc(true);
+                songsList = songsRepository.findByIsPublicOrderByRatingDesc(true);
             } else {
                 title = "%" + title + "%";
-                songsList = songsRepository.findTop10ByIsPublicAndTitleLikeOrderByRatingDesc(true, title);
+                songsList = songsRepository.findByIsPublicAndTitleLikeOrderByRatingDesc(true, title);
             }
         } else {
             if (StringUtils.isEmpty(title)) {
-                songsList = songsRepository.findTop10ByIsPublicAndOwnerIdOrderByRatingDesc(false, user.getUserId());
+                songsList = songsRepository.findByIsPublicAndOwnerIdOrderByRatingDesc(false, user.getUserId());
             } else {
                 title = "%" + title + "%";
-                songsList = songsRepository.findTop10ByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(false, user.getUserId(), title);
+                songsList = songsRepository.findByIsPublicAndOwnerIdAndTitleLikeOrderByRatingDesc(false, user.getUserId(), title);
             }
         }
         if (songsList == null) {
@@ -367,6 +367,22 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
         SongDTO result = musicMapper.toSongDTO(songs);
         return result;
+    }
+
+    @Override
+    public List<SongDTO> getSongsTop50() {
+        Iterable<Songs> all = songsRepository.findAll();
+        if (all == null) {
+            return null;
+        }
+        List<Songs> allSongs = new ArrayList<>();
+        all.forEach(allSongs::add);
+        List<SongDTO> result = musicMapper.toSongDTOList(allSongs);
+        if (result == null || result.isEmpty()) {
+            return null;
+        } else {
+            return result.subList(0, result.size() > 49 ? 49 : result.size());
+        }
     }
 
 }

@@ -134,9 +134,15 @@ public class VideoController {
     @PutMapping("/auth/update/video")
     public
     @ResponseBody
-    ResponseEntity<Boolean> updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
-        Boolean success = videoMetadataService.updateVideoMetadata(videoDTO) != null;
-        return ResponseEntity.ok(success);
+    ResponseEntity<VideoDTO> updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
+        return ResponseEntity.ok(videoMetadataService.updateVideoMetadata(videoDTO));
+    }
+
+    @GetMapping("/noauth/video/top50")
+    public
+    @ResponseBody
+    ResponseEntity<List<VideoDTO>> getVideosTop50() {
+        return ResponseEntity.ok(videoMetadataService.getVideosTop50());
     }
 
 }

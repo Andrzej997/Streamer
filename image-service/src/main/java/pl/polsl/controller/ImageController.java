@@ -126,8 +126,14 @@ public class ImageController {
     @PutMapping("/auth/update/image")
     public
     @ResponseBody
-    ResponseEntity<Boolean> updateImageMetadata(@RequestBody ImageDTO imageDTO) {
-        Boolean success = imageMetadataService.updateImageMetadata(imageDTO) != null;
-        return ResponseEntity.ok(success);
+    ResponseEntity<ImageDTO> updateImageMetadata(@RequestBody ImageDTO imageDTO) {
+        return ResponseEntity.ok(imageMetadataService.updateImageMetadata(imageDTO));
+    }
+
+    @GetMapping("/noauth/image/top50")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>> getImagesTop50() {
+        return ResponseEntity.ok(imageMetadataService.getImagesTop50());
     }
 }

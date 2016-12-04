@@ -24,4 +24,6 @@ public interface VideoMetadataService {
     List<VideoDTO> searchVideosByCriteria(SearchVideoCriteriaDTO searchVideoCriteriaDTO);
 
     VideoDTO updateVideoMetadata(VideoDTO videoDTO);
+
+    List<VideoDTO> getVideosTop50();
 }
