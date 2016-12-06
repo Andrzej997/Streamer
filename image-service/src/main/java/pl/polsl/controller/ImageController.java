@@ -107,10 +107,10 @@ public class ImageController {
     }
 
 
-    @GetMapping("/noauth/public/images")
+    @PostMapping("/noauth/public/images")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> searchImagesByCriteria(@RequestParam("criteria") SearchImageCriteriaDTO searchImageCriteriaDTO) {
+    ResponseEntity<List<ImageDTO>> searchImagesByCriteria(@RequestBody SearchImageCriteriaDTO searchImageCriteriaDTO) {
         List<ImageDTO> imageDTOList = imageMetadataService.searchImagesByCriteria(searchImageCriteriaDTO);
         return ResponseEntity.ok(imageDTOList);
     }

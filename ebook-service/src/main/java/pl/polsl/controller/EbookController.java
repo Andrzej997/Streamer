@@ -107,10 +107,10 @@ public class EbookController {
     }
 
 
-    @GetMapping("/noauth/public/ebooks")
+    @PostMapping("/noauth/public/ebooks")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestParam("criteria") SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
+    ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestBody SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
         List<EbookDTO> ebookDTOList = ebookMetadataService.searchEbooksByCriteria(searchEbookCriteriaDTO);
         return ResponseEntity.ok(ebookDTOList);
     }

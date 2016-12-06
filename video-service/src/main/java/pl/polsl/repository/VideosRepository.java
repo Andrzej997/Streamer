@@ -68,4 +68,6 @@ public interface VideosRepository extends CrudRepository<Videos, Long> {
             "( SELECT d.directorId from Directors d where d.name like ?1 and d.surname like ?2 " +
             " and d.name2 like ?3 ) ) order by v.rating")
     List<Videos> findByDirectorNameLikeAndSurnameLikeAndName2LikeOrderByRating(String name, String surname, String name2);
+
+    List<Videos> findAllByOrderByRatingDesc();
 }

@@ -69,4 +69,6 @@ public interface ImagesRepository extends CrudRepository<Images, Long> {
             " and aa.name2 like ?3 ) ) order by i.rating")
     List<Images> findByArtistNameLikeAndSurnameLikeAndName2LikeOrderByRating(String name, String surname, String name2);
 
+    List<Images> findAllByOrderByRatingDesc();
+
 }

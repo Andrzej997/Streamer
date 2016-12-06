@@ -115,10 +115,10 @@ public class VideoController {
     }
 
 
-    @GetMapping("/noauth/public/videos")
+    @PostMapping("/noauth/public/videos")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestParam("criteria") SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+    ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestBody SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
         List<VideoDTO> videoDTOList = videoMetadataService.searchVideosByCriteria(searchVideoCriteriaDTO);
         return ResponseEntity.ok(videoDTOList);
     }

@@ -14,6 +14,7 @@ import pl.polsl.service.MusicMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mateusz on 23.11.2016.
@@ -145,7 +146,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicGenreForSong(SongDTO songDTO, Songs songs) {
         MusicGenres genre = null;
-        if (songDTO.getGenre() != null) {
+        if (songDTO.getGenre() != null && !StringUtils.isEmpty(songDTO.getGenre().getName())) {
             genre = musicGenresRepository.save(musicMapper.toMusicGenres(songDTO.getGenre()));
         }
         if (genre == null) {
@@ -157,7 +158,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicAlbumForSong(SongDTO songDTO, Songs songs) {
         MusicAlbums album = null;
-        if (songDTO.getAlbum() != null) {
+        if (songDTO.getAlbum() != null && !StringUtils.isEmpty(songDTO.getAlbum().getAlbumTitle())) {
             album = musicAlbumsRepository.save(musicMapper.toMusicAlbums(songDTO.getAlbum()));
         }
         if (album == null) {
@@ -231,8 +232,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     @Override
     public List<SongDTO> getAllUserSongs(String username) {
-        UsersView user = null;
-        user = usersRepository.findUsersByUserName(username);
+        UsersView user = usersRepository.findUsersByUserName(username);
         if (user == null) {
             return null;
         }
@@ -272,6 +272,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         }
         title += "%";
         songsList.addAll(songsRepository.findByTitleLikeOrderByRating(title));
+        songsList = songsList.stream().filter(songs ->
+                (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()))
+                .collect(Collectors.toList());
         return musicMapper.toSongDTOList(songsList);
     }
 
@@ -301,6 +304,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             default:
                 break;
         }
+        result = result.stream().filter(songs ->
+                (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()))
+                .collect(Collectors.toList());
+        ;
         return musicMapper.toSongDTOList(result);
     }
 
@@ -314,6 +321,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         }
         name += "%";
         songsList = songsRepository.findByGenreNameLikeOrderByRating(name);
+        songsList = songsList.stream().filter(songs ->
+                (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()))
+                .collect(Collectors.toList());
         return musicMapper.toSongDTOList(songsList);
     }
 
@@ -323,6 +333,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         }
         Short yearNumber = Short.parseShort(year);
         List<Songs> songsList = songsRepository.findByProductionYearOrderByRating(yearNumber);
+        songsList = songsList.stream().filter(songs ->
+                (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()))
+                .collect(Collectors.toList());
         return musicMapper.toSongDTOList(songsList);
     }
 
@@ -371,18 +384,36 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     @Override
     public List<SongDTO> getSongsTop50() {
-        Iterable<Songs> all = songsRepository.findAll();
+        Iterable<Songs> all = songsRepository.findAllByOrderByRatingDesc();
         if (all == null) {
             return null;
         }
         List<Songs> allSongs = new ArrayList<>();
-        all.forEach(allSongs::add);
+        all.forEach(songs -> {
+            if (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()) {
+                allSongs.add(songs);
+            }
+        });
+        allSongs.sort((o1, o2) -> compareFloat(o1.getRating(), o2.getRating()));
         List<SongDTO> result = musicMapper.toSongDTOList(allSongs);
         if (result == null || result.isEmpty()) {
             return null;
         } else {
             return result.subList(0, result.size() > 49 ? 49 : result.size());
         }
+    }
+
+    private int compareFloat(Float f1, Float f2) {
+        if (f1 == null && f2 == null) {
+            return 0;
+        }
+        if (f1 == null) {
+            return 1;
+        }
+        if (f2 == null) {
+            return -1;
+        }
+        return f2.compareTo(f1);
     }
 
 }

@@ -14,6 +14,7 @@ import pl.polsl.service.ImageMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -118,7 +119,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     private void saveImageTypeForImage(ImageDTO imageDTO, Images images) {
         ImageTypes imageTypes = null;
-        if (imageDTO.getImageTypeDTO() != null) {
+        if (imageDTO.getImageTypeDTO() != null && !StringUtils.isEmpty(imageDTO.getImageTypeDTO().getName())) {
             imageTypes = imageTypesRepository.save(imageMapper.toImageTypes(imageDTO.getImageTypeDTO()));
         }
         if (imageTypes == null) {
@@ -233,6 +234,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         }
         title += "%";
         imagesList.addAll(imagesRepository.findByTitleLikeOrderByRating(title));
+        imagesList = imagesList.stream().filter(images ->
+                (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
+                .collect(Collectors.toList());
         return imageMapper.toImageDTOList(imagesList);
     }
 
@@ -262,6 +266,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             default:
                 break;
         }
+        result = result.stream().filter(images ->
+                (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
+                .collect(Collectors.toList());
         return imageMapper.toImageDTOList(result);
     }
 
@@ -275,6 +282,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         }
         name += "%";
         imagesList.addAll(imagesRepository.findByTypeNameLikeOrderByRating(name));
+        imagesList = imagesList.stream().filter(images ->
+                (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
+                .collect(Collectors.toList());
         return imageMapper.toImageDTOList(imagesList);
     }
 
@@ -284,6 +294,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         }
         Short yearNumber = Short.parseShort(year);
         List<Images> imagesList = imagesRepository.findByYearOrderByRating(yearNumber);
+        imagesList = imagesList.stream().filter(images ->
+                (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
+                .collect(Collectors.toList());
         return imageMapper.toImageDTOList(imagesList);
     }
 
@@ -332,18 +345,36 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     @Override
     public List<ImageDTO> getImagesTop50() {
-        Iterable<Images> all = imagesRepository.findAll();
+        Iterable<Images> all = imagesRepository.findAllByOrderByRatingDesc();
         if (all == null) {
             return null;
         }
         List<Images> allImages = new ArrayList<>();
-        all.forEach(allImages::add);
+        all.forEach(images -> {
+            if (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()) {
+                allImages.add(images);
+            }
+        });
+        allImages.sort((o1, o2) -> compareFloat(o1.getRating(), o2.getRating()));
         List<ImageDTO> result = imageMapper.toImageDTOList(allImages);
         if (result == null || result.isEmpty()) {
             return null;
         } else {
             return result.subList(0, result.size() > 49 ? 49 : result.size());
         }
+    }
+
+    private int compareFloat(Float f1, Float f2) {
+        if (f1 == null && f2 == null) {
+            return 0;
+        }
+        if (f1 == null) {
+            return 1;
+        }
+        if (f2 == null) {
+            return -1;
+        }
+        return f2.compareTo(f1);
     }
 
 }

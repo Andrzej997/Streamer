@@ -116,10 +116,10 @@ public class MusicController {
     }
 
 
-    @GetMapping("/noauth/public/songs")
+    @PostMapping("/noauth/public/songs")
     public
     @ResponseBody
-    ResponseEntity<List<SongDTO>> searchSongsByCriteria(@RequestParam("criteria") SearchSongCriteriaDTO searchSongCriteriaDTO) {
+    ResponseEntity<List<SongDTO>> searchSongsByCriteria(@RequestBody SearchSongCriteriaDTO searchSongCriteriaDTO) {
         List<SongDTO> songDTOList = musicMetadataService.searchSongsByCriteria(searchSongCriteriaDTO);
         return ResponseEntity.ok(songDTOList);
     }

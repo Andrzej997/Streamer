@@ -14,6 +14,7 @@ import pl.polsl.service.VideoMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -82,7 +83,6 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     @Override
     public List<FilmGenreDTO> getFilmGenresByPrediction(String name) {
-        List<FilmGenreDTO> result;
         if (StringUtils.isEmpty(name)) {
             return null;
         }
@@ -93,7 +93,6 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     @Override
     public List<VideoSerieDTO> getVideoSeriesByPrediction(String serieTitle, String videoTitle) {
-        List<VideoSerieDTO> result;
         if (StringUtils.isEmpty(serieTitle)) {
             return null;
         }
@@ -146,7 +145,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     private void saveFilmGenreForVideo(VideoDTO videoDTO, Videos videos) {
         FilmGenres genre = null;
-        if (videoDTO.getFilmGenre() != null) {
+        if (videoDTO.getFilmGenre() != null && !StringUtils.isEmpty(videoDTO.getFilmGenre().getName())) {
             genre = filmGenresRepository.save(videoMapper.toFilmGenres(videoDTO.getFilmGenre()));
         }
         if (genre == null) {
@@ -158,7 +157,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     private void saveVideoSerieForVideo(VideoDTO videoDTO, Videos videos) {
         VideoSeries videoSeries = null;
-        if (videoDTO.getVideoSerie() != null) {
+        if (videoDTO.getVideoSerie() != null && !StringUtils.isEmpty(videoDTO.getVideoSerie().getTitle())) {
             videoSeries = videoSeriesRepository.save(videoMapper.toVideoSeries(videoDTO.getVideoSerie()));
         }
         if (videoSeries == null) {
@@ -270,6 +269,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         title += "%";
         videosList.addAll(videosRepository.findByTitleLikeOrderByRating(title));
+        videosList = videosList.stream().filter(videos ->
+                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
+                .collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -299,6 +301,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             default:
                 break;
         }
+        result = result.stream().filter(videos ->
+                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
+                .collect(Collectors.toList());
         return videoMapper.toVideoDTOList(result);
     }
 
@@ -312,6 +317,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         name += "%";
         videosList.addAll(videosRepository.findByGenreNameLikeOrderByRating(name));
+        videosList = videosList.stream().filter(videos ->
+                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
+                .collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -321,6 +329,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         Short yearNumber = Short.parseShort(year);
         List<Videos> videosList = videosRepository.findByProductionYearOrderByRating(yearNumber);
+        videosList = videosList.stream().filter(videos ->
+                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
+                .collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -366,18 +377,38 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     @Override
     public List<VideoDTO> getVideosTop50() {
-        Iterable<Videos> all = videosRepository.findAll();
+        Iterable<Videos> all = videosRepository.findAllByOrderByRatingDesc();
         if (all == null) {
             return null;
         }
         List<Videos> allVideos = new ArrayList<>();
-        all.forEach(allVideos::add);
+        all.forEach(videos -> {
+            if (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()) {
+                allVideos.add(videos);
+            }
+        });
+        allVideos.sort((o1, o2) -> {
+            return compareFloat(o1.getRating(), o2.getRating());
+        });
         List<VideoDTO> result = videoMapper.toVideoDTOList(allVideos);
         if (result == null || result.isEmpty()) {
             return null;
         } else {
             return result.subList(0, result.size() > 49 ? 49 : result.size());
         }
+    }
+
+    private int compareFloat(Float f1, Float f2) {
+        if (f1 == null && f2 == null) {
+            return 0;
+        }
+        if (f1 == null) {
+            return 1;
+        }
+        if (f2 == null) {
+            return -1;
+        }
+        return f2.compareTo(f1);
     }
 
 }

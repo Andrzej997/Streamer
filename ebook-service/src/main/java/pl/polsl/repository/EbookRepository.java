@@ -69,4 +69,6 @@ public interface EbookRepository extends CrudRepository<Ebook, Long> {
             " and w.name2 like ?3 ) ) order by e.rating")
     List<Ebook> findByWriterNameLikeAndSurnameLikeAndName2LikeOrderByRating(String name, String surname, String name2);
 
+    List<Ebook> findAllByOrderByRatingDesc();
+
 }

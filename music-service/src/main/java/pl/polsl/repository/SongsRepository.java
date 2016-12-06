@@ -69,4 +69,6 @@ public interface SongsRepository extends CrudRepository<Songs, Long> {
             " and aa.name2 like ?3 ) ) order by s.rating")
     List<Songs> findByArtistNameLikeAndSurnameLikeAndName2LikeOrderByRating(String name, String surname, String name2);
 
+    List<Songs> findAllByOrderByRatingDesc();
+
 }

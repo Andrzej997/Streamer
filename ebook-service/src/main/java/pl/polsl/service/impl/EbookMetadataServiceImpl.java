@@ -14,6 +14,7 @@ import pl.polsl.service.EbookMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mateusz on 28.11.2016.
@@ -118,7 +119,7 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     private void saveLiteraryGenreForEbook(EbookDTO ebookDTO, Ebook ebook) {
         LiteraryGenre literaryGenre = null;
-        if (ebookDTO.getLiteraryGenreDTO() != null) {
+        if (ebookDTO.getLiteraryGenreDTO() != null && !StringUtils.isEmpty(ebookDTO.getLiteraryGenreDTO().getName())) {
             literaryGenre = literaryGenreRepository.save(ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO()));
         }
         if (literaryGenre == null) {
@@ -232,6 +233,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         }
         title += "%";
         ebookList.addAll(ebookRepository.findByTitleLikeOrderByRating(title));
+        ebookList = ebookList.stream().filter(ebook ->
+                (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()))
+                .collect(Collectors.toList());
         return ebookMapper.toEbookDTOList(ebookList);
     }
 
@@ -261,6 +265,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             default:
                 break;
         }
+        result = result.stream().filter(ebook ->
+                (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()))
+                .collect(Collectors.toList());
         return ebookMapper.toEbookDTOList(result);
     }
 
@@ -274,6 +281,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         }
         name += "%";
         ebookList.addAll(ebookRepository.findByTypeNameLikeOrderByRating(name));
+        ebookList = ebookList.stream().filter(ebook ->
+                (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()))
+                .collect(Collectors.toList());
         return ebookMapper.toEbookDTOList(ebookList);
     }
 
@@ -283,6 +293,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         }
         Short yearNumber = Short.parseShort(year);
         List<Ebook> ebookList = ebookRepository.findByYearOrderByRating(yearNumber);
+        ebookList = ebookList.stream().filter(ebook ->
+                (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()))
+                .collect(Collectors.toList());
         return ebookMapper.toEbookDTOList(ebookList);
     }
 
@@ -331,18 +344,36 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     @Override
     public List<EbookDTO> getEbooksTop50() {
-        Iterable<Ebook> all = ebookRepository.findAll();
+        Iterable<Ebook> all = ebookRepository.findAllByOrderByRatingDesc();
         if (all == null) {
             return null;
         }
         List<Ebook> allEbooks = new ArrayList<>();
-        all.forEach(allEbooks::add);
+        all.forEach(ebook -> {
+            if (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()) {
+                allEbooks.add(ebook);
+            }
+        });
+        allEbooks.sort((o1, o2) -> compareFloat(o1.getRating(), o2.getRating()));
         List<EbookDTO> result = ebookMapper.toEbookDTOList(allEbooks);
         if (result == null || result.isEmpty()) {
             return null;
         } else {
             return result.subList(0, result.size() > 49 ? 49 : result.size());
         }
+    }
+
+    private int compareFloat(Float f1, Float f2) {
+        if (f1 == null && f2 == null) {
+            return 0;
+        }
+        if (f1 == null) {
+            return 1;
+        }
+        if (f2 == null) {
+            return -1;
+        }
+        return f2.compareTo(f1);
     }
 
 }
