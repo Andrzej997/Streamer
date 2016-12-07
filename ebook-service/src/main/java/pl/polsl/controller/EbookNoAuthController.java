@@ -23,7 +23,8 @@ import java.util.List;
  */
 
 @SuppressWarnings("ALL")
-@RestController("/noauth")
+@RestController
+@RequestMapping("/noauth")
 public class EbookNoAuthController {
 
     @Autowired
@@ -64,7 +65,7 @@ public class EbookNoAuthController {
         return new ResponseEntity<List<LiteraryGenreDTO>>(literaryGenresByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/top10/ebooks")
+    @GetMapping("/ebooks/top10")
     public
     @ResponseBody
     ResponseEntity<List<EbookDTO>> getTop10Ebooks(@RequestParam(value = "title", required = false) String title) {

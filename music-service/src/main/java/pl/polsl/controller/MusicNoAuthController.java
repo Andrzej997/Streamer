@@ -20,7 +20,8 @@ import java.util.List;
  * Created by Mateusz on 20.11.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/noauth")
+@RestController
+@RequestMapping("/noauth")
 public class MusicNoAuthController {
 
     @Autowired
@@ -70,7 +71,7 @@ public class MusicNoAuthController {
         return new ResponseEntity<List<MusicGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/top10/songs")
+    @GetMapping("/songs/top10")
     public
     @ResponseBody
     ResponseEntity<List<SongDTO>> getTop10Songs(@RequestParam(value = "title", required = false) String title) {

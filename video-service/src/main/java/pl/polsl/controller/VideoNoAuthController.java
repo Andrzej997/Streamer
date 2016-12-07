@@ -20,7 +20,8 @@ import java.util.List;
  * Created by Mateusz on 27.11.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/noauth")
+@RestController
+@RequestMapping("/noauth")
 public class VideoNoAuthController {
 
     @Autowired
@@ -73,7 +74,7 @@ public class VideoNoAuthController {
         return new ResponseEntity<List<FilmGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/top10/videos")
+    @GetMapping("/videos/top10")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>> getTop10Videos(@RequestParam(value = "title", required = false) String title) {

@@ -15,7 +15,8 @@ import pl.polsl.service.UsersService;
  * Created by Mateusz on 07.12.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class UsersAuthController {
 
     @Autowired

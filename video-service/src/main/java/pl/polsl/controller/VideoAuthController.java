@@ -17,7 +17,8 @@ import java.util.List;
  * Created by Mateusz on 07.12.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/auth")
+@RestController
+@RequestMapping("/auth")
 public class VideoAuthController {
 
     @Autowired

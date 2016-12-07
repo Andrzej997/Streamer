@@ -18,7 +18,8 @@ import pl.polsl.service.UsersService;
  * Created by Mateusz on 25.10.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/noauth")
+@RestController
+@RequestMapping("/noauth")
 public class UsersNoAuthController {
 
     @Autowired

@@ -22,7 +22,8 @@ import java.util.List;
  * Created by Mateusz on 27.11.2016.
  */
 @SuppressWarnings("ALL")
-@RestController("/noauth")
+@RestController
+@RequestMapping("/noauth")
 public class ImageNoAuthController {
 
     @Autowired
@@ -63,7 +64,7 @@ public class ImageNoAuthController {
         return new ResponseEntity<List<ImageTypeDTO>>(imageTypesByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/top10/images")
+    @GetMapping("/images/top10")
     public
     @ResponseBody
     ResponseEntity<List<ImageDTO>> getTop10Images(@RequestParam(value = "title", required = false) String title) {
