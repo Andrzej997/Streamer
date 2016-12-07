@@ -32,4 +32,19 @@ public class EbookManagementServiceImpl implements EbookManagementService {
         return true;
     }
 
+    public EbookFilesRepository getEbookFilesRepository() {
+        return ebookFilesRepository;
+    }
+
+    public void setEbookFilesRepository(EbookFilesRepository ebookFilesRepository) {
+        this.ebookFilesRepository = ebookFilesRepository;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 }

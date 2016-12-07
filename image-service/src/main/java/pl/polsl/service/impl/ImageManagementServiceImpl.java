@@ -32,4 +32,19 @@ public class ImageManagementServiceImpl implements ImageManagementService {
         return true;
     }
 
+    public ImageFilesRepository getImageFilesRepository() {
+        return imageFilesRepository;
+    }
+
+    public void setImageFilesRepository(ImageFilesRepository imageFilesRepository) {
+        this.imageFilesRepository = imageFilesRepository;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 }

@@ -376,5 +376,60 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         return f2.compareTo(f1);
     }
 
+    public EbookMapper getEbookMapper() {
+        return ebookMapper;
+    }
+
+    public void setEbookMapper(EbookMapper ebookMapper) {
+        this.ebookMapper = ebookMapper;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    public WritersRepository getWritersRepository() {
+        return writersRepository;
+    }
+
+    public void setWritersRepository(WritersRepository writersRepository) {
+        this.writersRepository = writersRepository;
+    }
+
+    public LiteraryGenreRepository getLiteraryGenreRepository() {
+        return literaryGenreRepository;
+    }
+
+    public void setLiteraryGenreRepository(LiteraryGenreRepository literaryGenreRepository) {
+        this.literaryGenreRepository = literaryGenreRepository;
+    }
+
+    public EbookAuthorsRepository getEbookAuthorsRepository() {
+        return ebookAuthorsRepository;
+    }
+
+    public void setEbookAuthorsRepository(EbookAuthorsRepository ebookAuthorsRepository) {
+        this.ebookAuthorsRepository = ebookAuthorsRepository;
+    }
+
+    public EbookFilesRepository getEbookFilesRepository() {
+        return ebookFilesRepository;
+    }
+
+    public void setEbookFilesRepository(EbookFilesRepository ebookFilesRepository) {
+        this.ebookFilesRepository = ebookFilesRepository;
+    }
+
+    public EbookRepository getEbookRepository() {
+        return ebookRepository;
+    }
+
+    public void setEbookRepository(EbookRepository ebookRepository) {
+        this.ebookRepository = ebookRepository;
+    }
 }
 

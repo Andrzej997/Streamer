@@ -31,4 +31,20 @@ public class VideoManagementServiceImpl implements VideoManagementService {
         videoFilesRepository.delete(fileId);
         return true;
     }
+
+    public VideoFilesRepository getVideoFilesRepository() {
+        return videoFilesRepository;
+    }
+
+    public void setVideoFilesRepository(VideoFilesRepository videoFilesRepository) {
+        this.videoFilesRepository = videoFilesRepository;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 }

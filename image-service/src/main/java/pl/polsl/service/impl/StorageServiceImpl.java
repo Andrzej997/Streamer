@@ -52,7 +52,7 @@ public class StorageServiceImpl implements StorageService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public ImageFiles downloadVideoFile(Long id) {
+    public ImageFiles downloadImageFile(Long id) {
         return imageFilesRepositoryy.findOne(id);
     }
 
@@ -86,5 +86,29 @@ public class StorageServiceImpl implements StorageService {
 
     protected Session getCurrentSession() {
         return entityManager.unwrap(Session.class);
+    }
+
+    public ImageFilesRepository getImageFilesRepositoryy() {
+        return imageFilesRepositoryy;
+    }
+
+    public void setImageFilesRepositoryy(ImageFilesRepository imageFilesRepositoryy) {
+        this.imageFilesRepositoryy = imageFilesRepositoryy;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
     }
 }

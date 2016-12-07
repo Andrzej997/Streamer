@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
 import pl.polsl.mapper.UsersMapper;
@@ -26,6 +27,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Boolean userExists(String username, String password) {
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            return false;
+        }
         String sha256 = ShaEncrypter.sha256(password);
         Users user = usersRepository.findByUserNameAndPassword(username, sha256);
         return user != null;
@@ -33,6 +37,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Boolean userExistsByEmail(String email, String password) {
+        if (StringUtils.isEmpty(email) || StringUtils.isEmpty(password)) {
+            return false;
+        }
         String sha256 = ShaEncrypter.sha256(password);
         Users user = usersRepository.findByEmailAndPassword(email, sha256);
         return user != null;
@@ -40,6 +47,9 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UsersDTO getUserData(String username) {
+        if (StringUtils.isEmpty(username)) {
+            return null;
+        }
         Users user = usersRepository.findByUserName(username);
         return user != null ? mapper.toUsersDTO(user) : null;
     }
@@ -110,16 +120,23 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Boolean changePassword(String username, String password) {
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+    public Boolean changePassword(ChangePasswordDTO changePasswordDTO) {
+        if (changePasswordDTO == null) {
             return false;
         }
-        Users user = usersRepository.findByUserName(username);
-        if (user == null) {
-            return false;
+        if (userExists(changePasswordDTO.getUsername(), changePasswordDTO.getOldPassword())) {
+            if (StringUtils.isEmpty(changePasswordDTO.getUsername())
+                    || StringUtils.isEmpty(changePasswordDTO.getNewPassword())) {
+                return false;
+            }
+            Users user = usersRepository.findByUserName(changePasswordDTO.getUsername());
+            if (user == null) {
+                return false;
+            }
+            user.setPassword(ShaEncrypter.sha256(changePasswordDTO.getNewPassword()));
+            return usersRepository.save(user) != null;
         }
-        user.setPassword(ShaEncrypter.sha256(password));
-        return usersRepository.save(user) != null;
+        return false;
     }
 
     public UsersRepository getUsersRepository() {

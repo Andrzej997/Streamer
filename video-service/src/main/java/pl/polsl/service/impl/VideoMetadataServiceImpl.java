@@ -411,4 +411,67 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         return f2.compareTo(f1);
     }
 
+    public VideoMapper getVideoMapper() {
+        return videoMapper;
+    }
+
+    public void setVideoMapper(VideoMapper videoMapper) {
+        this.videoMapper = videoMapper;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    public DirectorsRepository getDirectorsRepository() {
+        return directorsRepository;
+    }
+
+    public void setDirectorsRepository(DirectorsRepository directorsRepository) {
+        this.directorsRepository = directorsRepository;
+    }
+
+    public FilmGenresRepository getFilmGenresRepository() {
+        return filmGenresRepository;
+    }
+
+    public void setFilmGenresRepository(FilmGenresRepository filmGenresRepository) {
+        this.filmGenresRepository = filmGenresRepository;
+    }
+
+    public VideoAuthorsRepository getVideoAuthorsRepository() {
+        return videoAuthorsRepository;
+    }
+
+    public void setVideoAuthorsRepository(VideoAuthorsRepository videoAuthorsRepository) {
+        this.videoAuthorsRepository = videoAuthorsRepository;
+    }
+
+    public VideoFilesRepository getVideoFilesRepository() {
+        return videoFilesRepository;
+    }
+
+    public void setVideoFilesRepository(VideoFilesRepository videoFilesRepository) {
+        this.videoFilesRepository = videoFilesRepository;
+    }
+
+    public VideoSeriesRepository getVideoSeriesRepository() {
+        return videoSeriesRepository;
+    }
+
+    public void setVideoSeriesRepository(VideoSeriesRepository videoSeriesRepository) {
+        this.videoSeriesRepository = videoSeriesRepository;
+    }
+
+    public VideosRepository getVideosRepository() {
+        return videosRepository;
+    }
+
+    public void setVideosRepository(VideosRepository videosRepository) {
+        this.videosRepository = videosRepository;
+    }
 }

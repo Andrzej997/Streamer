@@ -10,7 +10,7 @@ public interface StorageService {
 
     ImageFiles store(MultipartFile file);
 
-    ImageFiles downloadVideoFile(Long id);
+    ImageFiles downloadImageFile(Long id);
 
     String getExtension(MultipartFile file);
 

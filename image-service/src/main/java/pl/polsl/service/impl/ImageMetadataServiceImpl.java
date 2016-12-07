@@ -377,4 +377,59 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         return f2.compareTo(f1);
     }
 
+    public ImageMapper getImageMapper() {
+        return imageMapper;
+    }
+
+    public void setImageMapper(ImageMapper imageMapper) {
+        this.imageMapper = imageMapper;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    public ArtistsRepository getArtistsRepository() {
+        return artistsRepository;
+    }
+
+    public void setArtistsRepository(ArtistsRepository artistsRepository) {
+        this.artistsRepository = artistsRepository;
+    }
+
+    public ImageTypesRepository getImageTypesRepository() {
+        return imageTypesRepository;
+    }
+
+    public void setImageTypesRepository(ImageTypesRepository imageTypesRepository) {
+        this.imageTypesRepository = imageTypesRepository;
+    }
+
+    public ImageAuthorsRepository getImageAuthorsRepository() {
+        return imageAuthorsRepository;
+    }
+
+    public void setImageAuthorsRepository(ImageAuthorsRepository imageAuthorsRepository) {
+        this.imageAuthorsRepository = imageAuthorsRepository;
+    }
+
+    public ImageFilesRepository getImageFilesRepository() {
+        return imageFilesRepository;
+    }
+
+    public void setImageFilesRepository(ImageFilesRepository imageFilesRepository) {
+        this.imageFilesRepository = imageFilesRepository;
+    }
+
+    public ImagesRepository getImagesRepository() {
+        return imagesRepository;
+    }
+
+    public void setImagesRepository(ImagesRepository imagesRepository) {
+        this.imagesRepository = imagesRepository;
+    }
 }

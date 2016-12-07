@@ -87,4 +87,28 @@ public class StorageServiceImpl implements StorageService {
     protected Session getCurrentSession() {
         return entityManager.unwrap(Session.class);
     }
+
+    public EbookFilesRepository getEbookFilesRepository() {
+        return ebookFilesRepository;
+    }
+
+    public void setEbookFilesRepository(EbookFilesRepository ebookFilesRepository) {
+        this.ebookFilesRepository = ebookFilesRepository;
+    }
+
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 }

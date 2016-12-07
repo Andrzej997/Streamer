@@ -49,4 +49,27 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
         chain.doFilter(request, response);
     }
 
+    public String getTokenHeader() {
+        return tokenHeader;
+    }
+
+    public void setTokenHeader(String tokenHeader) {
+        this.tokenHeader = tokenHeader;
+    }
+
+    public Tokenizer getTokenizer() {
+        return tokenizer;
+    }
+
+    public void setTokenizer(Tokenizer tokenizer) {
+        this.tokenizer = tokenizer;
+    }
+
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
+    }
 }

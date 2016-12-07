@@ -31,4 +31,20 @@ public class MusicManagementServiceImpl implements MusicManagementService {
         musicFilesRepository.delete(fileId);
         return true;
     }
+
+    public MusicFilesRepository getMusicFilesRepository() {
+        return musicFilesRepository;
+    }
+
+    public void setMusicFilesRepository(MusicFilesRepository musicFilesRepository) {
+        this.musicFilesRepository = musicFilesRepository;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
 }

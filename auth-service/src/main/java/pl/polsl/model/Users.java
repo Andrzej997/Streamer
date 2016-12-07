@@ -1,5 +1,6 @@
 package pl.polsl.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 import pl.polsl.model.base.BaseEntity;
 
@@ -33,6 +34,7 @@ public class Users extends BaseEntity {
     @NotNull
     private String userName;
 
+    @JsonIgnore
     @Basic
     @Column(name = "password", nullable = false)
     @NotNull

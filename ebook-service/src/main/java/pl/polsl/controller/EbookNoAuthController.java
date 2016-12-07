@@ -5,10 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import pl.polsl.dto.*;
+import pl.polsl.dto.EbookDTO;
+import pl.polsl.dto.LiteraryGenreDTO;
+import pl.polsl.dto.SearchEbookCriteriaDTO;
+import pl.polsl.dto.WriterDTO;
 import pl.polsl.model.EbookFiles;
-import pl.polsl.service.EbookManagementService;
 import pl.polsl.service.EbookMetadataService;
 import pl.polsl.service.StorageService;
 
@@ -22,8 +23,8 @@ import java.util.List;
  */
 
 @SuppressWarnings("ALL")
-@RestController
-public class EbookController {
+@RestController("/noauth")
+public class EbookNoAuthController {
 
     @Autowired
     private StorageService storageService;
@@ -31,17 +32,7 @@ public class EbookController {
     @Autowired
     private EbookMetadataService ebookMetadataService;
 
-    @Autowired
-    private EbookManagementService ebookManagementService;
-
-    @PostMapping("/auth/upload")
-    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
-
-        EbookFiles ebookFile = storageService.store(file);
-        return ResponseEntity.ok(ebookFile.getEbookFileId());
-    }
-
-    @GetMapping("/noauth/download")
+    @GetMapping("/download")
     public void downloadEbookFile(@RequestParam("id") Long id, HttpServletResponse response) {
         EbookFiles ebookFile = storageService.downloadEbookFile(id);
         try {
@@ -55,7 +46,7 @@ public class EbookController {
         return;
     }
 
-    @GetMapping("/noauth/writers/prediction")
+    @GetMapping("/writers/prediction")
     public
     @ResponseBody
     ResponseEntity<List<WriterDTO>> getWritersPredictionList(@RequestParam("name") String name,
@@ -65,7 +56,7 @@ public class EbookController {
         return new ResponseEntity<List<WriterDTO>>(writersByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/noauth/literarygenre/prediction")
+    @GetMapping("/literarygenre/prediction")
     public
     @ResponseBody
     ResponseEntity<List<LiteraryGenreDTO>> getLiteraryGenresPredictionList(@RequestParam("name") String name) {
@@ -73,15 +64,7 @@ public class EbookController {
         return new ResponseEntity<List<LiteraryGenreDTO>>(literaryGenresByPrediction, HttpStatus.OK);
     }
 
-    @PostMapping("/auth/file/metadata")
-    public
-    @ResponseBody
-    ResponseEntity<UploadEbookMetadataDTO> saveEbookFileMetadata(@RequestBody UploadEbookMetadataDTO uploadEbookMetadataDTO) {
-        UploadEbookMetadataDTO result = ebookMetadataService.saveMetadata(uploadEbookMetadataDTO);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/noauth/top10/ebooks")
+    @GetMapping("/top10/ebooks")
     public
     @ResponseBody
     ResponseEntity<List<EbookDTO>> getTop10Ebooks(@RequestParam(value = "title", required = false) String title) {
@@ -89,25 +72,7 @@ public class EbookController {
         return ResponseEntity.ok(top10Ebooks);
     }
 
-    @GetMapping("/auth/top10/ebooks")
-    public
-    @ResponseBody
-    ResponseEntity<List<EbookDTO>> getTop10EbooksOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                              @RequestParam("username") String username) {
-        List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(username, title);
-        return ResponseEntity.ok(top10Ebooks);
-    }
-
-    @GetMapping("/auth/user/ebooks")
-    public
-    @ResponseBody
-    ResponseEntity<List<EbookDTO>> getAllUserEbooks(@RequestParam("username") String username) {
-        List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserImages(username);
-        return ResponseEntity.ok(allUserEbooks);
-    }
-
-
-    @PostMapping("/noauth/public/ebooks")
+    @PostMapping("/public/ebooks")
     public
     @ResponseBody
     ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestBody SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
@@ -115,26 +80,26 @@ public class EbookController {
         return ResponseEntity.ok(ebookDTOList);
     }
 
-    @DeleteMapping("/auth/delete/ebook")
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
-        Boolean success = ebookManagementService.removeFileAndMetadata(id, username);
-        return ResponseEntity.ok(success);
-    }
-
-    @PutMapping("/auth/update/ebook")
-    public
-    @ResponseBody
-    ResponseEntity<EbookDTO> updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
-        return ResponseEntity.ok(ebookMetadataService.updateEbookMetadata(ebookDTO));
-    }
-
-    @GetMapping("/noauth/ebook/top50")
+    @GetMapping("/ebook/top50")
     public
     @ResponseBody
     ResponseEntity<List<EbookDTO>> getEbooksTop50() {
         return ResponseEntity.ok(ebookMetadataService.getEbooksTop50());
     }
 
+    public StorageService getStorageService() {
+        return storageService;
+    }
+
+    public void setStorageService(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
+    public EbookMetadataService getEbookMetadataService() {
+        return ebookMetadataService;
+    }
+
+    public void setEbookMetadataService(EbookMetadataService ebookMetadataService) {
+        this.ebookMetadataService = ebookMetadataService;
+    }
 }

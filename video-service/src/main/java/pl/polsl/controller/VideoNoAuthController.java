@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.dto.*;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
@@ -21,8 +20,8 @@ import java.util.List;
  * Created by Mateusz on 27.11.2016.
  */
 @SuppressWarnings("ALL")
-@RestController
-public class VideoController {
+@RestController("/noauth")
+public class VideoNoAuthController {
 
     @Autowired
     private StorageService storageService;
@@ -33,14 +32,7 @@ public class VideoController {
     @Autowired
     private VideoManagementService videoManagementService;
 
-    @PostMapping("/auth/upload")
-    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
-
-        VideoFiles videoFile = storageService.store(file);
-        return ResponseEntity.ok(videoFile.getVideoFileId());
-    }
-
-    @GetMapping("/noauth/download")
+    @GetMapping("/download")
     public void downloadVideoFile(@RequestParam("id") Long id, HttpServletResponse response) {
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         try {
@@ -54,7 +46,7 @@ public class VideoController {
         return;
     }
 
-    @GetMapping("/noauth/directors/prediction")
+    @GetMapping("/directors/prediction")
     public
     @ResponseBody
     ResponseEntity<List<DirectorDTO>> getDirectorsPredictionList(@RequestParam("name") String name,
@@ -64,7 +56,7 @@ public class VideoController {
         return new ResponseEntity<List<DirectorDTO>>(directorsByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/noauth/videoseries/prediction")
+    @GetMapping("/videoseries/prediction")
     public
     @ResponseBody
     ResponseEntity<List<VideoSerieDTO>> getVideoSeriesPredictionList(@RequestParam("serieTitle") String serieTitle,
@@ -73,7 +65,7 @@ public class VideoController {
         return new ResponseEntity<List<VideoSerieDTO>>(videoSeriesByPrediction, HttpStatus.OK);
     }
 
-    @GetMapping("/noauth/genres/prediction")
+    @GetMapping("/genres/prediction")
     public
     @ResponseBody
     ResponseEntity<List<FilmGenreDTO>> getGenresPredictionList(@RequestParam("name") String name) {
@@ -81,15 +73,7 @@ public class VideoController {
         return new ResponseEntity<List<FilmGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
 
-    @PostMapping("/auth/file/metadata")
-    public
-    @ResponseBody
-    ResponseEntity<UploadVideoMetadataDTO> saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO) {
-        UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
-        return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/noauth/top10/videos")
+    @GetMapping("/top10/videos")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>> getTop10Videos(@RequestParam(value = "title", required = false) String title) {
@@ -97,25 +81,7 @@ public class VideoController {
         return ResponseEntity.ok(top10Videos);
     }
 
-    @GetMapping("/auth/top10/videos")
-    public
-    @ResponseBody
-    ResponseEntity<List<VideoDTO>> getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                              @RequestParam("username") String username) {
-        List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(username, title);
-        return ResponseEntity.ok(top10Videos);
-    }
-
-    @GetMapping("/auth/user/videos")
-    public
-    @ResponseBody
-    ResponseEntity<List<VideoDTO>> getAllUserVideos(@RequestParam("username") String username) {
-        List<VideoDTO> allUserVideos = videoMetadataService.getAllUserVideos(username);
-        return ResponseEntity.ok(allUserVideos);
-    }
-
-
-    @PostMapping("/noauth/public/videos")
+    @PostMapping("/public/videos")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestBody SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
@@ -123,26 +89,34 @@ public class VideoController {
         return ResponseEntity.ok(videoDTOList);
     }
 
-    @DeleteMapping("/auth/delete/video")
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
-        Boolean success = videoManagementService.removeFileAndMetadata(id, username);
-        return ResponseEntity.ok(success);
-    }
-
-    @PutMapping("/auth/update/video")
-    public
-    @ResponseBody
-    ResponseEntity<VideoDTO> updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
-        return ResponseEntity.ok(videoMetadataService.updateVideoMetadata(videoDTO));
-    }
-
-    @GetMapping("/noauth/video/top50")
+    @GetMapping("/video/top50")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>> getVideosTop50() {
         return ResponseEntity.ok(videoMetadataService.getVideosTop50());
     }
 
+    public StorageService getStorageService() {
+        return storageService;
+    }
+
+    public void setStorageService(StorageService storageService) {
+        this.storageService = storageService;
+    }
+
+    public VideoMetadataService getVideoMetadataService() {
+        return videoMetadataService;
+    }
+
+    public void setVideoMetadataService(VideoMetadataService videoMetadataService) {
+        this.videoMetadataService = videoMetadataService;
+    }
+
+    public VideoManagementService getVideoManagementService() {
+        return videoManagementService;
+    }
+
+    public void setVideoManagementService(VideoManagementService videoManagementService) {
+        this.videoManagementService = videoManagementService;
+    }
 }

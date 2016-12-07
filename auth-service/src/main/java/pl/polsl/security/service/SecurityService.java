@@ -8,6 +8,7 @@ import pl.polsl.security.model.SecuredUser;
  * Created by Mateusz on 16.11.2016.
  */
 public interface SecurityService extends UserDetailsService {
+
     Boolean hasProtectedAccess();
 
     SecuredUser getUserByUsername(String username);

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
 import pl.polsl.mapper.UsersMapper;
@@ -260,34 +261,46 @@ public class UsersServiceTestClass {
 
     @Test
     public void testChangePassword_whenUserExists() {
-        String username = "username";
-        String password = "password";
+        ChangePasswordDTO changePasswordDTO = new ChangePasswordDTO();
+        changePasswordDTO.setNewPassword("newPassword");
+        changePasswordDTO.setOldPassword("oldPassword");
+        changePasswordDTO.setUsername("username");
         Users users = new Users();
-        users.setUserName(username);
-        users.setPassword(password);
+        users.setUserName(changePasswordDTO.getUsername());
+        users.setPassword(changePasswordDTO.getOldPassword());
         users.setEmail("email");
         users.setUserId(1L);
-        when(usersRepository.findByUserName(username)).thenReturn(users);
-        users.setPassword(ShaEncrypter.sha256(password));
+
+        when(usersRepository.findByUserNameAndPassword(changePasswordDTO.getUsername(),
+                ShaEncrypter.sha256(changePasswordDTO.getOldPassword()))).thenReturn(users);
+        when(usersRepository.findByUserName(changePasswordDTO.getUsername())).thenReturn(users);
+        users.setPassword(ShaEncrypter.sha256(changePasswordDTO.getNewPassword()));
         when(usersRepository.save(users)).thenReturn(users);
 
-        Boolean result = usersService.changePassword(username, password);
+        Boolean result = usersService.changePassword(changePasswordDTO);
 
         assertThat(result).isTrue();
     }
 
     @Test
     public void testChangePassword_whenUserNotExists() {
-        String username = "username";
-        String password = "password";
+        ChangePasswordDTO changePasswordDTO = new ChangePasswordDTO();
+        changePasswordDTO.setNewPassword("newPassword");
+        changePasswordDTO.setOldPassword("oldPassword");
+        changePasswordDTO.setUsername("username");
         Users users = new Users();
-        users.setUserName(username);
-        users.setPassword(password);
+        users.setUserName(changePasswordDTO.getUsername());
+        users.setPassword(changePasswordDTO.getOldPassword());
         users.setEmail("email");
         users.setUserId(1L);
-        when(usersRepository.findByUserName(username)).thenReturn(null);
 
-        Boolean result = usersService.changePassword(username, password);
+        when(usersRepository.findByUserNameAndPassword(changePasswordDTO.getUsername(),
+                ShaEncrypter.sha256(changePasswordDTO.getOldPassword()))).thenReturn(null);
+        when(usersRepository.findByUserName(changePasswordDTO.getUsername())).thenReturn(users);
+        users.setPassword(ShaEncrypter.sha256(changePasswordDTO.getNewPassword()));
+        when(usersRepository.save(users)).thenReturn(users);
+
+        Boolean result = usersService.changePassword(changePasswordDTO);
 
         assertThat(result).isFalse();
     }

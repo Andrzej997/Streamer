@@ -5,13 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.annotation.AuthMethod;
 import pl.polsl.dto.RegistrationDTO;
-import pl.polsl.dto.UsersDTO;
 import pl.polsl.security.Tokenizer;
 import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
@@ -20,8 +18,8 @@ import pl.polsl.service.UsersService;
  * Created by Mateusz on 25.10.2016.
  */
 @SuppressWarnings("ALL")
-@RestController
-public class UsersControler {
+@RestController("/noauth")
+public class UsersNoAuthController {
 
     @Autowired
     private UsersService usersService;
@@ -32,17 +30,12 @@ public class UsersControler {
     @Autowired
     private Tokenizer tokenizer;
 
-    public UsersControler() {
+    public UsersNoAuthController() {
 
-    }
-
-    @RequestMapping("/")
-    public String home() {
-        return "index";
     }
 
     @AuthMethod(params = {"username", "password"})
-    @RequestMapping(value = "/noauth/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean> login(@RequestParam(value = "username") String username,
@@ -52,7 +45,7 @@ public class UsersControler {
     }
 
     @AuthMethod(params = {"email", "password"})
-    @RequestMapping(value = "/noauth/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean> loginWithEmail(@RequestParam(value = "email") String email,
@@ -62,7 +55,7 @@ public class UsersControler {
         return new ResponseEntity<Boolean>(userExistsByEmail, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/noauth/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<String> registerUser(@RequestBody RegistrationDTO registrationDTO) {
@@ -77,7 +70,7 @@ public class UsersControler {
         }
     }
 
-    @RequestMapping(value = "/noauth/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean> usernameExists(@RequestParam(value = "username") String username) {
@@ -85,66 +78,12 @@ public class UsersControler {
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/auth/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<UsersDTO> getUserData(@RequestParam(value = "username") String username) {
-        UsersDTO user = usersService.getUserData(username);
-        if (user != null) {
-            return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<UsersDTO>(new UsersDTO(), HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PutMapping(value = "/auth/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> updateUserData(@RequestBody UsersDTO dto) {
-        Boolean success = usersService.updateUserInformations(dto) != null;
-        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
-    }
-
-    @PreAuthorize("@securityService.hasProtectedAccess()")
-    @DeleteMapping(value = "/auth/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> deleteUser(@RequestBody UsersDTO dto) {
-        Boolean deleted = usersService.deleteUser(dto);
-        return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/noauth/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean> checkEmailExists(@RequestParam(value = "email") String email) {
         Boolean exists = usersService.checkEmailExists(email);
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/auth/valid/password", produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> validateOldPassword(@RequestParam(value = "username") String username,
-                                                @RequestParam(value = "password") String password) {
-        Boolean exists = usersService.userExists(username, password);
-        return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
-    }
-
-    @PostMapping(value = "/auth/password/change", produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<Boolean> changePassword(@RequestParam(value = "username") String username,
-                                           @RequestParam(value = "password") String password) {
-        Boolean success = usersService.changePassword(username, password);
-        return new ResponseEntity<Boolean>(success, HttpStatus.OK);
-    }
-
-    @GetMapping(value = "/auth/authorize", produces = MediaType.APPLICATION_JSON_VALUE)
-    public
-    @ResponseBody
-    ResponseEntity<String> authorize() {
-        return new ResponseEntity<String>("T", HttpStatus.OK);
     }
 
     private String generateToken(String username, String password, String email) {
@@ -169,6 +108,20 @@ public class UsersControler {
         this.usersService = usersService;
     }
 
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
 
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
+    }
+
+    public Tokenizer getTokenizer() {
+        return tokenizer;
+    }
+
+    public void setTokenizer(Tokenizer tokenizer) {
+        this.tokenizer = tokenizer;
+    }
 }
 

@@ -1,5 +1,6 @@
 package pl.polsl.service;
 
+import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.model.Users;
 
@@ -23,5 +24,5 @@ public interface UsersService {
 
     Boolean checkEmailExists(String email);
 
-    Boolean changePassword(String username, String password);
+    Boolean changePassword(ChangePasswordDTO changePasswordDTO);
 }

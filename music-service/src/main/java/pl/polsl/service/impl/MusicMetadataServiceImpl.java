@@ -416,4 +416,67 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         return f2.compareTo(f1);
     }
 
+    public MusicArtistsRepository getMusicArtistsRepository() {
+        return musicArtistsRepository;
+    }
+
+    public void setMusicArtistsRepository(MusicArtistsRepository musicArtistsRepository) {
+        this.musicArtistsRepository = musicArtistsRepository;
+    }
+
+    public MusicAlbumsRepository getMusicAlbumsRepository() {
+        return musicAlbumsRepository;
+    }
+
+    public void setMusicAlbumsRepository(MusicAlbumsRepository musicAlbumsRepository) {
+        this.musicAlbumsRepository = musicAlbumsRepository;
+    }
+
+    public MusicGenresRepository getMusicGenresRepository() {
+        return musicGenresRepository;
+    }
+
+    public void setMusicGenresRepository(MusicGenresRepository musicGenresRepository) {
+        this.musicGenresRepository = musicGenresRepository;
+    }
+
+    public MusicFilesRepository getMusicFilesRepository() {
+        return musicFilesRepository;
+    }
+
+    public void setMusicFilesRepository(MusicFilesRepository musicFilesRepository) {
+        this.musicFilesRepository = musicFilesRepository;
+    }
+
+    public UsersRepositoryCustom getUsersRepository() {
+        return usersRepository;
+    }
+
+    public void setUsersRepository(UsersRepositoryCustom usersRepository) {
+        this.usersRepository = usersRepository;
+    }
+
+    public SongsRepository getSongsRepository() {
+        return songsRepository;
+    }
+
+    public void setSongsRepository(SongsRepository songsRepository) {
+        this.songsRepository = songsRepository;
+    }
+
+    public MusicAuthorsRepository getMusicAuthorsRepository() {
+        return musicAuthorsRepository;
+    }
+
+    public void setMusicAuthorsRepository(MusicAuthorsRepository musicAuthorsRepository) {
+        this.musicAuthorsRepository = musicAuthorsRepository;
+    }
+
+    public MusicMapper getMusicMapper() {
+        return musicMapper;
+    }
+
+    public void setMusicMapper(MusicMapper musicMapper) {
+        this.musicMapper = musicMapper;
+    }
 }
