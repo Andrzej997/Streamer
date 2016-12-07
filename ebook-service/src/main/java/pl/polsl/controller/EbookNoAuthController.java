@@ -34,7 +34,9 @@ public class EbookNoAuthController {
     private EbookMetadataService ebookMetadataService;
 
     @GetMapping("/download")
-    public void downloadEbookFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    public void
+    downloadEbookFile(@RequestParam("id") Long id, HttpServletResponse response) {
+
         EbookFiles ebookFile = storageService.downloadEbookFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + ebookFile.getFileName() + "\"");
@@ -50,9 +52,11 @@ public class EbookNoAuthController {
     @GetMapping("/writers/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<WriterDTO>> getWritersPredictionList(@RequestParam("name") String name,
-                                                             @RequestParam("name2") String name2,
-                                                             @RequestParam("surname") String surname) {
+    ResponseEntity<List<WriterDTO>>
+    getWritersPredictionList(@RequestParam(value = "name", required = false) String name,
+                             @RequestParam(value = "name2", required = false) String name2,
+                             @RequestParam(value = "surname", required = false) String surname) {
+
         List<WriterDTO> writersByPrediction = ebookMetadataService.getWritersByPrediction(name, name2, surname);
         return new ResponseEntity<List<WriterDTO>>(writersByPrediction, HttpStatus.OK);
     }
@@ -60,7 +64,9 @@ public class EbookNoAuthController {
     @GetMapping("/literarygenre/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<LiteraryGenreDTO>> getLiteraryGenresPredictionList(@RequestParam("name") String name) {
+    ResponseEntity<List<LiteraryGenreDTO>>
+    getLiteraryGenresPredictionList(@RequestParam(value = "name", required = false) String name) {
+
         List<LiteraryGenreDTO> literaryGenresByPrediction = ebookMetadataService.getLiteraryGenresByPrediction(name);
         return new ResponseEntity<List<LiteraryGenreDTO>>(literaryGenresByPrediction, HttpStatus.OK);
     }
@@ -68,7 +74,9 @@ public class EbookNoAuthController {
     @GetMapping("/ebooks/top10")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> getTop10Ebooks(@RequestParam(value = "title", required = false) String title) {
+    ResponseEntity<List<EbookDTO>>
+    getTop10Ebooks(@RequestParam(value = "title", required = false) String title) {
+
         List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(null, title);
         return ResponseEntity.ok(top10Ebooks);
     }
@@ -76,7 +84,9 @@ public class EbookNoAuthController {
     @PostMapping("/public/ebooks")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> searchEbooksByCriteria(@RequestBody SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
+    ResponseEntity<List<EbookDTO>>
+    searchEbooksByCriteria(@RequestBody SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
+
         List<EbookDTO> ebookDTOList = ebookMetadataService.searchEbooksByCriteria(searchEbookCriteriaDTO);
         return ResponseEntity.ok(ebookDTOList);
     }
@@ -84,7 +94,9 @@ public class EbookNoAuthController {
     @GetMapping("/ebook/top50")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> getEbooksTop50() {
+    ResponseEntity<List<EbookDTO>>
+    getEbooksTop50() {
+
         return ResponseEntity.ok(ebookMetadataService.getEbooksTop50());
     }
 

@@ -33,7 +33,9 @@ public class ImageNoAuthController {
     private ImageMetadataService imageMetadataService;
 
     @GetMapping("/download")
-    public void downloadImageFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    public void
+    downloadImageFile(@RequestParam("id") Long id, HttpServletResponse response) {
+
         ImageFiles imageFile = storageService.downloadImageFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + imageFile.getFileName() + "\"");
@@ -49,9 +51,11 @@ public class ImageNoAuthController {
     @GetMapping("/artists/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<ArtistDTO>> getArtistPredictionList(@RequestParam("name") String name,
-                                                            @RequestParam("name2") String name2,
-                                                            @RequestParam("surname") String surname) {
+    ResponseEntity<List<ArtistDTO>>
+    getArtistPredictionList(@RequestParam(value = "name", required = false) String name,
+                            @RequestParam(value = "name2", required = false) String name2,
+                            @RequestParam(value = "surname", required = false) String surname) {
+
         List<ArtistDTO> artistsByPrediction = imageMetadataService.getArtistsByPrediction(name, name2, surname);
         return new ResponseEntity<List<ArtistDTO>>(artistsByPrediction, HttpStatus.OK);
     }
@@ -59,7 +63,9 @@ public class ImageNoAuthController {
     @GetMapping("/type/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<ImageTypeDTO>> getImageTypesByPrediction(@RequestParam("name") String name) {
+    ResponseEntity<List<ImageTypeDTO>>
+    getImageTypesByPrediction(@RequestParam(value = "name", required = false) String name) {
+
         List<ImageTypeDTO> imageTypesByPrediction = imageMetadataService.getImageTypesByPrediction(name);
         return new ResponseEntity<List<ImageTypeDTO>>(imageTypesByPrediction, HttpStatus.OK);
     }
@@ -67,7 +73,9 @@ public class ImageNoAuthController {
     @GetMapping("/images/top10")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> getTop10Images(@RequestParam(value = "title", required = false) String title) {
+    ResponseEntity<List<ImageDTO>>
+    getTop10Images(@RequestParam(value = "title", required = false) String title) {
+
         List<ImageDTO> top10Images = imageMetadataService.getTop10Images(null, title);
         return ResponseEntity.ok(top10Images);
     }
@@ -75,7 +83,9 @@ public class ImageNoAuthController {
     @PostMapping("/public/images")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> searchImagesByCriteria(@RequestBody SearchImageCriteriaDTO searchImageCriteriaDTO) {
+    ResponseEntity<List<ImageDTO>>
+    searchImagesByCriteria(@RequestBody SearchImageCriteriaDTO searchImageCriteriaDTO) {
+
         List<ImageDTO> imageDTOList = imageMetadataService.searchImagesByCriteria(searchImageCriteriaDTO);
         return ResponseEntity.ok(imageDTOList);
     }
@@ -83,7 +93,9 @@ public class ImageNoAuthController {
     @GetMapping("/image/top50")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> getImagesTop50() {
+    ResponseEntity<List<ImageDTO>>
+    getImagesTop50() {
+
         return ResponseEntity.ok(imageMetadataService.getImagesTop50());
     }
 

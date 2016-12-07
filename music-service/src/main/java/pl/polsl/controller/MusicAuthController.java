@@ -31,7 +31,8 @@ public class MusicAuthController {
     private MusicManagementService musicManagementService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Long>
+    handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         MusicFiles musicFile = storageService.store(file);
         return ResponseEntity.ok(musicFile.getMusicFileId());
@@ -40,7 +41,9 @@ public class MusicAuthController {
     @PostMapping("/file/metadata")
     public
     @ResponseBody
-    ResponseEntity<UploadSongMetadataDTO> saveMusicFileMetadata(@RequestBody UploadSongMetadataDTO uploadSongMetadataDTO) {
+    ResponseEntity<UploadSongMetadataDTO>
+    saveMusicFileMetadata(@RequestBody UploadSongMetadataDTO uploadSongMetadataDTO) {
+
         UploadSongMetadataDTO result = musicMetadataService.saveMetadata(uploadSongMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -48,8 +51,10 @@ public class MusicAuthController {
     @GetMapping("/top10/songs")
     public
     @ResponseBody
-    ResponseEntity<List<SongDTO>> getTop10SongsOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                            @RequestParam("username") String username) {
+    ResponseEntity<List<SongDTO>>
+    getTop10SongsOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                              @RequestParam("username") String username) {
+
         List<SongDTO> top10Songs = musicMetadataService.getTop10Songs(username, title);
         return ResponseEntity.ok(top10Songs);
     }
@@ -57,7 +62,9 @@ public class MusicAuthController {
     @GetMapping("/user/songs")
     public
     @ResponseBody
-    ResponseEntity<List<SongDTO>> getAllUserSongs(@RequestParam("username") String username) {
+    ResponseEntity<List<SongDTO>>
+    getAllUserSongs(@RequestParam("username") String username) {
+
         List<SongDTO> allUserSongs = musicMetadataService.getAllUserSongs(username);
         return ResponseEntity.ok(allUserSongs);
     }
@@ -65,7 +72,10 @@ public class MusicAuthController {
     @DeleteMapping("/delete/song")
     public
     @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+    ResponseEntity<Boolean>
+    deleteFileAndMetadata(@RequestParam("id") Long id,
+                          @RequestParam("username") String username) {
+
         Boolean success = musicManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -73,7 +83,9 @@ public class MusicAuthController {
     @PutMapping("/update/song")
     public
     @ResponseBody
-    ResponseEntity<SongDTO> updateSongMetadata(@RequestBody SongDTO songDTO) {
+    ResponseEntity<SongDTO>
+    updateSongMetadata(@RequestBody SongDTO songDTO) {
+
         return ResponseEntity.ok(musicMetadataService.updateSongMetadata(songDTO));
     }
 

@@ -28,7 +28,9 @@ public class UsersAuthController {
     @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<UsersDTO> getUserData(@RequestParam(value = "username") String username) {
+    ResponseEntity<UsersDTO>
+    getUserData(@RequestParam(value = "username") String username) {
+
         UsersDTO user = usersService.getUserData(username);
         if (user != null) {
             return new ResponseEntity<UsersDTO>(user, HttpStatus.OK);
@@ -40,7 +42,9 @@ public class UsersAuthController {
     @PutMapping(value = "/update/user_data", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> updateUserData(@RequestBody UsersDTO dto) {
+    ResponseEntity<Boolean>
+    updateUserData(@RequestBody UsersDTO dto) {
+
         Boolean success = usersService.updateUserInformations(dto) != null;
         return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
@@ -49,7 +53,9 @@ public class UsersAuthController {
     @DeleteMapping(value = "/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> deleteUser(@RequestBody UsersDTO dto) {
+    ResponseEntity<Boolean>
+    deleteUser(@RequestBody UsersDTO dto) {
+
         Boolean deleted = usersService.deleteUser(dto);
         return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
     }
@@ -57,8 +63,10 @@ public class UsersAuthController {
     @GetMapping(value = "/valid/password", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> validateOldPassword(@RequestParam(value = "username") String username,
-                                                @RequestParam(value = "password") String password) {
+    ResponseEntity<Boolean>
+    validateOldPassword(@RequestParam(value = "username") String username,
+                        @RequestParam(value = "password") String password) {
+
         Boolean exists = usersService.userExists(username, password);
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
@@ -66,7 +74,9 @@ public class UsersAuthController {
     @PostMapping(value = "/password/change", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+    ResponseEntity<Boolean>
+    changePassword(@RequestBody ChangePasswordDTO changePasswordDTO) {
+
         Boolean success = usersService.changePassword(changePasswordDTO);
         return new ResponseEntity<Boolean>(success, HttpStatus.OK);
     }
@@ -74,7 +84,8 @@ public class UsersAuthController {
     @GetMapping(value = "/authorize", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<String> authorize() {
+    ResponseEntity<String>
+    authorize() {
         return new ResponseEntity<String>("T", HttpStatus.OK);
     }
 

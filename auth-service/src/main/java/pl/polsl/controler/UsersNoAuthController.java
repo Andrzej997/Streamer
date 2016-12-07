@@ -39,8 +39,10 @@ public class UsersNoAuthController {
     @RequestMapping(value = "/login", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> login(@RequestParam(value = "username") String username,
-                                  @RequestParam(value = "password") String password) {
+    ResponseEntity<Boolean>
+    login(@RequestParam(value = "username") String username,
+          @RequestParam(value = "password") String password) {
+
         Boolean exists = usersService.userExists(username, password);
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
@@ -49,8 +51,9 @@ public class UsersNoAuthController {
     @RequestMapping(value = "/login_by_email", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> loginWithEmail(@RequestParam(value = "email") String email,
-                                           @RequestParam(value = "password") String password) {
+    ResponseEntity<Boolean>
+    loginWithEmail(@RequestParam(value = "email") String email,
+                   @RequestParam(value = "password") String password) {
 
         Boolean userExistsByEmail = usersService.userExistsByEmail(email, password);
         return new ResponseEntity<Boolean>(userExistsByEmail, HttpStatus.OK);
@@ -59,7 +62,8 @@ public class UsersNoAuthController {
     @RequestMapping(value = "/register", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<String> registerUser(@RequestBody RegistrationDTO registrationDTO) {
+    ResponseEntity<String>
+    registerUser(@RequestBody RegistrationDTO registrationDTO) {
 
         Boolean success = usersService.registerUser(registrationDTO.getUsername(), registrationDTO.getPassword(), registrationDTO.getEmail());
         if (success) {
@@ -74,7 +78,9 @@ public class UsersNoAuthController {
     @RequestMapping(value = "/username", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> usernameExists(@RequestParam(value = "username") String username) {
+    ResponseEntity<Boolean>
+    usernameExists(@RequestParam(value = "username") String username) {
+
         Boolean exists = usersService.usernameExists(username);
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
@@ -82,7 +88,9 @@ public class UsersNoAuthController {
     @GetMapping(value = "/email/exists", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
-    ResponseEntity<Boolean> checkEmailExists(@RequestParam(value = "email") String email) {
+    ResponseEntity<Boolean>
+    checkEmailExists(@RequestParam(value = "email") String email) {
+
         Boolean exists = usersService.checkEmailExists(email);
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }

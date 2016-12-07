@@ -41,7 +41,9 @@ public class EbookAuthController {
     @PostMapping("/file/metadata")
     public
     @ResponseBody
-    ResponseEntity<UploadEbookMetadataDTO> saveEbookFileMetadata(@RequestBody UploadEbookMetadataDTO uploadEbookMetadataDTO) {
+    ResponseEntity<UploadEbookMetadataDTO>
+    saveEbookFileMetadata(@RequestBody UploadEbookMetadataDTO uploadEbookMetadataDTO) {
+
         UploadEbookMetadataDTO result = ebookMetadataService.saveMetadata(uploadEbookMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -49,8 +51,10 @@ public class EbookAuthController {
     @GetMapping("/top10/ebooks")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> getTop10EbooksOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                              @RequestParam("username") String username) {
+    ResponseEntity<List<EbookDTO>>
+    getTop10EbooksOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                               @RequestParam("username") String username) {
+
         List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(username, title);
         return ResponseEntity.ok(top10Ebooks);
     }
@@ -58,7 +62,9 @@ public class EbookAuthController {
     @GetMapping("/user/ebooks")
     public
     @ResponseBody
-    ResponseEntity<List<EbookDTO>> getAllUserEbooks(@RequestParam("username") String username) {
+    ResponseEntity<List<EbookDTO>>
+    getAllUserEbooks(@RequestParam("username") String username) {
+
         List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserImages(username);
         return ResponseEntity.ok(allUserEbooks);
     }
@@ -66,7 +72,10 @@ public class EbookAuthController {
     @DeleteMapping("/delete/ebook")
     public
     @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+    ResponseEntity<Boolean>
+    deleteFileAndMetadata(@RequestParam("id") Long id,
+                          @RequestParam("username") String username) {
+
         Boolean success = ebookManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -74,7 +83,9 @@ public class EbookAuthController {
     @PutMapping("/update/ebook")
     public
     @ResponseBody
-    ResponseEntity<EbookDTO> updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
+    ResponseEntity<EbookDTO>
+    updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
+
         return ResponseEntity.ok(ebookMetadataService.updateEbookMetadata(ebookDTO));
     }
 

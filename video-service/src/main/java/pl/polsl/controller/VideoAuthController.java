@@ -31,7 +31,8 @@ public class VideoAuthController {
     private VideoManagementService videoManagementService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Long>
+    handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         VideoFiles videoFile = storageService.store(file);
         return ResponseEntity.ok(videoFile.getVideoFileId());
@@ -40,7 +41,9 @@ public class VideoAuthController {
     @PostMapping("/file/metadata")
     public
     @ResponseBody
-    ResponseEntity<UploadVideoMetadataDTO> saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO) {
+    ResponseEntity<UploadVideoMetadataDTO>
+    saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO) {
+
         UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -48,8 +51,10 @@ public class VideoAuthController {
     @GetMapping("/top10/videos")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                              @RequestParam("username") String username) {
+    ResponseEntity<List<VideoDTO>>
+    getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                               @RequestParam("username") String username) {
+
         List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(username, title);
         return ResponseEntity.ok(top10Videos);
     }
@@ -57,7 +62,9 @@ public class VideoAuthController {
     @GetMapping("/user/videos")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> getAllUserVideos(@RequestParam("username") String username) {
+    ResponseEntity<List<VideoDTO>>
+    getAllUserVideos(@RequestParam("username") String username) {
+
         List<VideoDTO> allUserVideos = videoMetadataService.getAllUserVideos(username);
         return ResponseEntity.ok(allUserVideos);
     }
@@ -65,7 +72,10 @@ public class VideoAuthController {
     @DeleteMapping("/delete/video")
     public
     @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+    ResponseEntity<Boolean>
+    deleteFileAndMetadata(@RequestParam("id") Long id,
+                          @RequestParam("username") String username) {
+
         Boolean success = videoManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -73,7 +83,9 @@ public class VideoAuthController {
     @PutMapping("/update/video")
     public
     @ResponseBody
-    ResponseEntity<VideoDTO> updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
+    ResponseEntity<VideoDTO>
+    updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
+
         return ResponseEntity.ok(videoMetadataService.updateVideoMetadata(videoDTO));
     }
 

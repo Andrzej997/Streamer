@@ -31,7 +31,9 @@ public class MusicNoAuthController {
     private MusicMetadataService musicMetadataService;
 
     @GetMapping(value = "/download")
-    public void downloadMusicFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+    public void
+    downloadMusicFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+
         MusicFiles musicFile = storageService.downloadMusicFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + musicFile.getFileName() + "\"");
@@ -47,9 +49,11 @@ public class MusicNoAuthController {
     @GetMapping("/authors/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<MusicArtistDTO>> getArtistsPredictionList(@RequestParam("name") String name,
-                                                                  @RequestParam(value = "name2", required = false) String name2,
-                                                                  @RequestParam(value = "surname", required = false) String surname) {
+    ResponseEntity<List<MusicArtistDTO>>
+    getArtistsPredictionList(@RequestParam(value = "name", required = false) String name,
+                             @RequestParam(value = "name2", required = false) String name2,
+                             @RequestParam(value = "surname", required = false) String surname) {
+
         List<MusicArtistDTO> artistsByPrediction = musicMetadataService.getArtistsByPrediction(name, name2, surname);
         return new ResponseEntity<List<MusicArtistDTO>>(artistsByPrediction, HttpStatus.OK);
     }
@@ -57,8 +61,10 @@ public class MusicNoAuthController {
     @GetMapping("/albums/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<MusicAlbumDTO>> getAlbumsPredictionList(@RequestParam("albumTitle") String albumTitle,
-                                                                @RequestParam("songTitle") String songTitle) {
+    ResponseEntity<List<MusicAlbumDTO>>
+    getAlbumsPredictionList(@RequestParam(value = "albumTitle", required = false) String albumTitle,
+                            @RequestParam(value = "songTitle", required = false) String songTitle) {
+
         List<MusicAlbumDTO> albumsByPrediction = musicMetadataService.getAlbumsByPrediction(albumTitle, songTitle);
         return new ResponseEntity<List<MusicAlbumDTO>>(albumsByPrediction, HttpStatus.OK);
     }
@@ -66,7 +72,9 @@ public class MusicNoAuthController {
     @GetMapping("/genres/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<MusicGenreDTO>> getGenresPredictionList(@RequestParam("genreName") String genreName) {
+    ResponseEntity<List<MusicGenreDTO>>
+    getGenresPredictionList(@RequestParam(value = "genreName", required = false) String genreName) {
+
         List<MusicGenreDTO> genresByPrediction = musicMetadataService.getGenresByPrediction(genreName);
         return new ResponseEntity<List<MusicGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
@@ -75,6 +83,7 @@ public class MusicNoAuthController {
     public
     @ResponseBody
     ResponseEntity<List<SongDTO>> getTop10Songs(@RequestParam(value = "title", required = false) String title) {
+
         List<SongDTO> top10Songs = musicMetadataService.getTop10Songs(null, title);
         return ResponseEntity.ok(top10Songs);
     }
@@ -82,7 +91,9 @@ public class MusicNoAuthController {
     @PostMapping("/public/songs")
     public
     @ResponseBody
-    ResponseEntity<List<SongDTO>> searchSongsByCriteria(@RequestBody SearchSongCriteriaDTO searchSongCriteriaDTO) {
+    ResponseEntity<List<SongDTO>>
+    searchSongsByCriteria(@RequestBody SearchSongCriteriaDTO searchSongCriteriaDTO) {
+
         List<SongDTO> songDTOList = musicMetadataService.searchSongsByCriteria(searchSongCriteriaDTO);
         return ResponseEntity.ok(songDTOList);
     }
@@ -90,7 +101,9 @@ public class MusicNoAuthController {
     @GetMapping("/song/top50")
     public
     @ResponseBody
-    ResponseEntity<List<SongDTO>> getSongsTop50() {
+    ResponseEntity<List<SongDTO>>
+    getSongsTop50() {
+
         return ResponseEntity.ok(musicMetadataService.getSongsTop50());
     }
 

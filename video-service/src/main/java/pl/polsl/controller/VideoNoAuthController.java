@@ -34,7 +34,9 @@ public class VideoNoAuthController {
     private VideoManagementService videoManagementService;
 
     @GetMapping("/download")
-    public void downloadVideoFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    public void
+    downloadVideoFile(@RequestParam("id") Long id, HttpServletResponse response) {
+
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         try {
             response.setHeader("Content-Disposition", "inline;filename=\"" + videoFile.getFileName() + "\"");
@@ -50,9 +52,11 @@ public class VideoNoAuthController {
     @GetMapping("/directors/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<DirectorDTO>> getDirectorsPredictionList(@RequestParam("name") String name,
-                                                                 @RequestParam("name2") String name2,
-                                                                 @RequestParam("surname") String surname) {
+    ResponseEntity<List<DirectorDTO>>
+    getDirectorsPredictionList(@RequestParam(value = "name", required = false) String name,
+                               @RequestParam(value = "name2", required = false) String name2,
+                               @RequestParam(value = "surname", required = false) String surname) {
+
         List<DirectorDTO> directorsByPrediction = videoMetadataService.getDirectorsByPrediction(name, name2, surname);
         return new ResponseEntity<List<DirectorDTO>>(directorsByPrediction, HttpStatus.OK);
     }
@@ -60,8 +64,10 @@ public class VideoNoAuthController {
     @GetMapping("/videoseries/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<VideoSerieDTO>> getVideoSeriesPredictionList(@RequestParam("serieTitle") String serieTitle,
-                                                                     @RequestParam("videoTitle") String videoTitle) {
+    ResponseEntity<List<VideoSerieDTO>>
+    getVideoSeriesPredictionList(@RequestParam(value = "serieTitle", required = false) String serieTitle,
+                                 @RequestParam(value = "videoTitle", required = false) String videoTitle) {
+
         List<VideoSerieDTO> videoSeriesByPrediction = videoMetadataService.getVideoSeriesByPrediction(serieTitle, videoTitle);
         return new ResponseEntity<List<VideoSerieDTO>>(videoSeriesByPrediction, HttpStatus.OK);
     }
@@ -69,7 +75,9 @@ public class VideoNoAuthController {
     @GetMapping("/genres/prediction")
     public
     @ResponseBody
-    ResponseEntity<List<FilmGenreDTO>> getGenresPredictionList(@RequestParam("name") String name) {
+    ResponseEntity<List<FilmGenreDTO>>
+    getGenresPredictionList(@RequestParam(value = "name", required = false) String name) {
+
         List<FilmGenreDTO> genresByPrediction = videoMetadataService.getFilmGenresByPrediction(name);
         return new ResponseEntity<List<FilmGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
@@ -77,7 +85,9 @@ public class VideoNoAuthController {
     @GetMapping("/videos/top10")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> getTop10Videos(@RequestParam(value = "title", required = false) String title) {
+    ResponseEntity<List<VideoDTO>>
+    getTop10Videos(@RequestParam(value = "title", required = false) String title) {
+
         List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(null, title);
         return ResponseEntity.ok(top10Videos);
     }
@@ -85,7 +95,9 @@ public class VideoNoAuthController {
     @PostMapping("/public/videos")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> searchVideosByCriteria(@RequestBody SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+    ResponseEntity<List<VideoDTO>>
+    searchVideosByCriteria(@RequestBody SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+
         List<VideoDTO> videoDTOList = videoMetadataService.searchVideosByCriteria(searchVideoCriteriaDTO);
         return ResponseEntity.ok(videoDTOList);
     }
@@ -93,7 +105,8 @@ public class VideoNoAuthController {
     @GetMapping("/video/top50")
     public
     @ResponseBody
-    ResponseEntity<List<VideoDTO>> getVideosTop50() {
+    ResponseEntity<List<VideoDTO>>
+    getVideosTop50() {
         return ResponseEntity.ok(videoMetadataService.getVideosTop50());
     }
 

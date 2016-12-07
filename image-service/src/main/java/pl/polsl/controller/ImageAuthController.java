@@ -31,7 +31,8 @@ public class ImageAuthController {
     private ImageManagementService imageManagementService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Long>
+    handleFileUpload(@RequestParam("file") MultipartFile file) {
 
         ImageFiles imageFile = storageService.store(file);
         return ResponseEntity.ok(imageFile.getImageFileId());
@@ -41,7 +42,9 @@ public class ImageAuthController {
     @PostMapping("/file/metadata")
     public
     @ResponseBody
-    ResponseEntity<UploadImageMetadataDTO> saveImageFileMetadata(@RequestBody UploadImageMetadataDTO uploadImageMetadataDTO) {
+    ResponseEntity<UploadImageMetadataDTO>
+    saveImageFileMetadata(@RequestBody UploadImageMetadataDTO uploadImageMetadataDTO) {
+
         UploadImageMetadataDTO result = imageMetadataService.saveMetadata(uploadImageMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -50,8 +53,10 @@ public class ImageAuthController {
     @GetMapping("/top10/images")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> getTop10ImagesOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                                                              @RequestParam("username") String username) {
+    ResponseEntity<List<ImageDTO>>
+    getTop10ImagesOnlyPrivates(@RequestParam(value = "title", required = false) String title,
+                               @RequestParam("username") String username) {
+
         List<ImageDTO> top10Images = imageMetadataService.getTop10Images(username, title);
         return ResponseEntity.ok(top10Images);
     }
@@ -59,7 +64,9 @@ public class ImageAuthController {
     @GetMapping("/user/images")
     public
     @ResponseBody
-    ResponseEntity<List<ImageDTO>> getAllUserImages(@RequestParam("username") String username) {
+    ResponseEntity<List<ImageDTO>>
+    getAllUserImages(@RequestParam("username") String username) {
+
         List<ImageDTO> allUserImages = imageMetadataService.getAllUserImages(username);
         return ResponseEntity.ok(allUserImages);
     }
@@ -67,7 +74,10 @@ public class ImageAuthController {
     @DeleteMapping("/delete/image")
     public
     @ResponseBody
-    ResponseEntity<Boolean> deleteFileAndMetadata(@RequestParam("id") Long id, @RequestParam("username") String username) {
+    ResponseEntity<Boolean>
+    deleteFileAndMetadata(@RequestParam("id") Long id,
+                          @RequestParam("username") String username) {
+
         Boolean success = imageManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -75,7 +85,9 @@ public class ImageAuthController {
     @PutMapping("/update/image")
     public
     @ResponseBody
-    ResponseEntity<ImageDTO> updateImageMetadata(@RequestBody ImageDTO imageDTO) {
+    ResponseEntity<ImageDTO>
+    updateImageMetadata(@RequestBody ImageDTO imageDTO) {
+
         return ResponseEntity.ok(imageMetadataService.updateImageMetadata(imageDTO));
     }
 
