@@ -102,6 +102,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         List<Artists> artistsList = imageMapper.toArtistsList(imageDTO.getArtistDTOList());
         saveImageTypeForImage(imageDTO, images);
         saveImageFileMetadataForImage(imageDTO, images);
+        images.setOwnerId(user.getUserId());
         images = imagesRepository.save(images);
 
         saveImageArtistsForImage(images, artistsList);

@@ -102,6 +102,7 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         List<Writers> writersList = ebookMapper.toWritersList(ebookDTO.getWriterDTOList());
         saveLiteraryGenreForEbook(ebookDTO, ebook);
         saveEbookFileMetadataForEbook(ebookDTO, ebook);
+        ebook.setOwnerId(user.getUserId());
         ebook = ebookRepository.save(ebook);
 
         saveWritersForEbook(ebook, writersList);
