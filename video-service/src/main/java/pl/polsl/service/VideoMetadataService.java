@@ -26,4 +26,6 @@ public interface VideoMetadataService {
     VideoDTO updateVideoMetadata(VideoDTO videoDTO);
 
     List<VideoDTO> getVideosTop50();
+
+    void rateVideo(RateVideoDTO rateVideoDTO);
 }

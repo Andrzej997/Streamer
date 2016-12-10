@@ -170,8 +170,11 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicFileMetadataForSong(SongDTO songDTO, Songs songs) {
         MusicFiles musicFiles = null;
+        MusicFiles file = musicFilesRepository.findOne(songDTO.getFileId());
         if (songDTO.getFileMetadata() != null) {
-            musicFiles = musicFilesRepository.save(musicMapper.toMusicFiles(songDTO.getFileMetadata()));
+            MusicFiles toMusicFiles = musicMapper.toMusicFiles(songDTO.getFileMetadata());
+            toMusicFiles.setFile(file.getFile());
+            musicFiles = musicFilesRepository.save(toMusicFiles);
         }
         if (musicFiles == null) {
             return;
@@ -414,6 +417,23 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             return -1;
         }
         return f2.compareTo(f1);
+    }
+
+    @Override
+    public void rateSong(RateSongDTO rateSongDTO) {
+        if (rateSongDTO == null || rateSongDTO.getSongId() == null || rateSongDTO.getRate() == null) {
+            return;
+        }
+        Songs song = songsRepository.findOne(rateSongDTO.getSongId());
+        if (song == null) {
+            return;
+        }
+        Float rating = song.getRating();
+        Long ratingTimes = song.getRatingTimes();
+        Float temp = (rating * ratingTimes) + (rateSongDTO.getRate() * 10);
+        song.setRatingTimes(song.getRatingTimes() + 1);
+        song.setRating(temp / song.getRatingTimes());
+        songsRepository.save(song);
     }
 
     public MusicArtistsRepository getMusicArtistsRepository() {

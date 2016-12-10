@@ -1,18 +1,18 @@
 package pl.polsl.controller;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
 import pl.polsl.model.MusicFiles;
 import pl.polsl.service.MusicMetadataService;
 import pl.polsl.service.StorageService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -31,19 +31,22 @@ public class MusicNoAuthController {
     private MusicMetadataService musicMetadataService;
 
     @GetMapping(value = "/download")
-    public void
-    downloadMusicFile(@RequestParam("id") Long id, HttpServletRequest request, HttpServletResponse response) {
+    public StreamingResponseBody
+    downloadMusicFile(@RequestParam("id") Long id) {
 
         MusicFiles musicFile = storageService.downloadMusicFile(id);
+        if (musicFile == null) {
+            return null;
+        }
         try {
-            response.setHeader("Content-Disposition", "inline;filename=\"" + musicFile.getFileName() + "\"");
-            response.setContentType("audio/" + musicFile.getExtension());
-            IOUtils.copy(musicFile.getFile().getBinaryStream(), response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | SQLException e) {
+            final InputStream binaryStream = musicFile.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return;
+        return null;
     }
 
     @GetMapping("/authors/prediction")
@@ -105,6 +108,21 @@ public class MusicNoAuthController {
     getSongsTop50() {
 
         return ResponseEntity.ok(musicMetadataService.getSongsTop50());
+    }
+
+    @PutMapping("/rate")
+    public void rateSong(@RequestBody RateSongDTO rateSongDTO) {
+        musicMetadataService.rateSong(rateSongDTO);
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

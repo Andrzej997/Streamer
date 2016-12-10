@@ -131,8 +131,11 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     private void saveEbookFileMetadataForEbook(EbookDTO ebookDTO, Ebook ebook) {
         EbookFiles ebookFiles = null;
+        EbookFiles file = ebookFilesRepository.findOne(ebookDTO.getEbookFileId());
         if (ebookDTO.getEbookFileMetadataDTO() != null) {
-            ebookFiles = ebookFilesRepository.save(ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO()));
+            EbookFiles toEbookFiles = ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO());
+            toEbookFiles.setFile(file.getFile());
+            ebookFiles = ebookFilesRepository.save(toEbookFiles);
         }
         if (ebookFiles == null) {
             return;

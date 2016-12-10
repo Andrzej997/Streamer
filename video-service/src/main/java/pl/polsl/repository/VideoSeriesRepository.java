@@ -20,6 +20,6 @@ public interface VideoSeriesRepository extends CrudRepository<VideoSeries, Long>
     List<VideoSeries> findByTitleLike(String title);
 
     @Query("SELECT v from VideoSeries v where v.videoSerieId in " +
-            "( SELECT f.videoSerieId from Videos f where f.title like :videoTitle)")
+            "( SELECT f.videoSerieId from Videos f where f.title like ?1)")
     List<VideoSeries> findByVideoTitleLike(String videoTitle);
 }

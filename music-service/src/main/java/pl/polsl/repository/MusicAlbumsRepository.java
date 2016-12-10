@@ -20,6 +20,6 @@ public interface MusicAlbumsRepository extends CrudRepository<MusicAlbums, Long>
     List<MusicAlbums> findByAlbumTitleLike(String albumTitle);
 
     @Query(value = "SELECT a FROM MusicAlbums a WHERE  a.albumId IN " +
-            "( SELECT s.albumId FROM Songs s WHERE s.title LIKE %?1) ")
+            "( SELECT s.albumId FROM Songs s WHERE s.title LIKE ?1) ")
     List<MusicAlbums> findBySongTitle(String songTitle);
 }

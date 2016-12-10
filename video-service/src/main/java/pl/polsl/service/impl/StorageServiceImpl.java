@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.exception.StorageException;
+import pl.polsl.model.UsersView;
 import pl.polsl.model.VideoFiles;
+import pl.polsl.model.Videos;
 import pl.polsl.repository.VideoFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
@@ -19,6 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -53,7 +56,30 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public VideoFiles downloadVideoFile(Long id) {
-        return videoFilesRepository.findOne(id);
+        VideoFiles videoFiles = videoFilesRepository.findOne(id);
+        if (videoFiles.getPublic()) {
+            return videoFiles;
+        }
+        return null;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public VideoFiles downloadVideoFile(Long id, String username) {
+        VideoFiles videoFiles = videoFilesRepository.findOne(id);
+        if (videoFiles == null) {
+            return null;
+        }
+        Collection<Videos> videoses = videoFiles.getVideosesByVideoFileId();
+        if (videoses == null || videoses.size() <= 0) {
+            return null;
+        }
+        Videos video = ((Videos[]) videoses.toArray())[0];
+        UsersView user = usersRepository.findUsersByUserName(username);
+        if (user == null || video == null || video.getOwnerId() == null || !video.getOwnerId().equals(user.getUserId())) {
+            return null;
+        }
+        return null;
     }
 
     public VideoFiles createVideoFile(MultipartFile file) throws IOException {

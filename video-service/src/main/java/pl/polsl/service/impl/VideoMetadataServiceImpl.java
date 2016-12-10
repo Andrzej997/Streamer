@@ -127,7 +127,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         saveFilmGenreForVideo(videoDTO, videos);
         saveVideoSerieForVideo(videoDTO, videos);
         saveVideoFileMetadataForVideo(videoDTO, videos);
-
+        videos.setOwnerId(user.getUserId());
         videos = videosRepository.save(videos);
 
         saveVideoDirectors(videos, directorsList);
@@ -169,8 +169,11 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     private void saveVideoFileMetadataForVideo(VideoDTO videoDTO, Videos videos) {
         VideoFiles videoFiles = null;
+        VideoFiles file = videoFilesRepository.findOne(videoDTO.getVideoFileId());
         if (videoDTO.getVideoFileMetadata() != null) {
-            videoFiles = videoFilesRepository.save(videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata()));
+            VideoFiles toVideoFiles = videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata());
+            toVideoFiles.setFile(file.getFile());
+            videoFiles = videoFilesRepository.save(toVideoFiles);
         }
         if (videoFiles == null) {
             return;
@@ -409,6 +412,23 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             return -1;
         }
         return f2.compareTo(f1);
+    }
+
+    @Override
+    public void rateVideo(RateVideoDTO rateVideoDTO) {
+        if (rateVideoDTO == null || rateVideoDTO.getFilmId() == null || rateVideoDTO.getRate() == null) {
+            return;
+        }
+        Videos video = videosRepository.findOne(rateVideoDTO.getFilmId());
+        if (video == null) {
+            return;
+        }
+        Float rating = video.getRating();
+        Long ratingTimes = video.getRatingTimes();
+        Float temp = (rating * ratingTimes) + (rateVideoDTO.getRate() * 10);
+        video.setRatingTimes(video.getRatingTimes() + 1);
+        video.setRating(temp / video.getRatingTimes());
+        videosRepository.save(video);
     }
 
     public VideoMapper getVideoMapper() {

@@ -17,13 +17,13 @@ public class CORSFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("origin"));
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, PATCH, HEAD, GET, OPTIONS, DELETE");
         response.setHeader("Access-Control-Max-Age", "1728000");
         response.setHeader("Access-Control-Allow-Headers", "Content-Type, Content-Length, Content-Disposition, Accept, X-Requested-With, remember-me, AuthHeader");
 
-        chain.doFilter(req, res);
+        chain.doFilter(request, response);
     }
 
     @Override

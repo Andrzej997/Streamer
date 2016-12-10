@@ -12,5 +12,7 @@ public interface StorageService {
 
     VideoFiles downloadVideoFile(Long id);
 
+    VideoFiles downloadVideoFile(Long id, String username);
+
     String getExtension(MultipartFile file);
 }

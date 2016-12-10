@@ -1,9 +1,11 @@
 package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.UploadVideoMetadataDTO;
 import pl.polsl.dto.VideoDTO;
 import pl.polsl.model.VideoFiles;
@@ -11,6 +13,10 @@ import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoManagementService;
 import pl.polsl.service.VideoMetadataService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -33,9 +39,28 @@ public class VideoAuthController {
     @PostMapping("/upload")
     public ResponseEntity<Long>
     handleFileUpload(@RequestParam("file") MultipartFile file) {
-
         VideoFiles videoFile = storageService.store(file);
-        return ResponseEntity.ok(videoFile.getVideoFileId());
+        return new ResponseEntity<Long>(videoFile.getVideoFileId(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadVideoFile(@RequestParam("id") Long id,
+                      @RequestParam("username") String username) {
+
+        VideoFiles videoFile = storageService.downloadVideoFile(id, username);
+        if (videoFile == null) {
+            return null;
+        }
+        try {
+            final InputStream binaryStream = videoFile.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @PostMapping("/file/metadata")
@@ -87,6 +112,16 @@ public class VideoAuthController {
     updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
 
         return ResponseEntity.ok(videoMetadataService.updateVideoMetadata(videoDTO));
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

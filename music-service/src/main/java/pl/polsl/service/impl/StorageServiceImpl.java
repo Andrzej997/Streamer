@@ -10,6 +10,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.exception.StorageException;
 import pl.polsl.model.MusicFiles;
+import pl.polsl.model.Songs;
+import pl.polsl.model.UsersView;
 import pl.polsl.repository.MusicFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
@@ -19,6 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Date;
 
 /**
@@ -53,7 +56,31 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MusicFiles downloadMusicFile(Long id) {
-        return musicFilesRepository.findOne(id);
+        MusicFiles musicFiles = musicFilesRepository.findOne(id);
+        if (musicFiles.getPublic()) {
+            return musicFiles;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public MusicFiles downloadMusicFile(Long id, String username) {
+        MusicFiles musicFiles = musicFilesRepository.findOne(id);
+        if (musicFiles == null) {
+            return null;
+        }
+        Collection<Songs> songses = musicFiles.getSongsesByMusicFileId();
+        if (songses == null || songses.size() <= 0) {
+            return null;
+        }
+        Songs song = ((Songs[]) songses.toArray())[0];
+        UsersView user = usersRepository.findUsersByUserName(username);
+        if (user == null || song == null || user.getUserId() == null || !user.getUserId().equals(song.getOwnerId())) {
+            return null;
+        }
+        return musicFiles;
     }
 
     private MusicFiles createMusicFile(MultipartFile file) throws IOException {

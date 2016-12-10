@@ -1,18 +1,19 @@
 package pl.polsl.controller;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoManagementService;
 import pl.polsl.service.VideoMetadataService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,20 +34,23 @@ public class VideoNoAuthController {
     @Autowired
     private VideoManagementService videoManagementService;
 
-    @GetMapping("/download")
-    public void
-    downloadVideoFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadVideoFile(@RequestParam("id") Long id) {
 
         VideoFiles videoFile = storageService.downloadVideoFile(id);
+        if (videoFile == null) {
+            return null;
+        }
         try {
-            response.setHeader("Content-Disposition", "inline;filename=\"" + videoFile.getFileName() + "\"");
-            response.setContentType("video/" + videoFile.getExtension());
-            IOUtils.copy(videoFile.getFile().getBinaryStream(), response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | SQLException e) {
+            final InputStream binaryStream = videoFile.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return;
+        return null;
     }
 
     @GetMapping("/directors/prediction")
@@ -108,6 +112,21 @@ public class VideoNoAuthController {
     ResponseEntity<List<VideoDTO>>
     getVideosTop50() {
         return ResponseEntity.ok(videoMetadataService.getVideosTop50());
+    }
+
+    @PutMapping("/rate")
+    public void rateVideo(@RequestBody RateVideoDTO rateVideoDTO) {
+        videoMetadataService.rateVideo(rateVideoDTO);
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

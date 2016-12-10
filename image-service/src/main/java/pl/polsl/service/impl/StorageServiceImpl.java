@@ -53,7 +53,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ImageFiles downloadImageFile(Long id) {
-        return imageFilesRepositoryy.findOne(id);
+        ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
+        if (imageFiles.getPublic()) {
+            return imageFiles;
+        }
+        return null;
     }
 
     public ImageFiles createImageFile(MultipartFile file) throws IOException {

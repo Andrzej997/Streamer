@@ -131,8 +131,11 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     private void saveImageFileMetadataForImage(ImageDTO imageDTO, Images images) {
         ImageFiles imageFiles = null;
+        ImageFiles file = imageFilesRepository.findOne(imageDTO.getImageFileId());
         if (imageDTO.getImageFileDTO() != null) {
-            imageFiles = imageFilesRepository.save(imageMapper.toImageFiles(imageDTO.getImageFileDTO()));
+            ImageFiles toImageFiles = imageMapper.toImageFiles(imageDTO.getImageFileDTO());
+            toImageFiles.setFile(file.getFile());
+            imageFiles = imageFilesRepository.save(toImageFiles);
         }
         if (imageFiles == null) {
             return;
