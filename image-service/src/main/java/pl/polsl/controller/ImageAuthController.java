@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.ImageDTO;
 import pl.polsl.dto.UploadImageMetadataDTO;
 import pl.polsl.model.ImageFiles;
@@ -11,6 +12,10 @@ import pl.polsl.service.ImageManagementService;
 import pl.polsl.service.ImageMetadataService;
 import pl.polsl.service.StorageService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -38,6 +43,25 @@ public class ImageAuthController {
         return ResponseEntity.ok(imageFile.getImageFileId());
     }
 
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadImageFile(@RequestParam("id") Long id,
+                      @RequestParam("username") String username) {
+
+        ImageFiles imageFiles = storageService.downloadImageFile(id, username);
+        if (imageFiles == null) {
+            return null;
+        }
+        try {
+            final InputStream binaryStream = imageFiles.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @PostMapping("/file/metadata")
     public
@@ -89,6 +113,16 @@ public class ImageAuthController {
     updateImageMetadata(@RequestBody ImageDTO imageDTO) {
 
         return ResponseEntity.ok(imageMetadataService.updateImageMetadata(imageDTO));
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

@@ -79,7 +79,7 @@ public class StorageServiceImpl implements StorageService {
         if (user == null || video == null || video.getOwnerId() == null || !video.getOwnerId().equals(user.getUserId())) {
             return null;
         }
-        return null;
+        return videoFiles;
     }
 
     public VideoFiles createVideoFile(MultipartFile file) throws IOException {

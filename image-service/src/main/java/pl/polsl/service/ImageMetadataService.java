@@ -24,4 +24,6 @@ public interface ImageMetadataService {
     ImageDTO updateImageMetadata(ImageDTO imageDTO);
 
     List<ImageDTO> getImagesTop50();
+
+    void rateImage(RateImageDTO rateImageDTO);
 }

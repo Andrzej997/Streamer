@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ImageTypeDTO {
 
-    @JsonProperty("_")
+    @JsonProperty("_typeId")
     private Long typeId;
-    @JsonProperty("_")
+    @JsonProperty("_name")
     private String name;
-    @JsonProperty("_")
+    @JsonProperty("_comments")
     private String comments;
 
     public Long getTypeId() {

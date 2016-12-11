@@ -103,6 +103,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         saveImageTypeForImage(imageDTO, images);
         saveImageFileMetadataForImage(imageDTO, images);
         images.setOwnerId(user.getUserId());
+        completeRequiredOnNull(images);
         images = imagesRepository.save(images);
 
         saveImageArtistsForImage(images, artistsList);
@@ -113,7 +114,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
         ImageDTO toImageDTO = imageMapper.toImageDTO(images);
         UploadImageMetadataDTO result = new UploadImageMetadataDTO();
-        result.setImageDTO(imageDTO);
+        result.setImageDTO(toImageDTO);
         result.setUsername(user.getUserName());
         return result;
     }
@@ -159,6 +160,18 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             imageAuthors.setImageId(images.getImageId());
             imageAuthors.setImagesByImageId(images);
             imageAuthorsRepository.save(imageAuthors);
+        }
+    }
+
+    private void completeRequiredOnNull(Images image) {
+        if (image.getNativeWidth() == null) {
+            image.setNativeWidth(0);
+        }
+        if (image.getNativeHeight() == null) {
+            image.setNativeHeight(0);
+        }
+        if (image.getResolution() == null) {
+            image.setResolution(image.getNativeHeight() * image.getNativeWidth());
         }
     }
 
@@ -379,6 +392,23 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             return -1;
         }
         return f2.compareTo(f1);
+    }
+
+    @Override
+    public void rateImage(RateImageDTO rateImageDTO) {
+        if (rateImageDTO == null || rateImageDTO.getImageId() == null || rateImageDTO.getRate() == null) {
+            return;
+        }
+        Images image = imagesRepository.findOne(rateImageDTO.getImageId());
+        if (image == null) {
+            return;
+        }
+        Float rating = image.getRating();
+        Long ratingTimes = image.getRatingTimes();
+        Float temp = (rating * ratingTimes) + (rateImageDTO.getRate() * 10);
+        image.setRatingTimes(image.getRatingTimes() + 1);
+        image.setRating(temp / image.getRatingTimes());
+        imagesRepository.save(image);
     }
 
     public ImageMapper getImageMapper() {

@@ -103,6 +103,7 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         saveLiteraryGenreForEbook(ebookDTO, ebook);
         saveEbookFileMetadataForEbook(ebookDTO, ebook);
         ebook.setOwnerId(user.getUserId());
+        completeReqiredFieldsForEbook(ebook);
         ebook = ebookRepository.save(ebook);
 
         saveWritersForEbook(ebook, writersList);
@@ -113,7 +114,7 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
         EbookDTO toEbookDTO = ebookMapper.toEbookDTO(ebook);
         UploadEbookMetadataDTO result = new UploadEbookMetadataDTO();
-        result.setEbookDTO(ebookDTO);
+        result.setEbookDTO(toEbookDTO);
         result.setUsername(user.getUserName());
         return result;
     }
@@ -158,6 +159,12 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             ebookAuthors.setEbookId(ebook.getEbookId());
             ebookAuthors.setEbookByEbookId(ebook);
             ebookAuthorsRepository.save(ebookAuthors);
+        }
+    }
+
+    private void completeReqiredFieldsForEbook(Ebook ebook) {
+        if (ebook.getNumOfPages() == null) {
+            ebook.setNumOfPages(0);
         }
     }
 

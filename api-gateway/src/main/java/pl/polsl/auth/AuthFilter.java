@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -65,6 +66,12 @@ public class AuthFilter implements Filter {
 
     private HttpEntity<String> generateHeaders(HttpServletRequest httpRequest) {
         Enumeration<String> headerNames = httpRequest.getHeaderNames();
+        String authToken = "";
+        if (httpRequest.getMethod().equals(HttpMethod.GET.name())
+                && httpRequest.getRequestURI() != null
+                && httpRequest.getRequestURI().contains("/auth/download")) {
+            authToken = httpRequest.getParameter("authToken");
+        }
         HttpHeaders headers = new HttpHeaders();
         List<String> headerNamesList = Collections.list(headerNames);
         for (String name : headerNamesList) {
@@ -72,6 +79,9 @@ public class AuthFilter implements Filter {
             if (headerValue != null) {
                 headers.add(name, headerValue);
             }
+        }
+        if (!StringUtils.isEmpty(authToken)) {
+            headers.add("AuthHeader", authToken);
         }
         return new HttpEntity<>(null, headers);
     }

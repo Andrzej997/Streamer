@@ -12,6 +12,8 @@ public interface StorageService {
 
     ImageFiles downloadImageFile(Long id);
 
+    ImageFiles downloadImageFile(Long id, String username);
+
     String getExtension(MultipartFile file);
 
 }

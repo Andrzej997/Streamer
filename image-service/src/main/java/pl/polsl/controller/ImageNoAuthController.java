@@ -1,20 +1,18 @@
 package pl.polsl.controller;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.polsl.dto.ArtistDTO;
-import pl.polsl.dto.ImageDTO;
-import pl.polsl.dto.ImageTypeDTO;
-import pl.polsl.dto.SearchImageCriteriaDTO;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.dto.*;
 import pl.polsl.model.ImageFiles;
 import pl.polsl.service.ImageMetadataService;
 import pl.polsl.service.StorageService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -32,20 +30,23 @@ public class ImageNoAuthController {
     @Autowired
     private ImageMetadataService imageMetadataService;
 
-    @GetMapping("/download")
-    public void
-    downloadImageFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadImageFile(@RequestParam("id") Long id) {
 
-        ImageFiles imageFile = storageService.downloadImageFile(id);
+        ImageFiles imageFiles = storageService.downloadImageFile(id);
+        if (imageFiles == null) {
+            return null;
+        }
         try {
-            response.setHeader("Content-Disposition", "inline;filename=\"" + imageFile.getFileName() + "\"");
-            response.setContentType("audio/" + imageFile.getFileExtension());
-            IOUtils.copy(imageFile.getFile().getBinaryStream(), response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | SQLException e) {
+            final InputStream binaryStream = imageFiles.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return;
+        return null;
     }
 
     @GetMapping("/artists/prediction")
@@ -97,6 +98,21 @@ public class ImageNoAuthController {
     getImagesTop50() {
 
         return ResponseEntity.ok(imageMetadataService.getImagesTop50());
+    }
+
+    @PutMapping("/rate")
+    public void rateImage(@RequestBody RateImageDTO rateImageDTO) {
+        imageMetadataService.rateImage(rateImageDTO);
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

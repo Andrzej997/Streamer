@@ -10,6 +10,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.exception.StorageException;
 import pl.polsl.model.ImageFiles;
+import pl.polsl.model.Images;
+import pl.polsl.model.UsersView;
 import pl.polsl.repository.ImageFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
@@ -19,7 +21,10 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -58,6 +63,26 @@ public class StorageServiceImpl implements StorageService {
             return imageFiles;
         }
         return null;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public ImageFiles downloadImageFile(Long id, String username) {
+        ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
+        if (imageFiles == null) {
+            return null;
+        }
+        Collection<Images> images = imageFiles.getImagesByImageFileId();
+        if (images == null || images.size() <= 0) {
+            return null;
+        }
+        List<Object> listObject = Arrays.asList(images.toArray());
+        Images image = (Images) listObject.get(0);
+        UsersView user = usersRepository.findUsersByUserName(username);
+        if (user == null || image == null || image.getOwnerId() == null || !image.getOwnerId().equals(user.getUserId())) {
+            return null;
+        }
+        return imageFiles;
     }
 
     public ImageFiles createImageFile(MultipartFile file) throws IOException {

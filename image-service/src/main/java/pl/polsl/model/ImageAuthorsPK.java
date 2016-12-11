@@ -11,6 +11,15 @@ public class ImageAuthorsPK implements Serializable {
     private Long imageId;
     private Long authorId;
 
+    public ImageAuthorsPK() {
+
+    }
+
+    public ImageAuthorsPK(Long imageId, Long authorId) {
+        this.imageId = imageId;
+        this.authorId = authorId;
+    }
+
     @Id
     @Column(name = "image_id", nullable = false)
     public Long getImageId() {
@@ -28,11 +37,6 @@ public class ImageAuthorsPK implements Serializable {
     }
 
     public void setAuthorId(Long authorId) {
-        this.authorId = authorId;
-    }
-
-    public ImageAuthorsPK(Long imageId, Long authorId) {
-        this.imageId = imageId;
         this.authorId = authorId;
     }
 
