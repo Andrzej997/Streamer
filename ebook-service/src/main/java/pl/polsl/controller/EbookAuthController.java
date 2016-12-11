@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.EbookDTO;
 import pl.polsl.dto.UploadEbookMetadataDTO;
 import pl.polsl.model.EbookFiles;
@@ -11,6 +12,10 @@ import pl.polsl.service.EbookManagementService;
 import pl.polsl.service.EbookMetadataService;
 import pl.polsl.service.StorageService;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -36,6 +41,26 @@ public class EbookAuthController {
 
         EbookFiles ebookFile = storageService.store(file);
         return ResponseEntity.ok(ebookFile.getEbookFileId());
+    }
+
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadImageFile(@RequestParam("id") Long id,
+                      @RequestParam("username") String username) {
+
+        EbookFiles ebookFiles = storageService.downloadEbookFile(id, username);
+        if (ebookFiles == null) {
+            return null;
+        }
+        try {
+            final InputStream binaryStream = ebookFiles.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     @PostMapping("/file/metadata")
@@ -87,6 +112,16 @@ public class EbookAuthController {
     updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
 
         return ResponseEntity.ok(ebookMetadataService.updateEbookMetadata(ebookDTO));
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

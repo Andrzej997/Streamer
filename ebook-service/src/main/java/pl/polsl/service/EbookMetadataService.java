@@ -23,4 +23,6 @@ public interface EbookMetadataService {
     EbookDTO updateEbookMetadata(EbookDTO ebookDTO);
 
     List<EbookDTO> getEbooksTop50();
+
+    void rateEbook(RateEbookDTO rateEbookDTO);
 }

@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import pl.polsl.exception.StorageException;
+import pl.polsl.model.Ebook;
 import pl.polsl.model.EbookFiles;
+import pl.polsl.model.UsersView;
 import pl.polsl.repository.EbookFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
@@ -19,7 +21,10 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mateusz on 28.11.2016.
@@ -58,6 +63,26 @@ public class StorageServiceImpl implements StorageService {
             return ebookFiles;
         }
         return null;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public EbookFiles downloadEbookFile(Long id, String username) {
+        EbookFiles ebookFiles = ebookFilesRepository.findOne(id);
+        if (ebookFiles == null) {
+            return null;
+        }
+        Collection<Ebook> ebooks = ebookFiles.getEbooksByEbookFileId();
+        if (ebooks == null || ebooks.size() <= 0) {
+            return null;
+        }
+        List<Object> listObject = Arrays.asList(ebooks.toArray());
+        Ebook ebook = (Ebook) listObject.get(0);
+        UsersView user = usersRepository.findUsersByUserName(username);
+        if (user == null || ebook == null || ebook.getOwnerId() == null || !ebook.getOwnerId().equals(user.getUserId())) {
+            return null;
+        }
+        return ebookFiles;
     }
 
     public EbookFiles createVideoFile(MultipartFile file) throws IOException {

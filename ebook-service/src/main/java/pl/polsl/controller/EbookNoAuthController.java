@@ -1,20 +1,18 @@
 package pl.polsl.controller;
 
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pl.polsl.dto.EbookDTO;
-import pl.polsl.dto.LiteraryGenreDTO;
-import pl.polsl.dto.SearchEbookCriteriaDTO;
-import pl.polsl.dto.WriterDTO;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.dto.*;
 import pl.polsl.model.EbookFiles;
 import pl.polsl.service.EbookMetadataService;
 import pl.polsl.service.StorageService;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -33,20 +31,23 @@ public class EbookNoAuthController {
     @Autowired
     private EbookMetadataService ebookMetadataService;
 
-    @GetMapping("/download")
-    public void
-    downloadEbookFile(@RequestParam("id") Long id, HttpServletResponse response) {
+    @GetMapping(value = "/download")
+    public StreamingResponseBody
+    downloadImageFile(@RequestParam("id") Long id) {
 
-        EbookFiles ebookFile = storageService.downloadEbookFile(id);
+        EbookFiles ebookFiles = storageService.downloadEbookFile(id);
+        if (ebookFiles == null) {
+            return null;
+        }
         try {
-            response.setHeader("Content-Disposition", "inline;filename=\"" + ebookFile.getFileName() + "\"");
-            response.setContentType("audio/" + ebookFile.getExtension());
-            IOUtils.copy(ebookFile.getFile().getBinaryStream(), response.getOutputStream());
-            response.flushBuffer();
-        } catch (IOException | SQLException e) {
+            final InputStream binaryStream = ebookFiles.getFile().getBinaryStream();
+            return (os) -> {
+                readAndWrite(binaryStream, os);
+            };
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return;
+        return null;
     }
 
     @GetMapping("/writers/prediction")
@@ -98,6 +99,21 @@ public class EbookNoAuthController {
     getEbooksTop50() {
 
         return ResponseEntity.ok(ebookMetadataService.getEbooksTop50());
+    }
+
+    @PutMapping("/rate")
+    public void rateEbook(@RequestBody RateEbookDTO rateEbookDTO) {
+        ebookMetadataService.rateEbook(rateEbookDTO);
+    }
+
+    private void readAndWrite(final InputStream is, OutputStream os)
+            throws IOException {
+        byte[] data = new byte[2048];
+        int read = 0;
+        while ((read = is.read(data)) > 0) {
+            os.write(data, 0, read);
+        }
+        os.flush();
     }
 
     public StorageService getStorageService() {

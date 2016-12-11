@@ -387,6 +387,23 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         return f2.compareTo(f1);
     }
 
+    @Override
+    public void rateEbook(RateEbookDTO rateEbookDTO) {
+        if (rateEbookDTO == null || rateEbookDTO.getEbookId() == null || rateEbookDTO.getRate() == null) {
+            return;
+        }
+        Ebook ebook = ebookRepository.findOne(rateEbookDTO.getEbookId());
+        if (ebook == null) {
+            return;
+        }
+        Float rating = ebook.getRating();
+        Long ratingTimes = ebook.getRatingTimes();
+        Float temp = (rating * ratingTimes) + (rateEbookDTO.getRate() * 10);
+        ebook.setRatingTimes(ebook.getRatingTimes() + 1);
+        ebook.setRating(temp / ebook.getRatingTimes());
+        ebookRepository.save(ebook);
+    }
+
     public EbookMapper getEbookMapper() {
         return ebookMapper;
     }

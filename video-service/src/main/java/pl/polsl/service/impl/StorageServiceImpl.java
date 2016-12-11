@@ -21,8 +21,10 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -74,7 +76,8 @@ public class StorageServiceImpl implements StorageService {
         if (videoses == null || videoses.size() <= 0) {
             return null;
         }
-        Videos video = ((Videos[]) videoses.toArray())[0];
+        List<Object> listObject = Arrays.asList(videoses.toArray());
+        Videos video = (Videos) listObject.get(0);
         UsersView user = usersRepository.findUsersByUserName(username);
         if (user == null || video == null || video.getOwnerId() == null || !video.getOwnerId().equals(user.getUserId())) {
             return null;

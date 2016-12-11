@@ -12,5 +12,7 @@ public interface StorageService {
 
     EbookFiles downloadEbookFile(Long id);
 
+    EbookFiles downloadEbookFile(Long id, String username);
+
     String getExtension(MultipartFile file);
 }
