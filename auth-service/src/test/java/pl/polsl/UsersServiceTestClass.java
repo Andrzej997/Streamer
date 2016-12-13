@@ -3,10 +3,7 @@ package pl.polsl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
+import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -197,8 +194,9 @@ public class UsersServiceTestClass {
         dto.setNationality("nationality");
         Users users = usersMapper.toUsers(dto);
         when(usersRepository.findOne(1L)).thenReturn(users);
+        Mockito.doNothing().when(usersRepository).delete(users);
 
-        Boolean result = usersService.deleteUser(dto);
+        Boolean result = usersService.deleteUser(1L);
 
         assertThat(result).isTrue();
     }
@@ -214,7 +212,7 @@ public class UsersServiceTestClass {
         dto.setNationality("nationality");
         when(usersRepository.findOne(1L)).thenReturn(null);
 
-        Boolean result = usersService.deleteUser(dto);
+        Boolean result = usersService.deleteUser(1L);
 
         assertThat(result).isFalse();
     }

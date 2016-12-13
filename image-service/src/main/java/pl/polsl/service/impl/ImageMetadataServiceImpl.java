@@ -411,6 +411,17 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         imagesRepository.save(image);
     }
 
+    @Override
+    public List<ImageDTO> getAllImages() {
+        Iterable<Images> imagesIterable = imagesRepository.findAll();
+        if (imagesIterable == null) {
+            return null;
+        }
+        List<ImageDTO> result = new ArrayList<>();
+        imagesIterable.forEach(image -> result.add(imageMapper.toImageDTO(image)));
+        return result;
+    }
+
     public ImageMapper getImageMapper() {
         return imageMapper;
     }

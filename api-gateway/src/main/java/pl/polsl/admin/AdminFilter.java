@@ -1,10 +1,9 @@
-package pl.polsl.auth;
+package pl.polsl.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,10 +16,10 @@ import java.util.Enumeration;
 import java.util.List;
 
 /**
- * Created by Mateusz on 21.11.2016.
+ * Created by Mateusz on 12.12.2016.
  */
 @Component
-public class AuthFilter implements Filter {
+public class AdminFilter implements Filter {
 
     @Value("${zuul.routes.auth-service.url}")
     private String authEndpoint;
@@ -43,11 +42,10 @@ public class AuthFilter implements Filter {
             chain.doFilter(request, httpResponse);
             return;
         }
-
-        if (checkAuthRegex(requestURI)) {
+        if (checkAdminRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
-                entity = restTemplate.exchange(authEndpoint + "/auth/authorize", HttpMethod.GET,
+                entity = restTemplate.exchange(authEndpoint + "/auth/admin", HttpMethod.GET,
                         generateHeaders(httpRequest), String.class);
             } catch (HttpClientErrorException e) {
                 exception = e;
@@ -62,16 +60,11 @@ public class AuthFilter implements Filter {
             }
         }
         chain.doFilter(request, httpResponse);
+
     }
 
     private HttpEntity<String> generateHeaders(HttpServletRequest httpRequest) {
         Enumeration<String> headerNames = httpRequest.getHeaderNames();
-        String authToken = "";
-        if (httpRequest.getMethod().equals(HttpMethod.GET.name())
-                && httpRequest.getRequestURI() != null
-                && httpRequest.getRequestURI().contains("/auth/download")) {
-            authToken = httpRequest.getParameter("authToken");
-        }
         HttpHeaders headers = new HttpHeaders();
         List<String> headerNamesList = Collections.list(headerNames);
         for (String name : headerNamesList) {
@@ -80,17 +73,14 @@ public class AuthFilter implements Filter {
                 headers.add(name, headerValue);
             }
         }
-        if (!StringUtils.isEmpty(authToken)) {
-            headers.add("AuthHeader", authToken);
-        }
         return new HttpEntity<>(null, headers);
     }
 
-    private Boolean checkAuthRegex(String URI) {
-        if (URI.contains("/auth/auth/") || URI.contains("/auth/noauth/")) {
+    private Boolean checkAdminRegex(String URI) {
+        if (URI.contains("/auth/admin/") || URI.contains("/auth/noauth/")) {
             return false;
         }
-        if (URI.contains("/auth/")) {
+        if (URI.contains("/admin/")) {
             return true;
         }
         return false;

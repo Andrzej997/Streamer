@@ -431,6 +431,17 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         videosRepository.save(video);
     }
 
+    @Override
+    public List<VideoDTO> getAllVideos() {
+        Iterable<Videos> videosIterable = videosRepository.findAll();
+        if (videosIterable == null) {
+            return null;
+        }
+        List<VideoDTO> result = new ArrayList<>();
+        videosIterable.forEach(video -> result.add(videoMapper.toVideoDTO(video)));
+        return result;
+    }
+
     public VideoMapper getVideoMapper() {
         return videoMapper;
     }

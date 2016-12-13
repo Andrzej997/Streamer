@@ -16,7 +16,7 @@ public interface EbookMetadataService {
 
     List<EbookDTO> getTop10Ebooks(String username, String title);
 
-    List<EbookDTO> getAllUserImages(String username);
+    List<EbookDTO> getAllUserEbooks(String username);
 
     List<EbookDTO> searchEbooksByCriteria(SearchEbookCriteriaDTO searchEbookCriteriaDTO);
 
@@ -25,4 +25,6 @@ public interface EbookMetadataService {
     List<EbookDTO> getEbooksTop50();
 
     void rateEbook(RateEbookDTO rateEbookDTO);
+
+    List<EbookDTO> getAllEbooks();
 }

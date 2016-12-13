@@ -12,6 +12,9 @@ import pl.polsl.model.Users;
 import pl.polsl.repository.UsersRepository;
 import pl.polsl.service.UsersService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mateusz on 27.10.2016.
  */
@@ -87,16 +90,11 @@ public class UsersServiceImpl implements UsersService {
     }
 
     @Override
-    public Boolean deleteUser(UsersDTO dto) {
-        if (dto == null) {
-            return false;
-        }
-        Users user = mapper.toUsers(dto);
-        if (user != null && user.getUserId() != null) {
-            if (usersRepository.findOne(user.getUserId()) != null) {
+    public Boolean deleteUser(Long userId) {
+        Users user = usersRepository.findOne(userId);
+        if (userId != null && user != null) {
                 usersRepository.delete(user);
                 return true;
-            }
         }
         return false;
     }
@@ -137,6 +135,17 @@ public class UsersServiceImpl implements UsersService {
             return usersRepository.save(user) != null;
         }
         return false;
+    }
+
+    @Override
+    public List<UsersDTO> getAllUsers() {
+        Iterable<Users> usersIterable = usersRepository.findAll();
+        if (usersIterable == null) {
+            return null;
+        }
+        List<UsersDTO> result = new ArrayList<>();
+        usersIterable.forEach(user -> result.add(mapper.toUsersDTO(user)));
+        return result;
     }
 
     public UsersRepository getUsersRepository() {

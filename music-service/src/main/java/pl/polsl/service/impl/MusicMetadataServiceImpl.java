@@ -436,6 +436,17 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         songsRepository.save(song);
     }
 
+    @Override
+    public List<SongDTO> getAllSongs() {
+        Iterable<Songs> songsIterable = songsRepository.findAll();
+        if (songsIterable == null) {
+            return null;
+        }
+        List<SongDTO> songDTOList = new ArrayList<>();
+        songsIterable.forEach(song -> songDTOList.add(musicMapper.toSongDTO(song)));
+        return songDTOList;
+    }
+
     public MusicArtistsRepository getMusicArtistsRepository() {
         return musicArtistsRepository;
     }

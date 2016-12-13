@@ -202,7 +202,7 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
     }
 
     @Override
-    public List<EbookDTO> getAllUserImages(String username) {
+    public List<EbookDTO> getAllUserEbooks(String username) {
         UsersView user = null;
         user = usersRepository.findUsersByUserName(username);
         if (user == null) {
@@ -402,6 +402,17 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         ebook.setRatingTimes(ebook.getRatingTimes() + 1);
         ebook.setRating(temp / ebook.getRatingTimes());
         ebookRepository.save(ebook);
+    }
+
+    @Override
+    public List<EbookDTO> getAllEbooks() {
+        Iterable<Ebook> ebookIterable = ebookRepository.findAll();
+        if (ebookIterable == null) {
+            return null;
+        }
+        List<EbookDTO> result = new ArrayList<>();
+        ebookIterable.forEach(ebook -> result.add(ebookMapper.toEbookDTO(ebook)));
+        return result;
     }
 
     public EbookMapper getEbookMapper() {

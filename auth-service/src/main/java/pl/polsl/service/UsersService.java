@@ -4,6 +4,8 @@ import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.model.Users;
 
+import java.util.List;
+
 /**
  * Created by Mateusz on 27.10.2016.
  */
@@ -18,11 +20,13 @@ public interface UsersService {
 
     Users updateUserInformations(UsersDTO dto);
 
-    Boolean deleteUser(UsersDTO dto);
+    Boolean deleteUser(Long userId);
 
     Boolean usernameExists(String username);
 
     Boolean checkEmailExists(String email);
 
     Boolean changePassword(ChangePasswordDTO changePasswordDTO);
+
+    List<UsersDTO> getAllUsers();
 }

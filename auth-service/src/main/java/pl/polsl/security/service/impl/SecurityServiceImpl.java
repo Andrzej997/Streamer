@@ -15,7 +15,7 @@ import pl.polsl.security.service.SecurityService;
 /**
  * Created by Mateusz on 16.11.2016.
  */
-@Service
+@Service(value = "securityService")
 public class SecurityServiceImpl implements SecurityService {
 
     @Autowired

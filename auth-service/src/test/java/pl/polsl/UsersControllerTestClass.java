@@ -182,10 +182,10 @@ public class UsersControllerTestClass {
 
     @Test
     public void testDeleteUser_whenUserExists() {
-        UsersDTO dto = new UsersDTO();
-        when(usersService.deleteUser(dto)).thenReturn(true);
+        Long userId = 1L;
+        when(usersService.deleteUser(userId)).thenReturn(true);
 
-        ResponseEntity<Boolean> result = usersAuthController.deleteUser(dto);
+        ResponseEntity<Boolean> result = usersAuthController.deleteUser(userId);
 
         assertThat(result).isNotNull();
         assertThat(result.getBody()).isTrue();
@@ -193,10 +193,10 @@ public class UsersControllerTestClass {
 
     @Test
     public void testDeleteUser_whenUserNotExists() {
-        UsersDTO dto = new UsersDTO();
-        when(usersService.deleteUser(dto)).thenReturn(false);
+        Long userId = 1L;
+        when(usersService.deleteUser(userId)).thenReturn(false);
 
-        ResponseEntity<Boolean> result = usersAuthController.deleteUser(dto);
+        ResponseEntity<Boolean> result = usersAuthController.deleteUser(userId);
 
         assertThat(result).isNotNull();
         assertThat(result.getBody()).isFalse();

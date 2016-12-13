@@ -8,8 +8,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
-import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
+
+import java.util.List;
 
 /**
  * Created by Mateusz on 07.12.2016.
@@ -21,9 +22,6 @@ public class UsersAuthController {
 
     @Autowired
     private UsersService usersService;
-
-    @Autowired
-    private SecurityService securityService;
 
     @RequestMapping(value = "/user_data", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public
@@ -50,13 +48,13 @@ public class UsersAuthController {
     }
 
     @PreAuthorize("@securityService.hasProtectedAccess()")
-    @DeleteMapping(value = "/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
+    @DeleteMapping(value = "/admin/delete/user", produces = MediaType.APPLICATION_JSON_VALUE)
     public
     @ResponseBody
     ResponseEntity<Boolean>
-    deleteUser(@RequestBody UsersDTO dto) {
+    deleteUser(@RequestParam("id") Long userId) {
 
-        Boolean deleted = usersService.deleteUser(dto);
+        Boolean deleted = usersService.deleteUser(userId);
         return new ResponseEntity<Boolean>(deleted, HttpStatus.OK);
     }
 
@@ -89,6 +87,23 @@ public class UsersAuthController {
         return new ResponseEntity<String>("T", HttpStatus.OK);
     }
 
+    @PreAuthorize("@securityService.hasProtectedAccess()")
+    @GetMapping("/admin")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean> isAdmin() {
+        return ResponseEntity.ok(true);
+    }
+
+    @PreAuthorize("@securityService.hasProtectedAccess()")
+    @GetMapping("/admin/users")
+    public
+    @ResponseBody
+    ResponseEntity<List<UsersDTO>> getAllUsers() {
+        return ResponseEntity.ok(usersService.getAllUsers());
+    }
+
+
     public UsersService getUsersService() {
         return usersService;
     }
@@ -97,11 +112,4 @@ public class UsersAuthController {
         this.usersService = usersService;
     }
 
-    public SecurityService getSecurityService() {
-        return securityService;
-    }
-
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }

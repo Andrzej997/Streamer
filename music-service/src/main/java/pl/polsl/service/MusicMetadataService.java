@@ -28,4 +28,6 @@ public interface MusicMetadataService {
     List<SongDTO> getSongsTop50();
 
     void rateSong(RateSongDTO rateSongDTO);
+
+    List<SongDTO> getAllSongs();
 }

@@ -90,7 +90,7 @@ public class EbookAuthController {
     ResponseEntity<List<EbookDTO>>
     getAllUserEbooks(@RequestParam("username") String username) {
 
-        List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserImages(username);
+        List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserEbooks(username);
         return ResponseEntity.ok(allUserEbooks);
     }
 
