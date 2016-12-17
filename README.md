@@ -55,7 +55,7 @@ and for Unit testing we have a test profile.
 ## Hystrix-Dashboard
 It is a microservice to test efficiency for business services.
  
- ## Docker
+## Docker
  Every service has his own DockerFile to build a docker image.
  The maven has docker plugin which builds docker image every build.
  To run all service enter the main docker package where docker-compose file is
@@ -64,5 +64,5 @@ It is a microservice to test efficiency for business services.
  To test what is running in firefox type `localhost:8761`
  
  
- ## CI + CD
+## CI + CD
  The project is built using Jenkins and maven plugin.
