@@ -63,3 +63,6 @@ It is a microservice to test efficiency for business services.
  maybe 15 min.
  To test what is running in firefox type `localhost:8761`
  
+ 
+ ## CI + CD
+ The project is built using Jenkins and maven plugin.
