@@ -1,6 +1,6 @@
 FROM java:8
 VOLUME /tmp
-ADD image-service-0.1.jar app.jar
+ADD image-service-1.0.jar app.jar
 RUN bash -c 'touch /app.jar'
 EXPOSE 9004
 ENV SPRING_PROFILES_ACTIVE docker

@@ -1,6 +1,6 @@
 FROM java:8
 VOLUME /tmp
-ADD music-service-0.1.jar app.jar
+ADD music-service-1.0.jar app.jar
 RUN bash -c 'touch /app.jar'
 EXPOSE 9006
 ENV SPRING_PROFILES_ACTIVE docker
