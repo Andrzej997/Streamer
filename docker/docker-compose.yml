@@ -1,12 +1,10 @@
 eureka-service:
   image: mateuszsojka/eureka-service
-  container_name: eureka-service
   ports:
    - 8761:8761
 
 config-server:
   image: mateuszsojka/config-server
-  container_name: config-server
   restart: always
   ports:
    - 8888:8888
@@ -15,7 +13,6 @@ config-server:
 
 hystrix-dashboard:
   image: mateuszsojka/hystrix-dashboard
-  container_name: hystrix-dashboard
   restart: always
   ports:
    - 7979:7979
@@ -25,7 +22,6 @@ hystrix-dashboard:
 
 auth-service:
   image: mateuszsojka/auth-service
-  container_name: auth-service
   restart: always
   ports:
    - 9000:9000
@@ -37,7 +33,6 @@ auth-service:
 
 ebook-service:
   image: mateuszsojka/ebook-service
-  container_name: ebook-service
   restart: always
   ports:
   - 9002:9002
@@ -49,7 +44,6 @@ ebook-service:
 
 image-service:
   image: mateuszsojka/image-service
-  container_name: image-service
   restart: always
   ports:
   - 9004:9004
@@ -61,7 +55,6 @@ image-service:
 
 music-service:
   image: mateuszsojka/music-service
-  container_name: music-service
   restart: always
   ports:
   - 9006:9006
@@ -73,7 +66,6 @@ music-service:
 
 video-service:
   image: mateuszsojka/video-service
-  container_name: video-service
   restart: always
   ports:
   - 9008:9008
@@ -85,7 +77,6 @@ video-service:
 
 api-gateway:
   image: mateuszsojka/api-gateway
-  container_name: api-gateway
   restart: always
   ports:
   - 8080:8080
