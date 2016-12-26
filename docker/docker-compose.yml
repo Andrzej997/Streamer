@@ -35,7 +35,7 @@ ebook-service:
   image: mateuszsojka/ebook-service
   restart: always
   ports:
-  - 9002:9002
+  - 9002
   external_links:
   - ebookdb:ebookdb
   links:
@@ -46,7 +46,7 @@ image-service:
   image: mateuszsojka/image-service
   restart: always
   ports:
-  - 9004:9004
+  - 9004
   external_links:
   - imagedb:imagedb
   links:
@@ -57,7 +57,7 @@ music-service:
   image: mateuszsojka/music-service
   restart: always
   ports:
-  - 9006:9006
+  - 9006
   external_links:
   - musicdb:musicdb
   links:
@@ -68,7 +68,7 @@ video-service:
   image: mateuszsojka/video-service
   restart: always
   ports:
-  - 9008:9008
+  - 9008
   external_links:
   - videodb:videodb
   links:
