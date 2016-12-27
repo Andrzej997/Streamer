@@ -50,6 +50,7 @@ endpoints:
     sensitive: false
 eureka:
   instance:
+    prefer-ip-address: true
     hostname: eureka-service
   client:
     registerWithEureka: false
