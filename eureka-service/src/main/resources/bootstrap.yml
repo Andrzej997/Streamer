@@ -50,7 +50,9 @@ endpoints:
     sensitive: false
 eureka:
   instance:
-    prefer-ip-address: true
+    prefer-ip-address: false
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
     hostname: eureka-service
   client:
     registerWithEureka: false
