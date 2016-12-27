@@ -2,7 +2,6 @@ eureka-service:
   image: mateuszsojka/eureka-service
   ports:
    - 8761:8761
-  net: "host"
 
 config-server:
   image: mateuszsojka/config-server
@@ -11,7 +10,6 @@ config-server:
    - 8888:8888
   links:
    - eureka-service:eureka-service
-  net: "host"
 
 hystrix-dashboard:
   image: mateuszsojka/hystrix-dashboard
@@ -21,7 +19,6 @@ hystrix-dashboard:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 auth-service:
   image: mateuszsojka/auth-service
@@ -33,7 +30,6 @@ auth-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 ebook-service:
   image: mateuszsojka/ebook-service
@@ -45,7 +41,6 @@ ebook-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 image-service:
   image: mateuszsojka/image-service
@@ -57,7 +52,6 @@ image-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 music-service:
   image: mateuszsojka/music-service
@@ -69,7 +63,6 @@ music-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 video-service:
   image: mateuszsojka/video-service
@@ -81,7 +74,6 @@ video-service:
   links:
    - eureka-service:eureka-service
    - config-server:config-server
-  net: "host"
 
 api-gateway:
   image: mateuszsojka/api-gateway
@@ -96,4 +88,3 @@ api-gateway:
   - image-service:image-service
   - music-service:music-service
   - video-service:video-service
-  net: "host"
