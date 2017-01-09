@@ -93,7 +93,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
                 albumsList = new ArrayList<>();
             }
             songTitle = "%" + songTitle + "%";
-            albumsList.addAll(musicAlbumsRepository.findBySongTitle(songTitle));
+            List<MusicAlbums> musicAlbumsList = musicAlbumsRepository.findBySongTitle(songTitle);
+            if (musicAlbumsList != null && !musicAlbumsList.isEmpty()) {
+                albumsList.addAll(musicAlbumsList);
+            }
         }
         return musicMapper.toMusicAlbumDTOList(albumsList);
     }
@@ -111,6 +114,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     @Override
     public UploadSongMetadataDTO saveMetadata(UploadSongMetadataDTO uploadSongMetadataDTO) {
+        if (uploadSongMetadataDTO == null || StringUtils.isEmpty(uploadSongMetadataDTO.getUsername())) {
+            return null;
+        }
         if (uploadSongMetadataDTO == null || uploadSongMetadataDTO.getSongDTO() == null
                 || uploadSongMetadataDTO.getSongDTO().getFileId() == null) {
             return null;
@@ -130,6 +136,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         saveMusicFileMetadataForSong(songDTO, songs);
         songs.setOwnerId(user.getUserId());
         songs = songsRepository.save(songs);
+        if (songs == null) {
+            return null;
+        }
+
         saveMusicArtistsForSong(songs, musicArtistsList);
 
         List<MusicAuthors> musicAuthors = musicAuthorsRepository.findBySongId(songs.getSongId());
@@ -274,7 +284,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             songsList = new ArrayList<>();
         }
         title += "%";
-        songsList.addAll(songsRepository.findByTitleLikeOrderByRating(title));
+        List<Songs> songsListByTitleLike = songsRepository.findByTitleLikeOrderByRating(title);
+        if (songsListByTitleLike != null && songsListByTitleLike.size() > 0) {
+            songsList.addAll(songsListByTitleLike);
+        }
         songsList = songsList.stream().filter(songs ->
                 (songs.getMusicFilesByFileId() != null && songs.getMusicFilesByFileId().getPublic()))
                 .collect(Collectors.toList());
@@ -368,6 +381,9 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     @Override
     public SongDTO updateSongMetadata(SongDTO songDTO) {
+        if (songDTO == null) {
+            return null;
+        }
         Songs songs = musicMapper.toSongs(songDTO);
         List<MusicArtists> musicArtistsList = musicMapper.toMusicArtistsList(songDTO.getAuthors());
         saveMusicGenreForSong(songDTO, songs);

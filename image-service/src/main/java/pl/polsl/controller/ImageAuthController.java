@@ -1,7 +1,9 @@
 package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -38,7 +40,9 @@ public class ImageAuthController {
     @PostMapping("/upload")
     public ResponseEntity<Long>
     handleFileUpload(@RequestParam("file") MultipartFile file) {
-
+        if (file == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
         ImageFiles imageFile = storageService.store(file);
         return ResponseEntity.ok(imageFile.getImageFileId());
     }
@@ -47,7 +51,9 @@ public class ImageAuthController {
     public StreamingResponseBody
     downloadImageFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
-
+        if (id == null || username == null) {
+            return null;
+        }
         ImageFiles imageFiles = storageService.downloadImageFile(id, username);
         if (imageFiles == null) {
             return null;
@@ -68,7 +74,9 @@ public class ImageAuthController {
     @ResponseBody
     ResponseEntity<UploadImageMetadataDTO>
     saveImageFileMetadata(@RequestBody UploadImageMetadataDTO uploadImageMetadataDTO) {
-
+        if (uploadImageMetadataDTO == null) {
+            return new ResponseEntity<UploadImageMetadataDTO>(HttpStatus.NOT_FOUND);
+        }
         UploadImageMetadataDTO result = imageMetadataService.saveMetadata(uploadImageMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -80,7 +88,9 @@ public class ImageAuthController {
     ResponseEntity<List<ImageDTO>>
     getTop10ImagesOnlyPrivates(@RequestParam(value = "title", required = false) String title,
                                @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<ImageDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<ImageDTO> top10Images = imageMetadataService.getTop10Images(username, title);
         return ResponseEntity.ok(top10Images);
     }
@@ -90,7 +100,9 @@ public class ImageAuthController {
     @ResponseBody
     ResponseEntity<List<ImageDTO>>
     getAllUserImages(@RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<ImageDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<ImageDTO> allUserImages = imageMetadataService.getAllUserImages(username);
         return ResponseEntity.ok(allUserImages);
     }
@@ -101,7 +113,9 @@ public class ImageAuthController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username) || id == null) {
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
         Boolean success = imageManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -111,7 +125,9 @@ public class ImageAuthController {
     @ResponseBody
     ResponseEntity<ImageDTO>
     updateImageMetadata(@RequestBody ImageDTO imageDTO) {
-
+        if (imageDTO == null) {
+            return new ResponseEntity<ImageDTO>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(imageMetadataService.updateImageMetadata(imageDTO));
     }
 

@@ -48,7 +48,7 @@ public class StorageServiceImpl implements StorageService {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            EbookFiles ebookFile = createVideoFile(file);
+            EbookFiles ebookFile = createEbookFile(file);
             return ebookFilesRepository.save(ebookFile);
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
@@ -58,8 +58,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public EbookFiles downloadEbookFile(Long id) {
+        if (id == null) {
+            return null;
+        }
         EbookFiles ebookFiles = ebookFilesRepository.findOne(id);
-        if (ebookFiles.getPublic()) {
+        if (ebookFiles != null && ebookFiles.getPublic() != null && ebookFiles.getPublic()) {
             return ebookFiles;
         }
         return null;
@@ -68,6 +71,9 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public EbookFiles downloadEbookFile(Long id, String username) {
+        if (id == null || StringUtils.isEmpty(username)) {
+            return null;
+        }
         EbookFiles ebookFiles = ebookFilesRepository.findOne(id);
         if (ebookFiles == null) {
             return null;
@@ -85,7 +91,7 @@ public class StorageServiceImpl implements StorageService {
         return ebookFiles;
     }
 
-    public EbookFiles createVideoFile(MultipartFile file) throws IOException {
+    public EbookFiles createEbookFile(MultipartFile file) throws IOException {
         EbookFiles ebookFiles = new EbookFiles();
         ebookFiles.setFileName(file.getOriginalFilename());
         ebookFiles.setCreationDate(new Timestamp(new Date().getTime()));

@@ -3,6 +3,7 @@ package pl.polsl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
@@ -33,8 +34,11 @@ public class EbookNoAuthController {
 
     @GetMapping(value = "/download")
     public StreamingResponseBody
-    downloadImageFile(@RequestParam("id") Long id) {
+    downloadEbookFile(@RequestParam("id") Long id) {
 
+        if (id == null) {
+            return null;
+        }
         EbookFiles ebookFiles = storageService.downloadEbookFile(id);
         if (ebookFiles == null) {
             return null;
@@ -57,7 +61,9 @@ public class EbookNoAuthController {
     getWritersPredictionList(@RequestParam(value = "name", required = false) String name,
                              @RequestParam(value = "name2", required = false) String name2,
                              @RequestParam(value = "surname", required = false) String surname) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<WriterDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<WriterDTO> writersByPrediction = ebookMetadataService.getWritersByPrediction(name, name2, surname);
         return new ResponseEntity<List<WriterDTO>>(writersByPrediction, HttpStatus.OK);
     }
@@ -67,7 +73,9 @@ public class EbookNoAuthController {
     @ResponseBody
     ResponseEntity<List<LiteraryGenreDTO>>
     getLiteraryGenresPredictionList(@RequestParam(value = "name", required = false) String name) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<LiteraryGenreDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<LiteraryGenreDTO> literaryGenresByPrediction = ebookMetadataService.getLiteraryGenresByPrediction(name);
         return new ResponseEntity<List<LiteraryGenreDTO>>(literaryGenresByPrediction, HttpStatus.OK);
     }
@@ -88,6 +96,10 @@ public class EbookNoAuthController {
     ResponseEntity<List<EbookDTO>>
     searchEbooksByCriteria(@RequestBody SearchEbookCriteriaDTO searchEbookCriteriaDTO) {
 
+        if (searchEbookCriteriaDTO == null) {
+            return new ResponseEntity<List<EbookDTO>>(HttpStatus.NOT_FOUND);
+        }
+
         List<EbookDTO> ebookDTOList = ebookMetadataService.searchEbooksByCriteria(searchEbookCriteriaDTO);
         return ResponseEntity.ok(ebookDTOList);
     }
@@ -103,6 +115,9 @@ public class EbookNoAuthController {
 
     @PutMapping("/rate")
     public void rateEbook(@RequestBody RateEbookDTO rateEbookDTO) {
+        if (rateEbookDTO == null) {
+            throw new NullPointerException();
+        }
         ebookMetadataService.rateEbook(rateEbookDTO);
     }
 

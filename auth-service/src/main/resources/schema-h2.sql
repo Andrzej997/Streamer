@@ -1,3 +1,4 @@
+drop SEQUENCE if EXISTS DEFAULTDBSEQ;
 drop schema IF EXISTS users_schema;
 DROP TABLE IF EXISTS USERS CASCADE;
 create schema users_schema;

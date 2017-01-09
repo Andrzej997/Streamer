@@ -43,7 +43,11 @@ public class EbookAdminController {
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
 
-        Boolean success = ebookManagementService.removeFileAndMetadata(id, username);
+        Boolean success = false;
+        if (id == null || username == null) {
+            return ResponseEntity.ok(success);
+        }
+        success = ebookManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
 

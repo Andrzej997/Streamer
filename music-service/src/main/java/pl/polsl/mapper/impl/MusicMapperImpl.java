@@ -202,11 +202,13 @@ public class MusicMapperImpl implements MusicMapper {
         songDTO.setProductionYear(songs.getProductionYear());
         songDTO.setOwnerId(songs.getOwnerId());
         Collection<MusicAuthors> musicAuthorsesBySongId = songs.getMusicAuthorsesBySongId();
-        List<MusicArtists> artists = new ArrayList<>();
-        for (MusicAuthors musicAuthors : musicAuthorsesBySongId) {
-            artists.add(musicAuthors.getMusicArtistsByAuthorId());
+        if (musicAuthorsesBySongId != null) {
+            List<MusicArtists> artists = new ArrayList<>();
+            for (MusicAuthors musicAuthors : musicAuthorsesBySongId) {
+                artists.add(musicAuthors.getMusicArtistsByAuthorId());
+            }
+            songDTO.setAuthors(this.toMusicArtistDTOList(artists));
         }
-        songDTO.setAuthors(this.toMusicArtistDTOList(artists));
         songDTO.setFileMetadata(this.toMusicFileMetadataDTO(songs.getMusicFilesByFileId()));
         songDTO.setGenre(this.toMusicGenreDTO(songs.getMusicGenresByMusicGenreId()));
         songDTO.setAlbum(this.toMusicAlbumDTO(songs.getMusicAlbumsByAlbumId()));

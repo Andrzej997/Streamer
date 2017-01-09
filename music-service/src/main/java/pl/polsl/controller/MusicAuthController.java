@@ -1,7 +1,9 @@
 package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -38,6 +40,9 @@ public class MusicAuthController {
     @PostMapping("/upload")
     public ResponseEntity<Long>
     handleFileUpload(@RequestParam("file") MultipartFile file) {
+        if (file == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
         MusicFiles musicFile = storageService.store(file);
         return ResponseEntity.ok(musicFile.getMusicFileId());
     }
@@ -46,7 +51,9 @@ public class MusicAuthController {
     public StreamingResponseBody
     downloadMusicFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
-
+        if (id == null || username == null) {
+            return null;
+        }
         MusicFiles musicFile = storageService.downloadMusicFile(id, username);
         if (musicFile == null) {
             return null;
@@ -67,7 +74,9 @@ public class MusicAuthController {
     @ResponseBody
     ResponseEntity<UploadSongMetadataDTO>
     saveMusicFileMetadata(@RequestBody UploadSongMetadataDTO uploadSongMetadataDTO) {
-
+        if (uploadSongMetadataDTO == null) {
+            return new ResponseEntity<UploadSongMetadataDTO>(HttpStatus.NOT_FOUND);
+        }
         UploadSongMetadataDTO result = musicMetadataService.saveMetadata(uploadSongMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -78,7 +87,9 @@ public class MusicAuthController {
     ResponseEntity<List<SongDTO>>
     getTop10SongsOnlyPrivates(@RequestParam(value = "title", required = false) String title,
                               @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<SongDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<SongDTO> top10Songs = musicMetadataService.getTop10Songs(username, title);
         return ResponseEntity.ok(top10Songs);
     }
@@ -88,7 +99,9 @@ public class MusicAuthController {
     @ResponseBody
     ResponseEntity<List<SongDTO>>
     getAllUserSongs(@RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<SongDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<SongDTO> allUserSongs = musicMetadataService.getAllUserSongs(username);
         return ResponseEntity.ok(allUserSongs);
     }
@@ -99,7 +112,9 @@ public class MusicAuthController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username) || id == null) {
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
         Boolean success = musicManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -109,7 +124,9 @@ public class MusicAuthController {
     @ResponseBody
     ResponseEntity<SongDTO>
     updateSongMetadata(@RequestBody SongDTO songDTO) {
-
+        if (songDTO == null) {
+            return new ResponseEntity<SongDTO>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(musicMetadataService.updateSongMetadata(songDTO));
     }
 

@@ -3,6 +3,7 @@ package pl.polsl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
@@ -33,7 +34,9 @@ public class MusicNoAuthController {
     @GetMapping(value = "/download")
     public StreamingResponseBody
     downloadMusicFile(@RequestParam("id") Long id) {
-
+        if (id == null) {
+            return null;
+        }
         MusicFiles musicFile = storageService.downloadMusicFile(id);
         if (musicFile == null) {
             return null;
@@ -56,7 +59,9 @@ public class MusicNoAuthController {
     getArtistsPredictionList(@RequestParam(value = "name", required = false) String name,
                              @RequestParam(value = "name2", required = false) String name2,
                              @RequestParam(value = "surname", required = false) String surname) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<MusicArtistDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<MusicArtistDTO> artistsByPrediction = musicMetadataService.getArtistsByPrediction(name, name2, surname);
         return new ResponseEntity<List<MusicArtistDTO>>(artistsByPrediction, HttpStatus.OK);
     }
@@ -67,7 +72,9 @@ public class MusicNoAuthController {
     ResponseEntity<List<MusicAlbumDTO>>
     getAlbumsPredictionList(@RequestParam(value = "albumTitle", required = false) String albumTitle,
                             @RequestParam(value = "songTitle", required = false) String songTitle) {
-
+        if (StringUtils.isEmpty(albumTitle)) {
+            return new ResponseEntity<List<MusicAlbumDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<MusicAlbumDTO> albumsByPrediction = musicMetadataService.getAlbumsByPrediction(albumTitle, songTitle);
         return new ResponseEntity<List<MusicAlbumDTO>>(albumsByPrediction, HttpStatus.OK);
     }
@@ -77,7 +84,9 @@ public class MusicNoAuthController {
     @ResponseBody
     ResponseEntity<List<MusicGenreDTO>>
     getGenresPredictionList(@RequestParam(value = "genreName", required = false) String genreName) {
-
+        if (StringUtils.isEmpty(genreName)) {
+            return new ResponseEntity<List<MusicGenreDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<MusicGenreDTO> genresByPrediction = musicMetadataService.getGenresByPrediction(genreName);
         return new ResponseEntity<List<MusicGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
@@ -96,6 +105,9 @@ public class MusicNoAuthController {
     @ResponseBody
     ResponseEntity<List<SongDTO>>
     searchSongsByCriteria(@RequestBody SearchSongCriteriaDTO searchSongCriteriaDTO) {
+        if (searchSongCriteriaDTO == null) {
+            return new ResponseEntity<List<SongDTO>>(HttpStatus.NOT_FOUND);
+        }
 
         List<SongDTO> songDTOList = musicMetadataService.searchSongsByCriteria(searchSongCriteriaDTO);
         return ResponseEntity.ok(songDTOList);
@@ -112,6 +124,10 @@ public class MusicNoAuthController {
 
     @PutMapping("/rate")
     public void rateSong(@RequestBody RateSongDTO rateSongDTO) {
+        if (rateSongDTO == null) {
+            throw new NullPointerException();
+        }
+
         musicMetadataService.rateSong(rateSongDTO);
     }
 

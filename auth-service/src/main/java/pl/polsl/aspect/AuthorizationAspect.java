@@ -7,6 +7,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -54,7 +55,7 @@ public class AuthorizationAspect {
             }
         } catch (Throwable throwable) {
             throwable.printStackTrace();
-            throw throwable;
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } finally {
         }
         return returnObject;
@@ -140,7 +141,7 @@ public class AuthorizationAspect {
             return securityService.getUserByUsername(username);
         }
         if (!StringUtils.isEmpty(email) && !StringUtils.isEmpty(password)) {
-            return securityService.getUserByEmail(email, password);
+            return securityService.getUserByEmail(email);
         }
         return null;
     }

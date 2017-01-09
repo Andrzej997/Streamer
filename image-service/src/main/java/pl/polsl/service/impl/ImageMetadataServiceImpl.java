@@ -90,6 +90,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     @Override
     public UploadImageMetadataDTO saveMetadata(UploadImageMetadataDTO uploadImageMetadataDTO) {
+        if (uploadImageMetadataDTO == null || StringUtils.isEmpty(uploadImageMetadataDTO.getUsername())) {
+            return null;
+        }
         UsersView user = usersRepository.findUsersByUserName(uploadImageMetadataDTO.getUsername());
         if (user == null) {
             return null;
@@ -105,6 +108,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         images.setOwnerId(user.getUserId());
         completeRequiredOnNull(images);
         images = imagesRepository.save(images);
+        if (images == null) {
+            return null;
+        }
 
         saveImageArtistsForImage(images, artistsList);
         List<ImageAuthors> imageAuthorsList = imageAuthorsRepository.findByImageId(images.getImageId());
@@ -250,7 +256,10 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             imagesList = new ArrayList<>();
         }
         title += "%";
-        imagesList.addAll(imagesRepository.findByTitleLikeOrderByRating(title));
+        List<Images> imagesListByTitleLike = imagesRepository.findByTitleLikeOrderByRating(title);
+        if (imagesListByTitleLike != null && imagesListByTitleLike.size() > 0) {
+            imagesList.addAll(imagesListByTitleLike);
+        }
         imagesList = imagesList.stream().filter(images ->
                 (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
                 .collect(Collectors.toList());
@@ -343,7 +352,9 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     @Override
     public ImageDTO updateImageMetadata(ImageDTO imageDTO) {
-
+        if (imageDTO == null) {
+            return null;
+        }
         Images images = imageMapper.toImages(imageDTO);
         List<Artists> artistsList = imageMapper.toArtistsList(imageDTO.getArtistDTOList());
         saveImageTypeForImage(imageDTO, images);

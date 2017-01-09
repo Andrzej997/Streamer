@@ -103,13 +103,19 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
                 videoSeriesList = new ArrayList<>();
             }
             videoTitle = "%" + videoTitle + "%";
-            videoSeriesList.addAll(videoSeriesRepository.findByVideoTitleLike(videoTitle));
+            List<VideoSeries> videoSeriesListByVideoTitleLike = videoSeriesRepository.findByVideoTitleLike(videoTitle);
+            if (videoSeriesListByVideoTitleLike != null && !videoSeriesListByVideoTitleLike.isEmpty()) {
+                videoSeriesList.addAll(videoSeriesListByVideoTitleLike);
+            }
         }
         return videoMapper.toVideoSerieDTOList(videoSeriesList);
     }
 
     @Override
     public UploadVideoMetadataDTO saveMetadata(UploadVideoMetadataDTO uploadVideoMetadataDTO) {
+        if (uploadVideoMetadataDTO == null || StringUtils.isEmpty(uploadVideoMetadataDTO.getUsername())) {
+            return null;
+        }
         if (uploadVideoMetadataDTO == null || uploadVideoMetadataDTO.getVideo() == null
                 || uploadVideoMetadataDTO.getVideo().getVideoFileId() == null) {
             return null;
@@ -129,6 +135,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         saveVideoFileMetadataForVideo(videoDTO, videos);
         videos.setOwnerId(user.getUserId());
         videos = videosRepository.save(videos);
+        if (videos == null) {
+            return null;
+        }
 
         saveVideoDirectors(videos, directorsList);
         List<VideosAuthors> videosAuthorsList = videoAuthorsRepository.findByVideoId(videos.getVideoId());
@@ -271,7 +280,10 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             videosList = new ArrayList<>();
         }
         title += "%";
-        videosList.addAll(videosRepository.findByTitleLikeOrderByRating(title));
+        List<Videos> videosListByTitleLike = videosRepository.findByTitleLikeOrderByRating(title);
+        if (videosListByTitleLike != null && videosListByTitleLike.size() > 0) {
+            videosList.addAll(videosListByTitleLike);
+        }
         videosList = videosList.stream().filter(videos ->
                 (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
                 .collect(Collectors.toList());
@@ -364,6 +376,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
 
     @Override
     public VideoDTO updateVideoMetadata(VideoDTO videoDTO) {
+        if (videoDTO == null) {
+            return null;
+        }
         Videos videos = videoMapper.toVideos(videoDTO);
         List<Directors> directorsList = videoMapper.toDirectorsList(videoDTO.getDirectorList());
         saveFilmGenreForVideo(videoDTO, videos);

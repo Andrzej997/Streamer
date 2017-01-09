@@ -3,6 +3,7 @@ package pl.polsl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -39,6 +40,9 @@ public class VideoAuthController {
     @PostMapping("/upload")
     public ResponseEntity<Long>
     handleFileUpload(@RequestParam("file") MultipartFile file) {
+        if (file == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
         VideoFiles videoFile = storageService.store(file);
         return new ResponseEntity<Long>(videoFile.getVideoFileId(), HttpStatus.OK);
     }
@@ -47,7 +51,9 @@ public class VideoAuthController {
     public StreamingResponseBody
     downloadVideoFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
-
+        if (id == null || username == null) {
+            return null;
+        }
         VideoFiles videoFile = storageService.downloadVideoFile(id, username);
         if (videoFile == null) {
             return null;
@@ -68,7 +74,9 @@ public class VideoAuthController {
     @ResponseBody
     ResponseEntity<UploadVideoMetadataDTO>
     saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO) {
-
+        if (uploadVideoMetadataDTO == null) {
+            return new ResponseEntity<UploadVideoMetadataDTO>(HttpStatus.NOT_FOUND);
+        }
         UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -79,7 +87,9 @@ public class VideoAuthController {
     ResponseEntity<List<VideoDTO>>
     getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
                                @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<VideoDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<VideoDTO> top10Videos = videoMetadataService.getTop10Videos(username, title);
         return ResponseEntity.ok(top10Videos);
     }
@@ -89,7 +99,9 @@ public class VideoAuthController {
     @ResponseBody
     ResponseEntity<List<VideoDTO>>
     getAllUserVideos(@RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<VideoDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<VideoDTO> allUserVideos = videoMetadataService.getAllUserVideos(username);
         return ResponseEntity.ok(allUserVideos);
     }
@@ -100,7 +112,9 @@ public class VideoAuthController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username) || id == null) {
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
         Boolean success = videoManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -110,7 +124,9 @@ public class VideoAuthController {
     @ResponseBody
     ResponseEntity<VideoDTO>
     updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
-
+        if (videoDTO == null) {
+            return new ResponseEntity<VideoDTO>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(videoMetadataService.updateVideoMetadata(videoDTO));
     }
 

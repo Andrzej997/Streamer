@@ -3,6 +3,7 @@ package pl.polsl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
@@ -33,7 +34,9 @@ public class ImageNoAuthController {
     @GetMapping(value = "/download")
     public StreamingResponseBody
     downloadImageFile(@RequestParam("id") Long id) {
-
+        if (id == null) {
+            return null;
+        }
         ImageFiles imageFiles = storageService.downloadImageFile(id);
         if (imageFiles == null) {
             return null;
@@ -56,7 +59,9 @@ public class ImageNoAuthController {
     getArtistPredictionList(@RequestParam(value = "name", required = false) String name,
                             @RequestParam(value = "name2", required = false) String name2,
                             @RequestParam(value = "surname", required = false) String surname) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<ArtistDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<ArtistDTO> artistsByPrediction = imageMetadataService.getArtistsByPrediction(name, name2, surname);
         return new ResponseEntity<List<ArtistDTO>>(artistsByPrediction, HttpStatus.OK);
     }
@@ -66,7 +71,9 @@ public class ImageNoAuthController {
     @ResponseBody
     ResponseEntity<List<ImageTypeDTO>>
     getImageTypesByPrediction(@RequestParam(value = "name", required = false) String name) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<ImageTypeDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<ImageTypeDTO> imageTypesByPrediction = imageMetadataService.getImageTypesByPrediction(name);
         return new ResponseEntity<List<ImageTypeDTO>>(imageTypesByPrediction, HttpStatus.OK);
     }
@@ -86,6 +93,9 @@ public class ImageNoAuthController {
     @ResponseBody
     ResponseEntity<List<ImageDTO>>
     searchImagesByCriteria(@RequestBody SearchImageCriteriaDTO searchImageCriteriaDTO) {
+        if (searchImageCriteriaDTO == null) {
+            return new ResponseEntity<List<ImageDTO>>(HttpStatus.NOT_FOUND);
+        }
 
         List<ImageDTO> imageDTOList = imageMetadataService.searchImagesByCriteria(searchImageCriteriaDTO);
         return ResponseEntity.ok(imageDTOList);
@@ -102,6 +112,10 @@ public class ImageNoAuthController {
 
     @PutMapping("/rate")
     public void rateImage(@RequestBody RateImageDTO rateImageDTO) {
+        if (rateImageDTO == null) {
+            throw new NullPointerException();
+        }
+
         imageMetadataService.rateImage(rateImageDTO);
     }
 

@@ -42,8 +42,11 @@ public class ImageAdminController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
-        Boolean success = imageManagementService.removeFileAndMetadata(id, username);
+        Boolean success = false;
+        if (id == null || username == null) {
+            return ResponseEntity.ok(success);
+        }
+        success = imageManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
 }

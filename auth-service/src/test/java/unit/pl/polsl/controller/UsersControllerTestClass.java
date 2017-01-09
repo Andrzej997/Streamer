@@ -1,4 +1,4 @@
-package pl.polsl;
+package unit.pl.polsl.controller;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,7 +10,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import pl.polsl.AuthServiceApplication;
+import pl.polsl.controler.UsersAdminController;
 import pl.polsl.controler.UsersAuthController;
 import pl.polsl.controler.UsersNoAuthController;
 import pl.polsl.dto.ChangePasswordDTO;
@@ -31,9 +33,9 @@ import static org.mockito.Mockito.when;
  * Created by Mateusz on 04.11.2016.
  */
 @ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {AuthServiceApplication.class})
 public class UsersControllerTestClass {
 
     @InjectMocks
@@ -41,6 +43,9 @@ public class UsersControllerTestClass {
 
     @InjectMocks
     private UsersAuthController usersAuthController;
+
+    @InjectMocks
+    private UsersAdminController usersAdminController;
 
     @Mock
     private UsersService usersService;
@@ -185,7 +190,7 @@ public class UsersControllerTestClass {
         Long userId = 1L;
         when(usersService.deleteUser(userId)).thenReturn(true);
 
-        ResponseEntity<Boolean> result = usersAuthController.deleteUser(userId);
+        ResponseEntity<Boolean> result = usersAdminController.deleteUser(userId);
 
         assertThat(result).isNotNull();
         assertThat(result.getBody()).isTrue();
@@ -196,7 +201,7 @@ public class UsersControllerTestClass {
         Long userId = 1L;
         when(usersService.deleteUser(userId)).thenReturn(false);
 
-        ResponseEntity<Boolean> result = usersAuthController.deleteUser(userId);
+        ResponseEntity<Boolean> result = usersAdminController.deleteUser(userId);
 
         assertThat(result).isNotNull();
         assertThat(result.getBody()).isFalse();

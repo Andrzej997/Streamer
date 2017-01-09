@@ -3,6 +3,7 @@ package pl.polsl.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import pl.polsl.dto.*;
@@ -37,7 +38,9 @@ public class VideoNoAuthController {
     @GetMapping(value = "/download")
     public StreamingResponseBody
     downloadVideoFile(@RequestParam("id") Long id) {
-
+        if (id == null) {
+            return null;
+        }
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         if (videoFile == null) {
             return null;
@@ -60,7 +63,9 @@ public class VideoNoAuthController {
     getDirectorsPredictionList(@RequestParam(value = "name", required = false) String name,
                                @RequestParam(value = "name2", required = false) String name2,
                                @RequestParam(value = "surname", required = false) String surname) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<DirectorDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<DirectorDTO> directorsByPrediction = videoMetadataService.getDirectorsByPrediction(name, name2, surname);
         return new ResponseEntity<List<DirectorDTO>>(directorsByPrediction, HttpStatus.OK);
     }
@@ -71,7 +76,9 @@ public class VideoNoAuthController {
     ResponseEntity<List<VideoSerieDTO>>
     getVideoSeriesPredictionList(@RequestParam(value = "serieTitle", required = false) String serieTitle,
                                  @RequestParam(value = "videoTitle", required = false) String videoTitle) {
-
+        if (StringUtils.isEmpty(serieTitle)) {
+            return new ResponseEntity<List<VideoSerieDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<VideoSerieDTO> videoSeriesByPrediction = videoMetadataService.getVideoSeriesByPrediction(serieTitle, videoTitle);
         return new ResponseEntity<List<VideoSerieDTO>>(videoSeriesByPrediction, HttpStatus.OK);
     }
@@ -81,7 +88,9 @@ public class VideoNoAuthController {
     @ResponseBody
     ResponseEntity<List<FilmGenreDTO>>
     getGenresPredictionList(@RequestParam(value = "name", required = false) String name) {
-
+        if (StringUtils.isEmpty(name)) {
+            return new ResponseEntity<List<FilmGenreDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<FilmGenreDTO> genresByPrediction = videoMetadataService.getFilmGenresByPrediction(name);
         return new ResponseEntity<List<FilmGenreDTO>>(genresByPrediction, HttpStatus.OK);
     }
@@ -101,6 +110,9 @@ public class VideoNoAuthController {
     @ResponseBody
     ResponseEntity<List<VideoDTO>>
     searchVideosByCriteria(@RequestBody SearchVideoCriteriaDTO searchVideoCriteriaDTO) {
+        if (searchVideoCriteriaDTO == null) {
+            return new ResponseEntity<List<VideoDTO>>(HttpStatus.NOT_FOUND);
+        }
 
         List<VideoDTO> videoDTOList = videoMetadataService.searchVideosByCriteria(searchVideoCriteriaDTO);
         return ResponseEntity.ok(videoDTOList);
@@ -116,6 +128,10 @@ public class VideoNoAuthController {
 
     @PutMapping("/rate")
     public void rateVideo(@RequestBody RateVideoDTO rateVideoDTO) {
+        if (rateVideoDTO == null) {
+            throw new NullPointerException();
+        }
+
         videoMetadataService.rateVideo(rateVideoDTO);
     }
 

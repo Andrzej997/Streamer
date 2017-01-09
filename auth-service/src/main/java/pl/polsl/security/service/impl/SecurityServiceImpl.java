@@ -1,5 +1,6 @@
 package pl.polsl.security.service.impl;
 
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,7 +34,17 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    public SecuredUser getUserByEmail(String email) {
+        Users user = usersRepository.findByEmail(email);
+        return mapUsersToSecuredUser(user);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        EmailValidator emailValidator = new EmailValidator();
+        if (username != null && emailValidator.isValid(username, null)) {
+            return getUserByEmail(username);
+        }
         return getUserByUsername(username);
     }
 

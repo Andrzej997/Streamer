@@ -1,7 +1,9 @@
 package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -38,7 +40,9 @@ public class EbookAuthController {
 
     @PostMapping("/upload")
     public ResponseEntity<Long> handleFileUpload(@RequestParam("file") MultipartFile file) {
-
+        if (file == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
         EbookFiles ebookFile = storageService.store(file);
         return ResponseEntity.ok(ebookFile.getEbookFileId());
     }
@@ -48,6 +52,9 @@ public class EbookAuthController {
     downloadImageFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
 
+        if (id == null || username == null) {
+            return null;
+        }
         EbookFiles ebookFiles = storageService.downloadEbookFile(id, username);
         if (ebookFiles == null) {
             return null;
@@ -68,7 +75,9 @@ public class EbookAuthController {
     @ResponseBody
     ResponseEntity<UploadEbookMetadataDTO>
     saveEbookFileMetadata(@RequestBody UploadEbookMetadataDTO uploadEbookMetadataDTO) {
-
+        if (uploadEbookMetadataDTO == null) {
+            return new ResponseEntity<UploadEbookMetadataDTO>(HttpStatus.NOT_FOUND);
+        }
         UploadEbookMetadataDTO result = ebookMetadataService.saveMetadata(uploadEbookMetadataDTO);
         return ResponseEntity.ok(result);
     }
@@ -80,6 +89,9 @@ public class EbookAuthController {
     getTop10EbooksOnlyPrivates(@RequestParam(value = "title", required = false) String title,
                                @RequestParam("username") String username) {
 
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<EbookDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<EbookDTO> top10Ebooks = ebookMetadataService.getTop10Ebooks(username, title);
         return ResponseEntity.ok(top10Ebooks);
     }
@@ -89,7 +101,9 @@ public class EbookAuthController {
     @ResponseBody
     ResponseEntity<List<EbookDTO>>
     getAllUserEbooks(@RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username)) {
+            return new ResponseEntity<List<EbookDTO>>(HttpStatus.NOT_FOUND);
+        }
         List<EbookDTO> allUserEbooks = ebookMetadataService.getAllUserEbooks(username);
         return ResponseEntity.ok(allUserEbooks);
     }
@@ -100,7 +114,9 @@ public class EbookAuthController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
+        if (StringUtils.isEmpty(username) || id == null) {
+            return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
+        }
         Boolean success = ebookManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
@@ -110,7 +126,9 @@ public class EbookAuthController {
     @ResponseBody
     ResponseEntity<EbookDTO>
     updateEbookMetadata(@RequestBody EbookDTO ebookDTO) {
-
+        if (ebookDTO == null) {
+            return new ResponseEntity<EbookDTO>(HttpStatus.NOT_FOUND);
+        }
         return ResponseEntity.ok(ebookMetadataService.updateEbookMetadata(ebookDTO));
     }
 

@@ -13,5 +13,7 @@ public interface SecurityService extends UserDetailsService {
 
     SecuredUser getUserByUsername(String username);
 
+    SecuredUser getUserByEmail(String email);
+
     UserDetails getUserByEmail(String email, String password);
 }

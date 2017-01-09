@@ -1,4 +1,4 @@
-package pl.polsl;
+package unit.pl.polsl.service;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,7 +7,8 @@ import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.junit4.SpringRunner;
+import pl.polsl.AuthServiceApplication;
 import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
@@ -15,7 +16,6 @@ import pl.polsl.mapper.UsersMapper;
 import pl.polsl.model.Users;
 import pl.polsl.repository.UsersRepository;
 import pl.polsl.service.UsersService;
-import pl.polsl.service.impl.UsersServiceImpl;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -24,13 +24,14 @@ import static org.mockito.Mockito.when;
  * Created by Mateusz on 05.11.2016.
  */
 @ActiveProfiles("test")
-@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {AuthServiceApplication.class})
 public class UsersServiceTestClass {
 
+    @Autowired
     @InjectMocks
-    private UsersService usersService = new UsersServiceImpl();
+    private UsersService usersService;
 
     @Mock
     private UsersRepository usersRepository;

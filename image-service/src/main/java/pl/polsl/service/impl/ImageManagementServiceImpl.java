@@ -3,6 +3,7 @@ package pl.polsl.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import pl.polsl.repository.ImageFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.ImageManagementService;
@@ -22,6 +23,9 @@ public class ImageManagementServiceImpl implements ImageManagementService {
 
     @Override
     public Boolean removeFileAndMetadata(Long fileId, String username) {
+        if (fileId == null || StringUtils.isEmpty(username)) {
+            return false;
+        }
         if (usersRepository.findUsersByUserName(username) == null) {
             return false;
         }

@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import pl.polsl.encryption.ShaEncrypter;
 import pl.polsl.security.service.SecurityService;
 
+import javax.servlet.http.HttpServletResponse;
+
 /**
  * Created by Mateusz on 16.11.2016.
  */
@@ -64,6 +66,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
         httpSecurity
                 .addFilterBefore(getAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.logout()
+                .logoutSuccessHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                })
+                .clearAuthentication(true)
+                .logoutUrl("/auth/logout")
+                .invalidateHttpSession(true);
     }
 
     public EntrypointUnauthorizedHandler getEntrypointUnauthorizedHandler() {

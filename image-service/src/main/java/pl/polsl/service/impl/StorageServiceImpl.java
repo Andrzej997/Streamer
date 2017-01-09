@@ -58,8 +58,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ImageFiles downloadImageFile(Long id) {
+        if (id == null) {
+            return null;
+        }
         ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
-        if (imageFiles.getPublic()) {
+        if (imageFiles != null && imageFiles.getPublic() != null && imageFiles.getPublic()) {
             return imageFiles;
         }
         return null;
@@ -68,6 +71,9 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ImageFiles downloadImageFile(Long id, String username) {
+        if (id == null || StringUtils.isEmpty(username)) {
+            return null;
+        }
         ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
         if (imageFiles == null) {
             return null;

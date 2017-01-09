@@ -13,4 +13,6 @@ public interface StorageService {
     MusicFiles downloadMusicFile(Long id);
 
     MusicFiles downloadMusicFile(Long id, String username);
+
+    String getExtension(MultipartFile file);
 }

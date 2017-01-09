@@ -90,6 +90,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     @Override
     public UploadEbookMetadataDTO saveMetadata(UploadEbookMetadataDTO uploadEbookMetadataDTO) {
+        if (uploadEbookMetadataDTO == null || StringUtils.isEmpty(uploadEbookMetadataDTO.getUsername())) {
+            return null;
+        }
         UsersView user = usersRepository.findUsersByUserName(uploadEbookMetadataDTO.getUsername());
         if (user == null) {
             return null;
@@ -105,7 +108,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         ebook.setOwnerId(user.getUserId());
         completeReqiredFieldsForEbook(ebook);
         ebook = ebookRepository.save(ebook);
-
+        if (ebook == null) {
+            return null;
+        }
         saveWritersForEbook(ebook, writersList);
         List<EbookAuthors> imageAuthorsList = ebookAuthorsRepository.findByEbookId(ebook.getEbookId());
         ebook.setEbookAuthorsesByEbookId(imageAuthorsList);
@@ -243,7 +248,10 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             ebookList = new ArrayList<>();
         }
         title += "%";
-        ebookList.addAll(ebookRepository.findByTitleLikeOrderByRating(title));
+        List<Ebook> ebookListByTitleLike = ebookRepository.findByTitleLikeOrderByRating(title);
+        if (ebookListByTitleLike != null && ebookListByTitleLike.size() > 0) {
+            ebookList.addAll(ebookListByTitleLike);
+        }
         ebookList = ebookList.stream().filter(ebook ->
                 (ebook.getEbookFilesByEbookFileId() != null && ebook.getEbookFilesByEbookFileId().getPublic()))
                 .collect(Collectors.toList());
@@ -336,6 +344,9 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     @Override
     public EbookDTO updateEbookMetadata(EbookDTO ebookDTO) {
+        if (ebookDTO == null) {
+            return null;
+        }
 
         Ebook ebook = ebookMapper.toEbook(ebookDTO);
         List<Writers> writersList = ebookMapper.toWritersList(ebookDTO.getWriterDTOList());

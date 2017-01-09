@@ -58,8 +58,11 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MusicFiles downloadMusicFile(Long id) {
+        if (id == null) {
+            return null;
+        }
         MusicFiles musicFiles = musicFilesRepository.findOne(id);
-        if (musicFiles.getPublic()) {
+        if (musicFiles != null && musicFiles.getPublic() != null && musicFiles.getPublic()) {
             return musicFiles;
         } else {
             return null;
@@ -69,6 +72,9 @@ public class StorageServiceImpl implements StorageService {
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public MusicFiles downloadMusicFile(Long id, String username) {
+        if (id == null || StringUtils.isEmpty(username)) {
+            return null;
+        }
         MusicFiles musicFiles = musicFilesRepository.findOne(id);
         if (musicFiles == null) {
             return null;
@@ -98,7 +104,8 @@ public class StorageServiceImpl implements StorageService {
         return musicFile;
     }
 
-    private String getExtension(MultipartFile file) {
+    @Override
+    public String getExtension(MultipartFile file) {
         if (file == null) {
             return null;
         }

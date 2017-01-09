@@ -70,12 +70,15 @@ public class UsersServiceImpl implements UsersService {
         if (usersRepository.findByUserName(username) != null) {
             return false;
         }
+        if (usersRepository.findByEmail(email) != null) {
+            return false;
+        }
         return usersRepository.save(user) != null;
     }
 
     @Override
     public Users updateUserInformations(UsersDTO dto) {
-        if (dto == null) {
+        if (dto == null || dto.getUserId() == null) {
             return null;
         }
         Users user = mapper.toUsers(dto);
@@ -93,8 +96,8 @@ public class UsersServiceImpl implements UsersService {
     public Boolean deleteUser(Long userId) {
         Users user = usersRepository.findOne(userId);
         if (userId != null && user != null) {
-                usersRepository.delete(user);
-                return true;
+            usersRepository.delete(user);
+            return true;
         }
         return false;
     }

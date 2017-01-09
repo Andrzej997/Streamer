@@ -42,8 +42,11 @@ public class VideoAdminController {
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
                           @RequestParam("username") String username) {
-
-        Boolean success = videoManagementService.removeFileAndMetadata(id, username);
+        Boolean success = false;
+        if (id == null || username == null) {
+            return ResponseEntity.ok(success);
+        }
+        success = videoManagementService.removeFileAndMetadata(id, username);
         return ResponseEntity.ok(success);
     }
 }
