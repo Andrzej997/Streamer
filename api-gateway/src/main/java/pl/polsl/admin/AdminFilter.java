@@ -45,7 +45,7 @@ public class AdminFilter implements Filter {
         if (checkAdminRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
-                entity = restTemplate.exchange(authEndpoint + "/admin", HttpMethod.GET,
+                entity = restTemplate.exchange(authEndpoint + "/admin/", HttpMethod.GET,
                         generateHeaders(httpRequest), String.class);
             } catch (HttpClientErrorException e) {
                 exception = e;
