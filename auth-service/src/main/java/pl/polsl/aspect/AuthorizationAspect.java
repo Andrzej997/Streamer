@@ -56,7 +56,6 @@ public class AuthorizationAspect {
         } catch (Throwable throwable) {
             throwable.printStackTrace();
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } finally {
         }
         return returnObject;
     }
@@ -146,7 +145,7 @@ public class AuthorizationAspect {
         return null;
     }
 
-    class Credentials {
+    private class Credentials {
         private String username;
         private String password;
         private String email;

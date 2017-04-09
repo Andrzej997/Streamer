@@ -6,7 +6,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import pl.polsl.security.model.SecuredUser;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -107,9 +106,8 @@ public class Tokenizer {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        SecuredUser user = (SecuredUser) userDetails;
         String username = this.getUsernameFromToken(token);
-        return (username.equals(user.getUsername()) && !(this.isTokenExpired(token)));
+        return (username.equals(userDetails.getUsername()) && !(this.isTokenExpired(token)));
     }
 
     public String generateToken(UserDetails userDetails) {

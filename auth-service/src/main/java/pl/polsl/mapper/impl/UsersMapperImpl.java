@@ -1,6 +1,5 @@
 package pl.polsl.mapper.impl;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.mapper.UsersMapper;
@@ -12,15 +11,35 @@ import pl.polsl.model.Users;
 @Component
 public class UsersMapperImpl implements UsersMapper {
 
-    private ModelMapper modelMapper = new ModelMapper();
+    //private ModelMapper modelMapper = new ModelMapper();
 
     @Override
     public UsersDTO toUsersDTO(Users users) {
-        return modelMapper.map(users, UsersDTO.class);
+        if (users == null) {
+            return null;
+        }
+        UsersDTO result = new UsersDTO();
+        result.setUserId(users.getUserId());
+        result.setName(users.getName());
+        result.setSurname(users.getSurname());
+        result.setNationality(users.getNationality());
+        result.setEmail(users.getEmail());
+        result.setUserName(users.getUserName());
+        return result;
     }
 
     @Override
     public Users toUsers(UsersDTO users) {
-        return modelMapper.map(users, Users.class);
+        if (users == null) {
+            return null;
+        }
+        Users result = new Users();
+        result.setUserId(users.getUserId());
+        result.setName(users.getName());
+        result.setSurname(users.getSurname());
+        result.setNationality(users.getNationality());
+        result.setEmail(users.getEmail());
+        result.setUserName(users.getUserName());
+        return result;
     }
 }

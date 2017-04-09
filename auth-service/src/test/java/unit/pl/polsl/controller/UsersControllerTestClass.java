@@ -20,11 +20,11 @@ import pl.polsl.dto.RegistrationDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.model.Users;
 import pl.polsl.security.Tokenizer;
-import pl.polsl.security.model.SecuredUser;
 import pl.polsl.security.service.SecurityService;
 import pl.polsl.service.UsersService;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -107,16 +107,17 @@ public class UsersControllerTestClass {
         registrationDTO.setEmail("email");
         registrationDTO.setPassword("password");
         registrationDTO.setUsername("username");
-        SecuredUser securedUser = new SecuredUser();
-        securedUser.setId(1L);
+        Users securedUser = new Users();
+        securedUser.setUserId(1L);
         securedUser.setPassword("password");
         securedUser.setEmail("email");
-        securedUser.setUsername("username");
+        securedUser.setUserName("username");
         securedUser.setAuthorities(new ArrayList<>());
-        securedUser.setAccountNonExpired(true);
-        securedUser.setAccountNonLocked(true);
-        securedUser.setCredentialsNonExpired(true);
-        securedUser.setEnabled(true);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 120);
+        securedUser.setAccountExpirationDate(calendar.getTime());
+        securedUser.setAccountLocked(false);
+        securedUser.setPasswordExpirationDate(calendar.getTime());
 
         when(usersService.registerUser("username", "password", "email")).thenReturn(true);
         when(securityService.getUserByUsername(registrationDTO.getUsername())).thenReturn(securedUser);

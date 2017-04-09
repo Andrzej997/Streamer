@@ -15,6 +15,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Mateusz on 16.11.2016.
@@ -36,6 +38,12 @@ public class AuthFilter extends UsernamePasswordAuthenticationFilter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String authToken = httpRequest.getHeader(this.tokenHeader);
         String username = this.tokenizer.getUsernameFromToken(authToken);
+
+        Date creationDate = this.tokenizer.getCreatedDateFromToken(authToken);
+        if (creationDate != null && creationDate.after(Calendar.getInstance().getTime())) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.securityService.getUserByUsername(username);

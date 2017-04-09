@@ -13,9 +13,13 @@ import pl.polsl.dto.ChangePasswordDTO;
 import pl.polsl.dto.UsersDTO;
 import pl.polsl.encryption.ShaEncrypter;
 import pl.polsl.mapper.UsersMapper;
+import pl.polsl.model.Authority;
 import pl.polsl.model.Users;
+import pl.polsl.repository.AuthorityRepository;
 import pl.polsl.repository.UsersRepository;
 import pl.polsl.service.UsersService;
+
+import java.util.Calendar;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -35,6 +39,9 @@ public class UsersServiceTestClass {
 
     @Mock
     private UsersRepository usersRepository;
+
+    @Mock
+    private AuthorityRepository authorityRepository;
 
     @Autowired
     @Spy
@@ -121,8 +128,21 @@ public class UsersServiceTestClass {
         user.setEmail("email");
         user.setPassword(ShaEncrypter.sha256("password"));
         user.setUserName("username");
+        user.setAccountLocked(false);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, 120);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        user.setPasswordExpirationDate(calendar.getTime());
+        user.setAccountExpirationDate(calendar.getTime());
+        Authority authority = new Authority();
+        authority.setUserId(user.getUserId());
+        authority.setAuthority("ROLE_USER");
         when(usersRepository.findByUserName("username")).thenReturn(null);
+        when(usersRepository.findByEmail("email")).thenReturn(null);
         when(usersRepository.save(user)).thenReturn(user);
+        when(authorityRepository.save(authority)).thenReturn(authority);
 
         Boolean success = usersService.registerUser("username", "password", "email");
 
@@ -326,5 +346,13 @@ public class UsersServiceTestClass {
 
     public void setUsersMapper(UsersMapper usersMapper) {
         this.usersMapper = usersMapper;
+    }
+
+    public AuthorityRepository getAuthorityRepository() {
+        return authorityRepository;
+    }
+
+    public void setAuthorityRepository(AuthorityRepository authorityRepository) {
+        this.authorityRepository = authorityRepository;
     }
 }
