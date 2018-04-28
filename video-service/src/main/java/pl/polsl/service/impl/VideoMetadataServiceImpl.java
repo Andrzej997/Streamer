@@ -158,6 +158,8 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             genre = filmGenresRepository.save(videoMapper.toFilmGenres(videoDTO.getFilmGenre()));
         }
         if (genre == null) {
+            videos.setFilmGenresByFilmGenreId(null);
+            videos.setFilmGenreId(null);
             return;
         }
         videos.setFilmGenresByFilmGenreId(genre);
@@ -170,6 +172,8 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             videoSeries = videoSeriesRepository.save(videoMapper.toVideoSeries(videoDTO.getVideoSerie()));
         }
         if (videoSeries == null) {
+            videos.setVideoSeriesByVideoSerieId(null);
+            videos.setVideoSerieId(null);
             return;
         }
         videos.setVideoSeriesByVideoSerieId(videoSeries);
@@ -185,6 +189,8 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             videoFiles = videoFilesRepository.save(toVideoFiles);
         }
         if (videoFiles == null) {
+            videos.setVideoFilesByVideoFileId(null);
+            videos.setVideoFileId(null);
             return;
         }
         videos.setVideoFilesByVideoFileId(videoFiles);
@@ -389,8 +395,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<VideosAuthors> videosAuthorsList = videoAuthorsRepository.findByVideoId(videos.getVideoId());
         videos.setVideosAuthorsesByVideoId(videosAuthorsList);
         videos = videosRepository.save(videos);
-        VideoDTO result = videoMapper.toVideoDTO(videos);
-        return result;
+        return videoMapper.toVideoDTO(videos);
     }
 
     @Override

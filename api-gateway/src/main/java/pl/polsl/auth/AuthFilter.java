@@ -2,6 +2,7 @@ package pl.polsl.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,9 +21,10 @@ import java.util.List;
  * Created by Mateusz on 21.11.2016.
  */
 @Component
+@Order(2)
 public class AuthFilter implements Filter {
 
-    @Value("${zuul.routes.auth-service.url}")
+    @Value("${zuul.routes.auth-service.service-id}")
     private String authEndpoint;
 
     @Autowired
@@ -47,7 +49,7 @@ public class AuthFilter implements Filter {
         if (checkAuthRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
-                entity = restTemplate.exchange(authEndpoint + "/auth/authorize", HttpMethod.GET,
+                entity = restTemplate.exchange("http://" + authEndpoint + "/auth/authorize", HttpMethod.GET,
                         generateHeaders(httpRequest), String.class);
             } catch (HttpClientErrorException e) {
                 exception = e;

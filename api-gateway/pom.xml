@@ -37,8 +37,8 @@
             <version>1.2.1.RELEASE</version>
         </dependency>
         <dependency>
-            <groupId>com.netflix.ribbon</groupId>
-            <artifactId>ribbon-eureka</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
             <version>RELEASE</version>
         </dependency>
         <dependency>

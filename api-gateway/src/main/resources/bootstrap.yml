@@ -4,10 +4,96 @@ spring:
     name: api-gateway
   cloud:
     config:
-      failFast: true
       uri: http://localhost:8888
       discovery:
+        enabled: true
         serviceId: config-server
+  http:
+    multipart:
+      max-file-size: 25600MB
+      max-request-size: 25600MB
+server:
+  port: 8080
+eureka:
+  instance:
+    hostname: api-gateway
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    preferIpAddress: true
+    nonSecurePort: ${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 5
+    instanceInfoReplicationIntervalSeconds: 5
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    eureka-connection-idle-timeout-seconds: 6000
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    lease:
+      duration: 5
+ribbon:
+  ReadTimeout: 18000000
+  ConnectTimeout: 18000000
+  MaxAutoRetries: 10
+  MaxAutoRetriesNextServer: 10
+  OkToRetryOnAllOperations: true
+  eureka:
+    enabled: true
+zuul:
+  ignoredServices: "*"
+  host:
+    connect-timeout-millis: 18000000
+    socket-timeout-millis: 18000000
+  routes:
+    auth-service:
+      path: /auth/**
+      service-id: auth-service
+    ebook-service:
+      path: /ebook/**
+      service-id: ebook-service
+    image-service:
+      path: /image/**
+      service-id: image-service
+    music-service:
+      path: /music/**
+      service-id: music-service
+    video-service:
+      path: /video/**
+      service-id: video-service
+    hystrix-dashboard:
+      path: /hystrix/**
+      service-id: hystrix-dashboard
+gateway:
+  ribbon:
+    ReadTimeout: 18000000
+    ConnectTimeout: 18000000
+    ServerListRefreshInterval: 15000
+    eureka:
+      enabled: true
+hystrix:
+  threadpool:
+    default:
+      coreSize: 100
+      maxQueueSize: -1
+      queueSizeRejectionThreshold: 5
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 30000
+        requestVolumeThreshold: 20
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 10000
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
 ---
 
 spring:

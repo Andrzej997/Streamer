@@ -5,6 +5,53 @@ spring:
   cloud:
     config:
       uri: http://localhost:8888
+      discovery:
+        enabled: true
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+  datasource:
+    initialize: false
+    url: jdbc:postgresql://localhost:5432/videodb
+    username: sysadm
+    password: sysadm
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      default-auto-commit: false
+    dbcp:
+      default-auto-commit: false
+  http:
+    multipart:
+      max-file-size: 25600MB
+      max-request-size: 25600MB
+server:
+  port: 9008
+eureka:
+  instance:
+    hostname: video-service
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    prefer-ip-address: true
+    nonSecurePort: ${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    eureka-connection-idle-timeout-seconds: 3000
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+ribbon:
+  ReadTimeout: 18000000
+  ConnectTimeout: 18000000
+  eureka:
+    enabled: false
+encrypt:
+  failOnError: false
+logging:
+  file: log.txt
+  level: error
+
 ---
 spring:
   profiles: docker
