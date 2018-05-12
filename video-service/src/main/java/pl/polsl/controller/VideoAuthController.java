@@ -2,6 +2,7 @@ package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -48,25 +49,34 @@ public class VideoAuthController {
     }
 
     @GetMapping(value = "/download")
-    public StreamingResponseBody
+    public ResponseEntity<StreamingResponseBody>
     downloadVideoFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
         if (id == null || username == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id, username);
         if (videoFile == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         try {
+            Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
-            return (os) -> {
-                readAndWrite(binaryStream, os);
-            };
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
+                    .contentLength(videoFile.getFile().length())
+                    .header("X-Content-Duration", fileLength.toString())
+                    .header("Content-Range", "bytes 0-" +
+                            new Long(fileLength - 1).toString() + "/" + fileLength.toString())
+                    .header("Accept-Ranges", "bytes")
+                    .body(os -> {
+
+                        readAndWrite(binaryStream, os);
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/file/metadata")

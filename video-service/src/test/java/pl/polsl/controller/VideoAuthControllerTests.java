@@ -85,9 +85,10 @@ public class VideoAuthControllerTests {
         String username = "test";
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        StreamingResponseBody responseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username);
 
-        assertThat(responseBody).isNull();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -96,9 +97,10 @@ public class VideoAuthControllerTests {
         String username = null;
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        StreamingResponseBody responseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username);
 
-        assertThat(responseBody).isNull();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -118,13 +120,15 @@ public class VideoAuthControllerTests {
         when(storageService.downloadVideoFile(id, username)).thenReturn(videoFiles);
 
 
-        StreamingResponseBody streamingResponseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoAuthController.downloadVideoFile(id, username);
 
 
         assertThat(streamingResponseBody).isNotNull();
+        assertThat(streamingResponseBody.getBody()).isNotNull();
+        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
         OutputStream outputStream = new ByteArrayOutputStream();
         try {
-            streamingResponseBody.writeTo(outputStream);
+            streamingResponseBody.getBody().writeTo(outputStream);
             assertThat(outputStream).isNotNull();
         } catch (IOException e) {
             e.printStackTrace();
