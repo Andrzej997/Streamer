@@ -27,5 +27,5 @@ before_install:
 install:
   - mvn clean install package
 after_success:
-  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker images 'mateuszsojka/*:latest' --format '{{.Repository}}:{{.Tag}}' | while read -r line ; do docker push $line done
+  - docker login -u $DOCKER_USER -p $DOCKER_PASS
+  - docker images 'mateuszsojka/*latest' --format '{{.Repository}}:{{.Tag}}' | xargs -L1 docker push
