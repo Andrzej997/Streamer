@@ -1,0 +1,31 @@
+language: java
+sudo: required
+dist: trusty
+services:
+- docker
+cache:
+  directories:
+  - "$HOME/.m2"
+jdk:
+- oraclejdk8
+os:
+- linux
+branches:
+  only:
+  - develop
+env:
+  global:
+  - secure: Fb8dRdrbbYXbdEx/poUDL/N60MHyLEdaWBe5moqtjPXPHcOQavnh/rucFJ/IeYOBm3N7fbZlWTDfNsKxtxqXYVnlHE28r8oi+qp16/nO6wmmiTOYxgk4lOzwvqDYPHhiO97a7xdR2vyDSVRRoMLMsNmvuB0nWz+AQKutgCRN4SYBoSll5D/rRi+IesaHU0Qb4Ck21F2ix+4gbCH+2HYzz62Rxq3nMP8/JPgBATzhK14pYMEnXkB7qIhMn2+zUMOfWSvkrqC+vdwkW1ZRDSxLMb0qrsj0jx3P/etn9+Lsa+J3fBVwPf2Ir5N5oFBUNW6GxJk4h643j9jx7iduaAlbI1bObL0zzkxw94VKTsAjANTmoSRerJWUvGwDpD+3zoUTCJWBtCJ3GhMZfZOcksxXSZveb8Df3tyhDPJt/GvH3/sYJ1cyncJ91hgvae91tx3V1LkQkeG5t/nA0V+f8NrxZ+ZpN3wY9XvH6u+4sIi4OgzDIHeXg6KCs4sc+Ib6A7oEQc2NEPTjlJdv9Zq5NSUfV/E8b5nufhRL0baxaurRuY2nm43BE6Fbf6qVi82IiXM3N6eUy9ubuZLmEYRHkKj/eOb3eX+QzM78qmtTuNFswqPp+rPND42QyXx0DQI3LgHB67jzATi7rMB6WH9TQZlHdlWzn3ZsOOpmfQhM/lULUSo=
+  - secure: mhU6+2Zw3R+HpBlav9mpfIokAc2/kgj9vLUC/ZPLbYnmK99+gimsaEphRl3c2CbjBwSSJ/5/RabaRhlGT9cC/cB2PwAGZu7igyXWmDi/hlkFwICFowyFLsMUMNq/I+XgM4sOJxDLMzK4VOmTkkB8Thu7xpAjB2seHENhnxdkXc73Vw3mmKkeZuRPDHlhAneCQEmwBlgJus+N1CufF8r1p9Aiz8fVb8fsWCa4UhfhN/CgWekR4X1m+Nw/DiVHzYQColiuLHTIV6UCp296Z9xwbxaZpzQhvE2mEpI4VW1SAAHRS9K2QXUabEFoQebq28LmLw93VPjEDDdbP5avlO5uSqKSVDOMIC9zFijr/cfBcLUL9MwluAcu7PkPM+aQ+SdbXrlQr0t1T47xsqUjwWJXAJrpjguLJaZkRE2Hios30wZFq7NLFBupOLqSU8xDuoUkqb0b3yAJFl+bVL9ODZyzZ6X1hZOm6BrU93yfEy6dASK0b7Jj+CaTh39rWj+m8YajSQcLwD6nvd4Qc6WoV3zlUm7kY6bllrD5qsLHP4/dsSM+7zkjO8RA2HkluyLLP3p9jgNncxBYoW0WBjyi7MhdhYvx5u63YDVNWogXpaNu8e51gHEgGzXlM9DQ7ElY38rnNRfzj3CkFI9//qiiJJ7aBjMexWde772yj2xNChL5FQA=
+  - secure: SHqs27F6bXOh+KBvGrH4a0aHU4Irfdh3uiS04Hwkjl/1JizD2proT+HKf7Du4sDuLsgs2dHiNgDUNSjdZzBHqRrPL5BzyUyyqRUOmFmAS++0CKfJvkMkOxH1uqJtgg5Pmbwr7CRfJ6RaiJdu0sZDPPk9nwNnalgsJjcEGMmPM0uMI0vA96LFhNqyNQ3cb39jBLmUcfvhxQc+PUTzPBPuSWM+2Hgu8ciAtVNi6s3SVKL9vw9MQ67p69T3zT2ro+5XAwyL3F6O4nnSuA68UTa3/O4fsudD3/aN3QV4AzGJUcyAL2gGQmnbJt1WzbQ3TmxBCFujjww3rxhTruX9nX9gtyMLxAHZltTf2ntvvAYJSKjsmv5IcHIUpXyokitjmIyMwFQ8b3BlbdKnahpZda449ndBGbXLVRPo7T0kK8lKBEc6G+jD57gxLdlXJSDojld9eEWMS+ch5lcA7VAI4r3qPcFKqS+JP8uGXafXX2/Iz5epAyIe999qFF/f70/m3LySIOz/niMZ9rwmDT6FdNBr4D9gCUVBdAm/WgCE7aRiJy4/uK9MA4bVnp1m8AfE0DwJOi8WXqZxluVM5iNqOOuwb2ar0tCa3ujzOkLV9dXMnywgcvFU86tw2Lohg9tY/TVsJG2UZCiYtLuaY2cz9ufNw1qI2JVIQM3TL3De0b1ZZFg=
+# 1 DOCKER_EMAIL
+# 2 DOCKER_USER
+# 3 DOCKER_PASS
+before_install:
+- sudo apt-get update
+- sudo apt-get -y -o Dpkg::Options::="--force-confnew" install docker-ce
+install:
+  - mvn clean install package
+after_success:
+  - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+  - docker images 'mateuszsojka/*:latest' --format '{{.Repository}}:{{.Tag}}' | while read -r line ; do docker push $line done
