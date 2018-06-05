@@ -69,6 +69,33 @@ public class VideoNoAuthController {
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @GetMapping(value = "/thumbnail")
+    public ResponseEntity<StreamingResponseBody>
+    downloadThumbnail(@RequestParam("id") Long id) {
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        VideoFiles videoFile = storageService.downloadVideoFile(id);
+        if (videoFile == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            Long fileLength = new Long(videoFile.getThumbnail().length());
+            final InputStream binaryStream = videoFile.getThumbnail().getBinaryStream();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("image/jpeg"))
+                    .contentLength(fileLength)
+                    .header("Accept-Ranges", "bytes")
+                    .body(os -> {
+
+                        readAndWrite(binaryStream, os);
+                    });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     @GetMapping("/directors/prediction")
     public
     @ResponseBody

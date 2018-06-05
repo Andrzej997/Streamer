@@ -8,8 +8,11 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.dto.TranscodeRequestDTO;
 import pl.polsl.dto.UploadVideoMetadataDTO;
 import pl.polsl.dto.VideoDTO;
+import pl.polsl.exception.FFMPEGException;
+import pl.polsl.helper.Resolution;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoManagementService;
@@ -89,6 +92,24 @@ public class VideoAuthController {
         }
         UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/video/transcode")
+    public
+    @ResponseBody
+    ResponseEntity<Long>
+    transcodeVideo(@RequestBody TranscodeRequestDTO request) {
+        if (request == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            VideoFiles videoFile = storageService.transcode(request.getVideoId(), request.getUsername(), Resolution.valueOf(request.getResolutionType()));
+
+            return new ResponseEntity<Long>(videoFile.getVideoFileId(), HttpStatus.OK);
+        } catch (InterruptedException | IOException | FFMPEGException | SQLException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/top10/videos")
