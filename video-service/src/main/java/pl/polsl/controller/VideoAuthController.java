@@ -2,13 +2,17 @@ package pl.polsl.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.dto.TranscodeRequestDTO;
 import pl.polsl.dto.UploadVideoMetadataDTO;
 import pl.polsl.dto.VideoDTO;
+import pl.polsl.exception.FFMPEGException;
+import pl.polsl.helper.Resolution;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoManagementService;
@@ -48,25 +52,34 @@ public class VideoAuthController {
     }
 
     @GetMapping(value = "/download")
-    public StreamingResponseBody
+    public ResponseEntity<StreamingResponseBody>
     downloadVideoFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username) {
         if (id == null || username == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id, username);
         if (videoFile == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         try {
+            Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
-            return (os) -> {
-                readAndWrite(binaryStream, os);
-            };
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
+                    .contentLength(videoFile.getFile().length())
+                    .header("X-Content-Duration", fileLength.toString())
+                    .header("Content-Range", "bytes 0-" +
+                            new Long(fileLength - 1).toString() + "/" + fileLength.toString())
+                    .header("Accept-Ranges", "bytes")
+                    .body(os -> {
+
+                        readAndWrite(binaryStream, os);
+                    });
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping("/file/metadata")
@@ -79,6 +92,24 @@ public class VideoAuthController {
         }
         UploadVideoMetadataDTO result = videoMetadataService.saveMetadata(uploadVideoMetadataDTO);
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/video/transcode")
+    public
+    @ResponseBody
+    ResponseEntity<Long>
+    transcodeVideo(@RequestBody TranscodeRequestDTO request) {
+        if (request == null) {
+            return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            VideoFiles videoFile = storageService.transcode(request.getVideoId(), request.getUsername(), Resolution.valueOf(request.getResolutionType()));
+
+            return new ResponseEntity<Long>(videoFile.getVideoFileId(), HttpStatus.OK);
+        } catch (InterruptedException | IOException | FFMPEGException | SQLException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/top10/videos")

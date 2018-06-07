@@ -3,10 +3,7 @@ package pl.polsl.model;
 import org.hibernate.annotations.Immutable;
 import pl.polsl.model.base.BaseEntity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 /**
  * Created by Mateusz on 28.10.2016.

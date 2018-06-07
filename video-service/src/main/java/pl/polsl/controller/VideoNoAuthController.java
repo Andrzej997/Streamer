@@ -1,8 +1,11 @@
 package pl.polsl.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,24 +40,60 @@ public class VideoNoAuthController {
     private VideoManagementService videoManagementService;
 
     @GetMapping(value = "/download")
-    public StreamingResponseBody
+    public ResponseEntity<StreamingResponseBody>
     downloadVideoFile(@RequestParam("id") Long id) {
         if (id == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         if (videoFile == null) {
-            return null;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         try {
+            Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
-            return (os) -> {
-                readAndWrite(binaryStream, os);
-            };
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
+                    .contentLength(videoFile.getFile().length())
+                    .header("X-Content-Duration", fileLength.toString())
+                    .header("Content-Range", "bytes 0-" +
+                            new Long(fileLength - 1).toString() + "/" + fileLength.toString())
+                    .header("Accept-Ranges", "bytes")
+                    .body(os -> {
+
+               readAndWrite(binaryStream, os);
+            });
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(value = "/thumbnail")
+    public ResponseEntity<StreamingResponseBody>
+    downloadThumbnail(@RequestParam("id") Long id) {
+        if (id == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        VideoFiles videoFile = storageService.downloadVideoFile(id);
+        if (videoFile == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        try {
+            Long fileLength = new Long(videoFile.getThumbnail().length());
+            final InputStream binaryStream = videoFile.getThumbnail().getBinaryStream();
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType("image/jpeg"))
+                    .contentLength(fileLength)
+                    .header("Accept-Ranges", "bytes")
+                    .body(os -> {
+
+                        readAndWrite(binaryStream, os);
+                    });
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @GetMapping("/directors/prediction")

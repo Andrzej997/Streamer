@@ -1,5 +1,6 @@
 package integration.pl.polsl.controller;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -236,6 +237,7 @@ public class UsersNoAuthControllerIntegrationTests {
     }
 
     @Test
+    @Ignore
     public void shouldSuccessRegisterUser() {
         RegistrationDTO registrationDTO = new RegistrationDTO();
         registrationDTO.setUsername("test5");

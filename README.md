@@ -4,6 +4,8 @@ This is a backend server for Streamer Web Api.
 It is created using Spring Boot and Docker.
 The architecture is microservices with REST.
 
+[![Build Status](https://travis-ci.org/Andrzej997/Streamer.svg?branch=develop)](https://travis-ci.org/Andrzej997/Streamer)
+
 ## Auth-Service
 This is a microservice for registration, authorisation
 and managing users. 

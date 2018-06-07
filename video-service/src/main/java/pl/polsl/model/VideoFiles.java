@@ -53,6 +53,13 @@ public class VideoFiles extends BaseEntity {
     @Column(name = "file", nullable = false)
     private Blob file;
 
+    @Lob
+    @Column(name = "thumbnail", nullable = false)
+    private Blob thumbnail;
+
+    @Column(name = "resolution")
+    private String resolution;
+
     @OneToMany(mappedBy = "videoFilesByVideoFileId", cascade = CascadeType.ALL)
     private Collection<Videos> videosesByVideoFileId;
 
@@ -160,5 +167,21 @@ public class VideoFiles extends BaseEntity {
 
     public void setVideosesByVideoFileId(Collection<Videos> videosesByVideoFileId) {
         this.videosesByVideoFileId = videosesByVideoFileId;
+    }
+
+    public Blob getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(Blob thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
     }
 }

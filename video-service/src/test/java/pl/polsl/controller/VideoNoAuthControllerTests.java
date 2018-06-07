@@ -51,9 +51,10 @@ public class VideoNoAuthControllerTests {
         Long id = null;
         when(storageService.downloadVideoFile(id)).thenReturn(null);
 
-        StreamingResponseBody responseBody = videoNoAuthController.downloadVideoFile(id);
+        ResponseEntity<StreamingResponseBody> responseBody = videoNoAuthController.downloadVideoFile(id);
 
-        assertThat(responseBody).isNull();
+        assertThat(responseBody).isNotNull();
+        assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
     }
 
     @Test
@@ -72,13 +73,15 @@ public class VideoNoAuthControllerTests {
         when(storageService.downloadVideoFile(id)).thenReturn(videoFiles);
 
 
-        StreamingResponseBody streamingResponseBody = videoNoAuthController.downloadVideoFile(id);
+        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoNoAuthController.downloadVideoFile(id);
 
 
         assertThat(streamingResponseBody).isNotNull();
+        assertThat(streamingResponseBody.getBody()).isNotNull();
+        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
         OutputStream outputStream = new ByteArrayOutputStream();
         try {
-            streamingResponseBody.writeTo(outputStream);
+            streamingResponseBody.getBody().writeTo(outputStream);
             assertThat(outputStream).isNotNull();
         } catch (IOException e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package pl.polsl.admin;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,9 +20,10 @@ import java.util.List;
  * Created by Mateusz on 12.12.2016.
  */
 @Component
+@Order(2)
 public class AdminFilter implements Filter {
 
-    @Value("${zuul.routes.auth-service.url}")
+    @Value("${zuul.routes.auth-service.service-id}")
     private String authEndpoint;
 
     @Autowired
@@ -45,7 +47,7 @@ public class AdminFilter implements Filter {
         if (checkAdminRegex(requestURI)) {
             HttpClientErrorException exception = null;
             try {
-                entity = restTemplate.exchange(authEndpoint + "/admin/", HttpMethod.GET,
+                entity = restTemplate.exchange("http://" + authEndpoint + "/admin/", HttpMethod.GET,
                         generateHeaders(httpRequest), String.class);
             } catch (HttpClientErrorException e) {
                 exception = e;
