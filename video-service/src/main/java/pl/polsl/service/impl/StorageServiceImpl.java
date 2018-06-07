@@ -54,12 +54,12 @@ public class StorageServiceImpl implements StorageService {
     private FFMPEGHelper ffmpegHelper;
 
     @Override
-    public VideoFiles store(MultipartFile file) {
+    public VideoFiles store(MultipartFile file, String quality) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            VideoFiles musicFile = createVideoFile(file);
+            VideoFiles musicFile = createVideoFile(file, quality);
             return videoFilesRepository.save(musicFile);
         } catch (IOException | InterruptedException | FFMPEGException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
@@ -102,13 +102,14 @@ public class StorageServiceImpl implements StorageService {
         return videoFiles;
     }
 
-    public VideoFiles createVideoFile(MultipartFile file) throws IOException, InterruptedException, FFMPEGException {
+    public VideoFiles createVideoFile(MultipartFile file, String quality) throws IOException, InterruptedException, FFMPEGException {
         VideoFiles videoFiles = new VideoFiles();
         videoFiles.setFileName(file.getOriginalFilename());
         videoFiles.setCreationDate(new Timestamp(new Date().getTime()));
         videoFiles.setExtension(getExtension(file.getOriginalFilename()));
         videoFiles.setPublic(true);
         videoFiles.setFileSize(new Long(file.getSize()));
+        videoFiles.setResolution(Resolution.valueOf(quality) != null ? Resolution.valueOf(quality).name() : Resolution.H480.name());
 
         Blob video = Hibernate.getLobCreator(getCurrentSession()).createBlob(file.getInputStream(), file.getSize());
         videoFiles.setFile(video);
@@ -201,7 +202,7 @@ public class StorageServiceImpl implements StorageService {
         File thumbnailFile = File.createTempFile("streamerUploadThumbnail", ".jpeg");
         thumbnailFile.deleteOnExit();
 
-        File videoFile = File.createTempFile("streamerUpload", file.getOriginalFilename());
+        File videoFile = File.createTempFile("streamerUpload", file.getOriginalFilename().replaceAll("\\s", ""));
         videoFile.deleteOnExit();
 
         FileOutputStream out = new FileOutputStream(videoFile);

@@ -43,11 +43,11 @@ public class VideoAuthController {
 
     @PostMapping("/upload")
     public ResponseEntity<Long>
-    handleFileUpload(@RequestParam("file") MultipartFile file) {
+    handleFileUpload(@RequestParam("file") MultipartFile file, @RequestParam("quality") String quality) {
         if (file == null) {
             return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
         }
-        VideoFiles videoFile = storageService.store(file);
+        VideoFiles videoFile = storageService.store(file, quality);
         return new ResponseEntity<Long>(videoFile.getVideoFileId(), HttpStatus.OK);
     }
 

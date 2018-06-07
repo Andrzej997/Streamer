@@ -47,7 +47,7 @@ public class StorageServiceTests {
         byte[] bytes = new byte[0];
         MultipartFile file = new MockMultipartFile("test", bytes);
 
-        storageService.store(file);
+        storageService.store(file, "H480");
     }
 
     @Test

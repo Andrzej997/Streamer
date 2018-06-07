@@ -55,9 +55,10 @@ public class VideoAuthControllerTests {
     @Test
     public void testHandleFileUpload_whenFileIsNull() {
         MultipartFile file = null;
-        when(storageService.store(file)).thenReturn(null);
+        String quality = null;
+        when(storageService.store(file, quality)).thenReturn(null);
 
-        ResponseEntity<Long> responseEntity = videoAuthController.handleFileUpload(file);
+        ResponseEntity<Long> responseEntity = videoAuthController.handleFileUpload(file, quality);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -69,9 +70,10 @@ public class VideoAuthControllerTests {
         MultipartFile file = Mockito.mock(MultipartFile.class);
         VideoFiles videoFiles = new VideoFiles();
         videoFiles.setVideoFileId(1L);
-        when(storageService.store(file)).thenReturn(videoFiles);
+        String quality = "H480";
+        when(storageService.store(file, quality)).thenReturn(videoFiles);
 
-        ResponseEntity<Long> responseEntity = videoAuthController.handleFileUpload(file);
+        ResponseEntity<Long> responseEntity = videoAuthController.handleFileUpload(file, quality);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

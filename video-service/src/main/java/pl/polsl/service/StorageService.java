@@ -13,7 +13,7 @@ import java.sql.SQLException;
  */
 public interface StorageService {
 
-    VideoFiles store(MultipartFile file);
+    VideoFiles store(MultipartFile file, String quality);
 
     VideoFiles downloadVideoFile(Long id);
 

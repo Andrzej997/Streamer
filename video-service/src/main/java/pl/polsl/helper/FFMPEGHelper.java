@@ -3,8 +3,7 @@ package pl.polsl.helper;
 import org.springframework.stereotype.Component;
 import pl.polsl.exception.FFMPEGException;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 @Component
 public class FFMPEGHelper {
@@ -15,15 +14,15 @@ public class FFMPEGHelper {
     public void generateThumbnail(File thumbnail, File video) throws IOException, InterruptedException, FFMPEGException {
         Runtime run = Runtime.getRuntime();
         Process process = run.exec(System.getProperty("ffmpeg.exec") +
-                " -i " + video.getAbsolutePath() +
+                " -i " + video.getAbsolutePath().replaceAll("\\s", "") +
                 " -loglevel quiet" +
                 " -y" +
                 " -an" +
                 " -r 1" +
                 " -ss 00:00:00" +
                 " -t 00:00:01" +
-                " -vf \"crop=ih:ih:0:0, scale=" + THUMBNAIL_WIDTH + ":" + THUMBNAIL_HEIGHT + "\" " +
-                thumbnail.getAbsolutePath());
+                " -filter_complex crop=ih:ih:0:0,scale=200:200" + " " +
+                thumbnail.getAbsolutePath().replaceAll("\\s", ""));
 
         int exitCode = process.waitFor();
 

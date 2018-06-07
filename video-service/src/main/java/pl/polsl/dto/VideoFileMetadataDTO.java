@@ -21,6 +21,8 @@ public class VideoFileMetadataDTO {
     private Date creationDate;
     @JsonProperty("_isPublic")
     private Boolean isPublic;
+    @JsonProperty("_resolution")
+    private String resolution;
 
     public Long getVideoFileId() {
         return videoFileId;
@@ -68,5 +70,13 @@ public class VideoFileMetadataDTO {
 
     public void setPublic(Boolean aPublic) {
         isPublic = aPublic;
+    }
+
+    public String getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(String resolution) {
+        this.resolution = resolution;
     }
 }

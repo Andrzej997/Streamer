@@ -186,6 +186,8 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         if (videoDTO.getVideoFileMetadata() != null) {
             VideoFiles toVideoFiles = videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata());
             toVideoFiles.setFile(file.getFile());
+            toVideoFiles.setResolution(file.getResolution());
+            toVideoFiles.setThumbnail(file.getThumbnail());
             videoFiles = videoFilesRepository.save(toVideoFiles);
         }
         if (videoFiles == null) {
