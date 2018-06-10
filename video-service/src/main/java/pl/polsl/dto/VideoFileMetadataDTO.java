@@ -3,6 +3,7 @@ package pl.polsl.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -23,6 +24,8 @@ public class VideoFileMetadataDTO {
     private Boolean isPublic;
     @JsonProperty("_resolution")
     private String resolution;
+    @JsonProperty("_qualities")
+    private List<VideoQualityDTO> qualities;
 
     public Long getVideoFileId() {
         return videoFileId;
@@ -78,5 +81,13 @@ public class VideoFileMetadataDTO {
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
+    }
+
+    public List<VideoQualityDTO> getQualities() {
+        return qualities;
+    }
+
+    public void setQualities(List<VideoQualityDTO> qualities) {
+        this.qualities = qualities;
     }
 }

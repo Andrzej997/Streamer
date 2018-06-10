@@ -116,8 +116,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         if (uploadVideoMetadataDTO == null || StringUtils.isEmpty(uploadVideoMetadataDTO.getUsername())) {
             return null;
         }
-        if (uploadVideoMetadataDTO == null || uploadVideoMetadataDTO.getVideo() == null
-                || uploadVideoMetadataDTO.getVideo().getVideoFileId() == null) {
+        if (uploadVideoMetadataDTO.getVideo() == null || uploadVideoMetadataDTO.getVideo().getVideoFileId() == null) {
             return null;
         }
         UsersView user = usersRepository.findUsersByUserName(uploadVideoMetadataDTO.getUsername());
@@ -188,6 +187,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             toVideoFiles.setFile(file.getFile());
             toVideoFiles.setResolution(file.getResolution());
             toVideoFiles.setThumbnail(file.getThumbnail());
+            toVideoFiles.setChildVideoFiles(file.getChildVideoFiles());
             videoFiles = videoFilesRepository.save(toVideoFiles);
         }
         if (videoFiles == null) {
@@ -303,7 +303,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             return null;
         }
         String[] data = authorData.split(" ");
-        if (data == null || data.length <= 0) {
+        if (data.length <= 0) {
             return null;
         }
         String name = data[0];
@@ -324,9 +324,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             default:
                 break;
         }
-        result = result.stream().filter(videos ->
+        result = result != null ? result.stream().filter(videos ->
                 (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()) : null;
         return videoMapper.toVideoDTOList(result);
     }
 
@@ -412,9 +412,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
                 allVideos.add(videos);
             }
         });
-        allVideos.sort((o1, o2) -> {
-            return compareFloat(o1.getRating(), o2.getRating());
-        });
+        allVideos.sort((o1, o2) -> compareFloat(o1.getRating(), o2.getRating()));
         List<VideoDTO> result = videoMapper.toVideoDTOList(allVideos);
         if (result == null || result.isEmpty()) {
             return null;

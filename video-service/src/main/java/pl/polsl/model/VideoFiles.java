@@ -7,13 +7,14 @@ import javax.persistence.*;
 import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Set;
 
 /**
  * Created by Mateusz on 18.10.2016.
  */
 @Entity
 @Table(name = "video_files", schema = "public")
-public class VideoFiles extends BaseEntity {
+public class VideoFiles extends BaseEntity implements Cloneable {
 
     @Id
     @Column(name = "video_file_id", nullable = false)
@@ -59,6 +60,16 @@ public class VideoFiles extends BaseEntity {
 
     @Column(name = "resolution")
     private String resolution;
+
+    @Column(name = "parent_file_id")
+    private Long parentFileId;
+
+    @ManyToOne(cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_file_id", referencedColumnName = "video_file_id", insertable = false, updatable = false)
+    private VideoFiles parent;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
+    private Set<VideoFiles> childVideoFiles;
 
     @OneToMany(mappedBy = "videoFilesByVideoFileId", cascade = CascadeType.ALL)
     private Collection<Videos> videosesByVideoFileId;
@@ -183,5 +194,33 @@ public class VideoFiles extends BaseEntity {
 
     public void setResolution(String resolution) {
         this.resolution = resolution;
+    }
+
+    public Long getParentFileId() {
+        return parentFileId;
+    }
+
+    public void setParentFileId(Long parentFileId) {
+        this.parentFileId = parentFileId;
+    }
+
+    public Set<VideoFiles> getChildVideoFiles() {
+        return childVideoFiles;
+    }
+
+    public void setChildVideoFiles(Set<VideoFiles> childVideoFiles) {
+        this.childVideoFiles = childVideoFiles;
+    }
+
+    public VideoFiles getParent() {
+        return parent;
+    }
+
+    public void setParent(VideoFiles parent) {
+        this.parent = parent;
+    }
+
+    public VideoFiles clone() throws CloneNotSupportedException {
+        return (VideoFiles) super.clone();
     }
 }

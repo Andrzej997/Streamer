@@ -22,4 +22,6 @@ public interface StorageService {
     String getExtension(MultipartFile file);
 
     VideoFiles transcode(Long id, String username, Resolution resolution) throws IOException, SQLException, FFMPEGException, InterruptedException;
+
+    void transcode(VideoFiles videoFile, Resolution resolution) throws IOException, SQLException, FFMPEGException, InterruptedException;
 }
