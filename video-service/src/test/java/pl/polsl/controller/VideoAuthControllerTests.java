@@ -87,7 +87,7 @@ public class VideoAuthControllerTests {
         String username = "test";
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null);
 
         assertThat(responseBody).isNotNull();
         assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
@@ -99,7 +99,7 @@ public class VideoAuthControllerTests {
         String username = null;
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null);
 
         assertThat(responseBody).isNotNull();
         assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
@@ -122,7 +122,7 @@ public class VideoAuthControllerTests {
         when(storageService.downloadVideoFile(id, username)).thenReturn(videoFiles);
 
 
-        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoAuthController.downloadVideoFile(id, username);
+        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoAuthController.downloadVideoFile(id, username, null);
 
 
         assertThat(streamingResponseBody).isNotNull();

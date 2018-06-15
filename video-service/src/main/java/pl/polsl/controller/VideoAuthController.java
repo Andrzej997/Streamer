@@ -54,9 +54,16 @@ public class VideoAuthController {
     @GetMapping(value = "/download")
     public ResponseEntity<StreamingResponseBody>
     downloadVideoFile(@RequestParam("id") Long id,
-                      @RequestParam("username") String username) {
+                      @RequestParam("username") String username,
+                      @RequestHeader("Range") String startRange) {
         if (id == null || username == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Long startPosition = 0l;
+        if (!StringUtils.isEmpty(startRange)){
+            startRange = startRange.replaceAll("bytes=", "");
+            String startPositionString = startRange.substring(0, startRange.indexOf("-"));
+            startPosition = Long.parseLong(startPositionString);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id, username);
         if (videoFile == null) {
@@ -65,6 +72,7 @@ public class VideoAuthController {
         try {
             Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
+            //binaryStream.skip(startPosition > 0 ? startPosition - 1 : 0);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
                     .contentLength(videoFile.getFile().length())
