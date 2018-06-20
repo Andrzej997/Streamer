@@ -180,23 +180,23 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
     }
 
     private void saveVideoFileMetadataForVideo(VideoDTO videoDTO, Videos videos) {
-        VideoFiles videoFiles = null;
-        VideoFiles file = videoFilesRepository.findOne(videoDTO.getVideoFileId());
-        if (videoDTO.getVideoFileMetadata() != null) {
-            VideoFiles toVideoFiles = videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata());
-            toVideoFiles.setFile(file.getFile());
-            toVideoFiles.setResolution(file.getResolution());
-            toVideoFiles.setThumbnail(file.getThumbnail());
-            toVideoFiles.setChildVideoFiles(file.getChildVideoFiles());
-            videoFiles = videoFilesRepository.save(toVideoFiles);
-        }
-        if (videoFiles == null) {
-            videos.setVideoFilesByVideoFileId(null);
-            videos.setVideoFileId(null);
-            return;
-        }
-        videos.setVideoFilesByVideoFileId(videoFiles);
-        videos.setVideoFileId(videoFiles.getVideoFileId());
+//        VideoFiles videoFiles = null;
+//        VideoFiles file = videoFilesRepository.findOne(videoDTO.getVideoFileId());
+//        if (videoDTO.getVideoFileMetadata() != null) {
+//            VideoFiles toVideoFiles = videoMapper.toVideoFiles(videoDTO.getVideoFileMetadata());
+//            toVideoFiles.setFile(file.getFile());
+//            toVideoFiles.setResolution(file.getResolution());
+//            toVideoFiles.setThumbnail(file.getThumbnail());
+//            toVideoFiles.setChildVideoFiles(file.getChildVideoFiles());
+//            videoFiles = videoFilesRepository.save(toVideoFiles);
+//        }
+//        if (videoFiles == null) {
+//            videos.setVideoFilesByVideoFileId(null);
+//            videos.setVideoFileId(null);
+//            return;
+//        }
+//        videos.setVideoFilesByVideoFileId(videoFiles);
+        videos.setVideoFileId(videoDTO.getVideoFileId());
     }
 
     private void saveVideoDirectors(Videos videos, List<Directors> directorsList) {
@@ -238,6 +238,11 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         if (videosList == null) {
             return null;
         }
+        videosList.forEach(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+        });
         List<VideoDTO> videoDTOList = videoMapper.toVideoDTOList(videosList);
         if (videoDTOList == null || videoDTOList.isEmpty()) {
             return null;
@@ -254,6 +259,11 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             return null;
         }
         List<Videos> videosList = videosRepository.findByOwnerId(user.getUserId());
+        videosList.forEach(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+        });
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -292,9 +302,12 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         if (videosListByTitleLike != null && videosListByTitleLike.size() > 0) {
             videosList.addAll(videosListByTitleLike);
         }
-        videosList = videosList.stream().filter(videos ->
-                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
-                .collect(Collectors.toList());
+        videosList = videosList.stream().filter(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+            return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
+        }).collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -324,9 +337,12 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             default:
                 break;
         }
-        result = result != null ? result.stream().filter(videos ->
-                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
-                .collect(Collectors.toList()) : null;
+        result = result != null ? result.stream().filter(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+            return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
+        }).collect(Collectors.toList()) : null;
         return videoMapper.toVideoDTOList(result);
     }
 
@@ -340,9 +356,12 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         name += "%";
         videosList.addAll(videosRepository.findByGenreNameLikeOrderByRating(name));
-        videosList = videosList.stream().filter(videos ->
-                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
-                .collect(Collectors.toList());
+        videosList = videosList.stream().filter(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+            return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
+        }).collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -352,9 +371,12 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         Short yearNumber = Short.parseShort(year);
         List<Videos> videosList = videosRepository.findByProductionYearOrderByRating(yearNumber);
-        videosList = videosList.stream().filter(videos ->
-                (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()))
-                .collect(Collectors.toList());
+        videosList = videosList.stream().filter(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
+            return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
+        }).collect(Collectors.toList());
         return videoMapper.toVideoDTOList(videosList);
     }
 
@@ -397,6 +419,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<VideosAuthors> videosAuthorsList = videoAuthorsRepository.findByVideoId(videos.getVideoId());
         videos.setVideosAuthorsesByVideoId(videosAuthorsList);
         videos = videosRepository.save(videos);
+        if (videos.getVideoFileId() != null) {
+            videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+        }
         return videoMapper.toVideoDTO(videos);
     }
 
@@ -408,6 +433,9 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         List<Videos> allVideos = new ArrayList<>();
         all.forEach(videos -> {
+            if (videos.getVideoFileId() != null) {
+                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            }
             if (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()) {
                 allVideos.add(videos);
             }
@@ -458,7 +486,12 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
             return null;
         }
         List<VideoDTO> result = new ArrayList<>();
-        videosIterable.forEach(video -> result.add(videoMapper.toVideoDTO(video)));
+        videosIterable.forEach(video -> {
+            if (video.getVideoFileId() != null) {
+                video.setVideoFilesByVideoFileId(videoFilesRepository.findOne(video.getVideoFileId()));
+            }
+            result.add(videoMapper.toVideoDTO(video));
+        });
         return result;
     }
 

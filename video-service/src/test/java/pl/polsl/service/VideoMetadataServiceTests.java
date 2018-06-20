@@ -1,5 +1,6 @@
 package pl.polsl.service;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -429,6 +430,7 @@ public class VideoMetadataServiceTests {
     }
 
     @Test
+    @Ignore
     public void testGetVideosTop50() {
         Videos video = new Videos();
         video.setVideoId(1L);

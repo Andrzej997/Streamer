@@ -26,8 +26,18 @@ spring:
     multipart:
       max-file-size: 25600MB
       max-request-size: 25600MB
+  mvc:
+    async:
+      request-timeout: 3600
+  session:
+    timeout: 3600
+  transaction:
+    default-timeout: 3600
 server:
   port: 9008
+  connection-timeout: -1
+  session:
+    timeout: 3600
 eureka:
   instance:
     hostname: video-service
@@ -42,6 +52,7 @@ eureka:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka/
     enabled: true
+    eureka-server-read-timeout-seconds: 5000
 ribbon:
   ReadTimeout: 18000000
   ConnectTimeout: 18000000

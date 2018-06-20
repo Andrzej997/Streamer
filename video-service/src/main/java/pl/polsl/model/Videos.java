@@ -63,8 +63,7 @@ public class Videos extends BaseEntity {
     @OneToMany(mappedBy = "videosByVideoId", cascade = CascadeType.ALL)
     private Collection<PlaylistsVideos> playlistsVideosesByVideoId;
 
-    @ManyToOne
-    @JoinColumn(name = "video_file_id", referencedColumnName = "video_file_id", nullable = false, insertable = false, updatable = false)
+    @Transient
     private VideoFiles videoFilesByVideoFileId;
 
     @ManyToOne

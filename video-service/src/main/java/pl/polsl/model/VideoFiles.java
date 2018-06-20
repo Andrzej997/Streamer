@@ -18,17 +18,6 @@ public class VideoFiles extends BaseEntity implements Cloneable {
 
     @Id
     @Column(name = "video_file_id", nullable = false)
-    @GenericGenerator(
-            name = "generator",
-            strategy = "sequence-identity",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(
-                            name = "sequence",
-                            value = "DEFAULTDBSEQ"
-                    )
-
-            })
-    @GeneratedValue(generator = "generator")
     private Long videoFileId;
 
     @Basic
@@ -71,7 +60,7 @@ public class VideoFiles extends BaseEntity implements Cloneable {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "parent")
     private Set<VideoFiles> childVideoFiles;
 
-    @OneToMany(mappedBy = "videoFilesByVideoFileId", cascade = CascadeType.ALL)
+    @Transient
     private Collection<Videos> videosesByVideoFileId;
 
     public VideoFiles() {

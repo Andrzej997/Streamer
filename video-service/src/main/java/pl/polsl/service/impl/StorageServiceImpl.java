@@ -19,16 +19,20 @@ import pl.polsl.model.UsersView;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.model.Videos;
 import pl.polsl.repository.VideoFilesRepository;
+import pl.polsl.repository.VideosRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
+import pl.polsl.service.StoreTaskExecutor;
 import pl.polsl.service.TranscodeVideoTaskExecutor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -60,6 +64,13 @@ public class StorageServiceImpl implements StorageService {
     @Lazy
     private TranscodeVideoTaskExecutor transcodeVideoTaskExecutor;
 
+    @Autowired
+    @Lazy
+    private StoreTaskExecutor storeTaskExecutor;
+
+    @Autowired
+    private VideosRepository videosRepository;
+
     @Override
     public VideoFiles store(MultipartFile file, String quality) {
         try {
@@ -67,13 +78,19 @@ public class StorageServiceImpl implements StorageService {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
             VideoFiles videoFile = createVideoFile(file, quality);
-            videoFile = videoFilesRepository.save(videoFile);
-            getCurrentSession().flush();
-            transcodeVideoTaskExecutor.transcodeVideoToLowersQuality(Resolution.valueOf(videoFile.getResolution()), videoFile);
+            storeTaskExecutor.storeVideoFile(videoFile);
             return videoFile;
         } catch (IOException | InterruptedException | FFMPEGException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void storeFile(VideoFiles videoFile){
+        videoFile = videoFilesRepository.save(videoFile);
+        getCurrentSession().flush();
+        transcodeVideoTaskExecutor.transcodeVideoToLowersQuality(Resolution.valueOf(videoFile.getResolution()), videoFile);
     }
 
     @Override
@@ -99,7 +116,7 @@ public class StorageServiceImpl implements StorageService {
         if (videoFiles == null) {
             return null;
         }
-        Collection<Videos> videoses = videoFiles.getVideosesByVideoFileId();
+        Collection<Videos> videoses = videosRepository.findByVideoFileId(videoFiles.getVideoFileId());
         if (videoses == null || videoses.size() <= 0) {
             return null;
         }
@@ -114,6 +131,9 @@ public class StorageServiceImpl implements StorageService {
 
     public VideoFiles createVideoFile(MultipartFile file, String quality) throws IOException, InterruptedException, FFMPEGException {
         VideoFiles videoFiles = new VideoFiles();
+        Query query = entityManager.createNativeQuery("SELECT nextval('DEFAULTDBSEQ')");
+        BigInteger id = (BigInteger) query.getSingleResult();
+        videoFiles.setVideoFileId(id.longValue());
         videoFiles.setFileName(file.getOriginalFilename());
         videoFiles.setCreationDate(new Timestamp(new Date().getTime()));
         videoFiles.setExtension(getExtension(file.getOriginalFilename()));
@@ -165,7 +185,6 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void transcode(VideoFiles videoFile, Resolution resolution)
             throws IOException, SQLException, FFMPEGException, InterruptedException {
@@ -274,6 +293,9 @@ public class StorageServiceImpl implements StorageService {
 
     private VideoFiles createVideoFile(File file, Long parentVideoId, String name) throws IOException, InterruptedException, SQLException, FFMPEGException {
         VideoFiles videoFiles = new VideoFiles();
+        Query query = entityManager.createNativeQuery("SELECT nextval('DEFAULTDBSEQ')");
+        BigInteger id = (BigInteger) query.getSingleResult();
+        videoFiles.setVideoFileId(id.longValue());
         videoFiles.setFileName(name);
         videoFiles.setCreationDate(new Timestamp(new Date().getTime()));
         videoFiles.setExtension(getExtension(file.getName()));
