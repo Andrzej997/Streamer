@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.model.Videos;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -68,4 +69,6 @@ public interface VideosRepository extends CrudRepository<Videos, Long> {
     List<Videos> findByDirectorNameLikeAndSurnameLikeAndName2LikeOrderByRating(String name, String surname, String name2);
 
     List<Videos> findAllByOrderByRatingDesc();
+
+    Collection<Videos> findByVideoFileId(Long videoFileId);
 }

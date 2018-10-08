@@ -4,6 +4,8 @@ import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +19,20 @@ import pl.polsl.model.UsersView;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.model.Videos;
 import pl.polsl.repository.VideoFilesRepository;
+import pl.polsl.repository.VideosRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
 import pl.polsl.service.StorageService;
+import pl.polsl.service.StoreTaskExecutor;
+import pl.polsl.service.TranscodeVideoTaskExecutor;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -53,17 +60,37 @@ public class StorageServiceImpl implements StorageService {
     @Autowired
     private FFMPEGHelper ffmpegHelper;
 
+    @Autowired
+    @Lazy
+    private TranscodeVideoTaskExecutor transcodeVideoTaskExecutor;
+
+    @Autowired
+    @Lazy
+    private StoreTaskExecutor storeTaskExecutor;
+
+    @Autowired
+    private VideosRepository videosRepository;
+
     @Override
-    public VideoFiles store(MultipartFile file) {
+    public VideoFiles store(MultipartFile file, String quality) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            VideoFiles musicFile = createVideoFile(file);
-            return videoFilesRepository.save(musicFile);
+            VideoFiles videoFile = createVideoFile(file, quality);
+            storeTaskExecutor.storeVideoFile(videoFile);
+            return videoFile;
         } catch (IOException | InterruptedException | FFMPEGException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void storeFile(VideoFiles videoFile){
+        videoFile = videoFilesRepository.save(videoFile);
+        getCurrentSession().flush();
+        transcodeVideoTaskExecutor.transcodeVideoToLowersQuality(Resolution.valueOf(videoFile.getResolution()), videoFile);
     }
 
     @Override
@@ -89,7 +116,7 @@ public class StorageServiceImpl implements StorageService {
         if (videoFiles == null) {
             return null;
         }
-        Collection<Videos> videoses = videoFiles.getVideosesByVideoFileId();
+        Collection<Videos> videoses = videosRepository.findByVideoFileId(videoFiles.getVideoFileId());
         if (videoses == null || videoses.size() <= 0) {
             return null;
         }
@@ -102,13 +129,17 @@ public class StorageServiceImpl implements StorageService {
         return videoFiles;
     }
 
-    public VideoFiles createVideoFile(MultipartFile file) throws IOException, InterruptedException, FFMPEGException {
+    public VideoFiles createVideoFile(MultipartFile file, String quality) throws IOException, InterruptedException, FFMPEGException {
         VideoFiles videoFiles = new VideoFiles();
+        Query query = entityManager.createNativeQuery("SELECT nextval('DEFAULTDBSEQ')");
+        BigInteger id = (BigInteger) query.getSingleResult();
+        videoFiles.setVideoFileId(id.longValue());
         videoFiles.setFileName(file.getOriginalFilename());
         videoFiles.setCreationDate(new Timestamp(new Date().getTime()));
         videoFiles.setExtension(getExtension(file.getOriginalFilename()));
         videoFiles.setPublic(true);
-        videoFiles.setFileSize(new Long(file.getSize()));
+        videoFiles.setFileSize(file.getSize());
+        videoFiles.setResolution(Resolution.valueOf(quality).name());
 
         Blob video = Hibernate.getLobCreator(getCurrentSession()).createBlob(file.getInputStream(), file.getSize());
         videoFiles.setFile(video);
@@ -150,20 +181,50 @@ public class StorageServiceImpl implements StorageService {
         if (videoFile == null) {
             return null;
         }
+        return transcodeInternal(videoFile, resolution, 0);
+    }
 
-        File video = File.createTempFile("streamerTranscode", videoFile.getFileName());
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void transcode(VideoFiles videoFile, Resolution resolution)
+            throws IOException, SQLException, FFMPEGException, InterruptedException {
+        this.transcodeInternal(videoFile, resolution, 0);
+    }
+
+    private VideoFiles transcodeInternal(VideoFiles videoFile, Resolution resolution, Integer threadTime)
+            throws IOException, SQLException, FFMPEGException, InterruptedException {
+
+        if (videoFile == null){
+            return null;
+        }
+        File video = File.createTempFile("sTr", videoFile.getFileName().replaceAll("\\s", "") + "." + videoFile.getExtension());
         video.deleteOnExit();
+        Long id = videoFile.getVideoFileId();
+        VideoFiles vf = null;
+        try {
+            vf = videoFile.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        videoFile = videoFilesRepository.findOne(id);
+        if (videoFile == null && threadTime < 180000){
+            Thread.sleep(100);
+            transcodeInternal(vf, resolution, threadTime+100);
+        }
 
+        if (videoFile == null){
+            return null;
+        }
         FileOutputStream out = new FileOutputStream(video);
         IOUtils.copyLarge(videoFile.getFile().getBinaryStream(), out);
         out.close();
 
-        File transcoded = File.createTempFile("streamerTranscodeOutput", videoFile.getFileName());
+        File transcoded = File.createTempFile("sTO", videoFile.getFileName().replaceAll("\\s", "") + "." + videoFile.getExtension());
         transcoded.deleteOnExit();
 
         ffmpegHelper.transcode(video, transcoded, resolution);
 
-        VideoFiles transcodedFile = createVideoFile(transcoded);
+        VideoFiles transcodedFile = createVideoFile(transcoded, videoFile.getVideoFileId(), videoFile.getFileName());
         transcodedFile.setResolution(resolution.name());
 
         return videoFilesRepository.save(transcodedFile);
@@ -198,10 +259,10 @@ public class StorageServiceImpl implements StorageService {
     }
 
     private File generateThumbnail(MultipartFile file) throws IOException, InterruptedException, FFMPEGException {
-        File thumbnailFile = File.createTempFile("streamerUploadThumbnail", ".jpeg");
+        File thumbnailFile = File.createTempFile("sUT", ".jpeg");
         thumbnailFile.deleteOnExit();
 
-        File videoFile = File.createTempFile("streamerUpload", file.getOriginalFilename());
+        File videoFile = File.createTempFile("sUp", file.getOriginalFilename().replaceAll("\\s", ""));
         videoFile.deleteOnExit();
 
         FileOutputStream out = new FileOutputStream(videoFile);
@@ -213,18 +274,46 @@ public class StorageServiceImpl implements StorageService {
         return thumbnailFile;
     }
 
-    private VideoFiles createVideoFile(File file) throws IOException {
+
+    private File generateThumbnail(String name, File file) throws IOException, InterruptedException, FFMPEGException, SQLException {
+        File thumbnailFile = File.createTempFile("sUT", ".jpeg");
+        thumbnailFile.deleteOnExit();
+
+        File videoFile = File.createTempFile("sUp", name.replaceAll("\\s", ""));
+        videoFile.deleteOnExit();
+
+        FileOutputStream out = new FileOutputStream(videoFile);
+        IOUtils.copyLarge(new FileInputStream(file), out);
+        out.close();
+
+        ffmpegHelper.generateThumbnail(thumbnailFile, videoFile);
+
+        return thumbnailFile;
+    }
+
+    private VideoFiles createVideoFile(File file, Long parentVideoId, String name) throws IOException, InterruptedException, SQLException, FFMPEGException {
         VideoFiles videoFiles = new VideoFiles();
-        videoFiles.setFileName(file.getName());
+        Query query = entityManager.createNativeQuery("SELECT nextval('DEFAULTDBSEQ')");
+        BigInteger id = (BigInteger) query.getSingleResult();
+        videoFiles.setVideoFileId(id.longValue());
+        videoFiles.setFileName(name);
         videoFiles.setCreationDate(new Timestamp(new Date().getTime()));
         videoFiles.setExtension(getExtension(file.getName()));
         videoFiles.setPublic(true);
-        videoFiles.setFileSize(new Long(file.length()));
+        videoFiles.setFileSize(file.length());
+        videoFiles.setParentFileId(parentVideoId);
 
         FileInputStream stream = new FileInputStream(file);
 
         Blob video = Hibernate.getLobCreator(getCurrentSession()).createBlob(stream, file.length());
         videoFiles.setFile(video);
+
+        File thumbnailFile = generateThumbnail(videoFiles.getFileName() + "." + videoFiles.getExtension(), file);
+
+        FileInputStream thumbnailStream = new FileInputStream(thumbnailFile);
+
+        Blob thumbnail = Hibernate.getLobCreator(getCurrentSession()).createBlob(thumbnailStream, thumbnailFile.length());
+        videoFiles.setThumbnail(thumbnail);
 
         return videoFiles;
     }

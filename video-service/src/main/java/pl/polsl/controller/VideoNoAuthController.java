@@ -1,5 +1,6 @@
 package pl.polsl.controller;
 
+import org.postgresql.largeobject.BlobInputStream;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,9 +42,15 @@ public class VideoNoAuthController {
 
     @GetMapping(value = "/download")
     public ResponseEntity<StreamingResponseBody>
-    downloadVideoFile(@RequestParam("id") Long id) {
+    downloadVideoFile(@RequestParam("id") Long id, @RequestHeader("Range") String startRange) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        Long startPosition = 0l;
+        if (!StringUtils.isEmpty(startRange)){
+            startRange = startRange.replaceAll("bytes=", "");
+            String startPositionString = startRange.substring(0, startRange.indexOf("-"));
+            startPosition = Long.parseLong(startPositionString);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         if (videoFile == null) {
@@ -52,6 +59,7 @@ public class VideoNoAuthController {
         try {
             Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
+            //binaryStream.skip(startPosition > 0 ? startPosition - 1 : 0);
             return ResponseEntity.ok()
                     .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
                     .contentLength(videoFile.getFile().length())

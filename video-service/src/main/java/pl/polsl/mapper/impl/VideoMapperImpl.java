@@ -9,6 +9,8 @@ import pl.polsl.model.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -95,7 +97,14 @@ public class VideoMapperImpl implements VideoMapper {
         if (videoFiles == null) {
             return null;
         }
-        return modelMapper.map(videoFiles, VideoFileMetadataDTO.class);
+        Set<VideoFiles> filesSet = videoFiles.getChildVideoFiles();
+        List<VideoQualityDTO> qualities = null;
+        if (filesSet != null && filesSet.size() > 0) {
+            qualities = filesSet.stream().map(vf -> new VideoQualityDTO(vf.getVideoFileId(), vf.getResolution())).collect(Collectors.toList());
+        }
+        VideoFileMetadataDTO fileMetadataDTO = modelMapper.map(videoFiles, VideoFileMetadataDTO.class);
+        fileMetadataDTO.setQualities(qualities);
+        return fileMetadataDTO;
     }
 
     @Override
