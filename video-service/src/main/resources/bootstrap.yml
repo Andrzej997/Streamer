@@ -28,16 +28,16 @@ spring:
       max-request-size: 25600MB
   mvc:
     async:
-      request-timeout: 3600
+      request-timeout: 3600000
   session:
-    timeout: 3600
+    timeout: 3600000
   transaction:
-    default-timeout: 3600
+    default-timeout: 3600000
 server:
   port: 9008
   connection-timeout: -1
   session:
-    timeout: 3600
+    timeout: 3600000
 eureka:
   instance:
     hostname: video-service

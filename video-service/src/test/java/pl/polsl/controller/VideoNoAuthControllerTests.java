@@ -78,7 +78,7 @@ public class VideoNoAuthControllerTests {
 
         assertThat(streamingResponseBody).isNotNull();
         assertThat(streamingResponseBody.getBody()).isNotNull();
-        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.PARTIAL_CONTENT);
         OutputStream outputStream = new ByteArrayOutputStream();
         try {
             streamingResponseBody.getBody().writeTo(outputStream);
