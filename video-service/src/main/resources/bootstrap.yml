@@ -12,8 +12,13 @@ spring:
     hibernate:
       ddl-auto: validate
     database: POSTGRESQL
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
   datasource:
-    initialize: false
     url: jdbc:postgresql://localhost:5432/videodb
     username: sysadm
     password: sysadm
@@ -22,22 +27,24 @@ spring:
       default-auto-commit: false
     dbcp:
       default-auto-commit: false
-  http:
+    hikari:
+      auto-commit: false
+  servlet:
     multipart:
-      max-file-size: 25600MB
-      max-request-size: 25600MB
+      max-file-size: 200MB
+      max-request-size: 200MB
   mvc:
     async:
-      request-timeout: 3600000
+      request-timeout: 3600s
   session:
-    timeout: 3600000
+    timeout: 3600s
   transaction:
-    default-timeout: 3600000
+    default-timeout: 3600s
 server:
   port: 9008
-  connection-timeout: -1
+  connection-timeout: -1s
   session:
-    timeout: 3600000
+    timeout: 3600s
 eureka:
   instance:
     hostname: video-service
@@ -60,9 +67,6 @@ ribbon:
     enabled: false
 encrypt:
   failOnError: false
-logging:
-  file: log.txt
-  level: error
 
 ---
 spring:
@@ -105,4 +109,8 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error

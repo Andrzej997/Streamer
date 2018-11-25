@@ -10,15 +10,18 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.exception.StorageException;
 import pl.polsl.model.Ebook;
 import pl.polsl.model.EbookFiles;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.EbookFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.StorageServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -29,12 +32,11 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class StorageServiceTests {
 
-    @Autowired
     @InjectMocks
-    private StorageService storageService;
+    private StorageService storageService = new StorageServiceImpl();
 
     @Mock
     private EbookFilesRepository ebookFilesRepository;
@@ -53,7 +55,7 @@ public class StorageServiceTests {
     @Test
     public void testDownloadEbookFile_whenIdIsNull() {
         Long id = null;
-        when(ebookFilesRepository.findOne(id)).thenReturn(null);
+        when(ebookFilesRepository.findById(id)).thenReturn(Optional.empty());
 
         EbookFiles result = storageService.downloadEbookFile(id);
 
@@ -66,7 +68,7 @@ public class StorageServiceTests {
         EbookFiles ebookFiles = new EbookFiles();
         ebookFiles.setEbookFileId(1L);
         ebookFiles.setPublic(true);
-        when(ebookFilesRepository.findOne(id)).thenReturn(ebookFiles);
+        when(ebookFilesRepository.findById(id)).thenReturn(Optional.of(ebookFiles));
 
         EbookFiles result = storageService.downloadEbookFile(id);
 
@@ -100,7 +102,7 @@ public class StorageServiceTests {
         UsersView usersView = new UsersView();
         usersView.setUserId(1L);
         usersView.setUserName(username);
-        when(ebookFilesRepository.findOne(id)).thenReturn(ebookFiles);
+        when(ebookFilesRepository.findById(id)).thenReturn(Optional.of(ebookFiles));
         when(usersRepository.findUsersByUserName("test")).thenReturn(usersView);
 
         EbookFiles result = storageService.downloadEbookFile(id, username);

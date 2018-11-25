@@ -29,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class MusicAdminControllerTests {
 
-    @Autowired
     @InjectMocks
-    private MusicAdminController musicAdminController;
+    private MusicAdminController musicAdminController = new MusicAdminController();
 
     @Mock
     private MusicManagementService musicManagementService;

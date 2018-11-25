@@ -12,12 +12,21 @@ spring:
     hibernate:
       ddl-auto: validate
     database: POSTGRESQL
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
   datasource:
-    initialize: false
     url: jdbc:postgresql://localhost:5432/usersdb
     username: sysadm
     password: sysadm
     driver-class-name: org.postgresql.Driver
+    tomcat:
+      default-auto-commit: false
+    dbcp:
+      default-auto-commit: false
   resources:
     chain:
       enabled: true
@@ -45,7 +54,11 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error
 jwt:
   header: AuthHeader
   key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
@@ -70,7 +83,7 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
     username: admin
     password: admin
     platform: h2
@@ -88,4 +101,8 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error

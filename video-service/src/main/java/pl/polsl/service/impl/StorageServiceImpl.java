@@ -36,10 +36,7 @@ import java.math.BigInteger;
 import java.sql.Blob;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -99,7 +96,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null) {
             return null;
         }
-        VideoFiles videoFiles = videoFilesRepository.findOne(id);
+        Optional<VideoFiles> videoFilesO = videoFilesRepository.findById(id);
+        if (!videoFilesO.isPresent()) {
+            return null;
+        }
+        VideoFiles videoFiles = videoFilesO.get();
         if (videoFiles != null && videoFiles.getPublic() != null && videoFiles.getPublic()) {
             return videoFiles;
         }
@@ -112,10 +113,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null || StringUtils.isEmpty(username)) {
             return null;
         }
-        VideoFiles videoFiles = videoFilesRepository.findOne(id);
-        if (videoFiles == null) {
+        Optional<VideoFiles> videoFilesO = videoFilesRepository.findById(id);
+        if (!videoFilesO.isPresent()) {
             return null;
         }
+        VideoFiles videoFiles = videoFilesO.get();
         Collection<Videos> videoses = videosRepository.findByVideoFileId(videoFiles.getVideoFileId());
         if (videoses == null || videoses.size() <= 0) {
             return null;
@@ -206,7 +208,7 @@ public class StorageServiceImpl implements StorageService {
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
-        videoFile = videoFilesRepository.findOne(id);
+        videoFile = videoFilesRepository.findById(id).orElse(null);
         if (videoFile == null && threadTime < 180000){
             Thread.sleep(100);
             transcodeInternal(vf, resolution, threadTime+100);

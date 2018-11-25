@@ -15,9 +15,7 @@ public class StoreTaskExecutorImpl extends ThreadPoolTaskExecutor implements Sto
 
     @Override
     public void storeVideoFile(VideoFiles videoFile){
-        this.execute(() -> {
-            storageService.storeFile(videoFile);
-        });
+        this.execute(() -> storageService.storeFile(videoFile));
     }
 
 }

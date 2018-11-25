@@ -11,12 +11,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.polsl.dto.*;
 import pl.polsl.mapper.ImageMapper;
+import pl.polsl.mapper.impl.ImageMapperImpl;
 import pl.polsl.model.*;
 import pl.polsl.repository.*;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.ImageMetadataServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,13 +33,11 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class ImageMetadataServiceTests {
 
-    @Autowired
     @InjectMocks
-    private ImageMetadataService imageMetadataService;
+    private ImageMetadataService imageMetadataService = new ImageMetadataServiceImpl();
 
-    @Autowired
     @Spy
-    private ImageMapper imageMapper;
+    private ImageMapper imageMapper = new ImageMapperImpl();
 
     @Mock
     private UsersRepositoryCustom usersRepository;
@@ -423,7 +424,7 @@ public class ImageMetadataServiceTests {
         images.setRatingTimes(1L);
         images.setRating(5.0f);
 
-        when(imagesRepository.findOne(1L)).thenReturn(images);
+        when(imagesRepository.findById(1L)).thenReturn(Optional.of(images));
 
         imageMetadataService.rateImage(rateImageDTO);
 
@@ -432,11 +433,12 @@ public class ImageMetadataServiceTests {
 
     @Test
     public void testGetAllImages_whenImagesNotExists() {
-        when(imagesRepository.findAll()).thenReturn(null);
+        when(imagesRepository.findAll()).thenReturn(new ArrayList<>());
 
         List<ImageDTO> result = imageMetadataService.getAllImages();
 
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
+        assertThat(result.size()).isEqualTo(0);
     }
 
     @Test

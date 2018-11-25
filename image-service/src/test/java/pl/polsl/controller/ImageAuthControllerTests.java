@@ -39,9 +39,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class ImageAuthControllerTests {
 
-    @Autowired
     @InjectMocks
-    private ImageAuthController imageAuthController;
+    private ImageAuthController imageAuthController = new ImageAuthController();
 
     @Mock
     private StorageService storageService;

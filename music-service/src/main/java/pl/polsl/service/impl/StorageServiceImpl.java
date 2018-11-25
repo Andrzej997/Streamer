@@ -21,10 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Mateusz on 20.11.2016.
@@ -61,8 +58,12 @@ public class StorageServiceImpl implements StorageService {
         if (id == null) {
             return null;
         }
-        MusicFiles musicFiles = musicFilesRepository.findOne(id);
-        if (musicFiles != null && musicFiles.getPublic() != null && musicFiles.getPublic()) {
+        Optional<MusicFiles> musicFilesO = musicFilesRepository.findById(id);
+        if (!musicFilesO.isPresent()) {
+            return null;
+        }
+        MusicFiles musicFiles = musicFilesO.get();
+        if (musicFiles.getPublic() != null && musicFiles.getPublic()) {
             return musicFiles;
         } else {
             return null;
@@ -75,10 +76,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null || StringUtils.isEmpty(username)) {
             return null;
         }
-        MusicFiles musicFiles = musicFilesRepository.findOne(id);
-        if (musicFiles == null) {
+        Optional<MusicFiles> musicFilesO = musicFilesRepository.findById(id);
+        if (!musicFilesO.isPresent()) {
             return null;
         }
+        MusicFiles musicFiles = musicFilesO.get();
         Collection<Songs> songses = musicFiles.getSongsesByMusicFileId();
         if (songses == null || songses.size() <= 0) {
             return null;

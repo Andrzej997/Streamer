@@ -14,6 +14,7 @@ import pl.polsl.service.VideoMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -214,6 +215,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
     }
 
     @Override
+    @Transactional()
     public List<VideoDTO> getTop10Videos(String username, String title) {
         List<Videos> videosList = null;
         UsersView user = null;
@@ -240,7 +242,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         videosList.forEach(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
         });
         List<VideoDTO> videoDTOList = videoMapper.toVideoDTOList(videosList);
@@ -261,7 +263,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<Videos> videosList = videosRepository.findByOwnerId(user.getUserId());
         videosList.forEach(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
         });
         return videoMapper.toVideoDTOList(videosList);
@@ -304,7 +306,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         videosList = videosList.stream().filter(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
             return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
         }).collect(Collectors.toList());
@@ -339,7 +341,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         }
         result = result != null ? result.stream().filter(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
             return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
         }).collect(Collectors.toList()) : null;
@@ -358,7 +360,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         videosList.addAll(videosRepository.findByGenreNameLikeOrderByRating(name));
         videosList = videosList.stream().filter(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
             return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
         }).collect(Collectors.toList());
@@ -373,7 +375,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<Videos> videosList = videosRepository.findByProductionYearOrderByRating(yearNumber);
         videosList = videosList.stream().filter(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
             return videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic();
         }).collect(Collectors.toList());
@@ -420,7 +422,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         videos.setVideosAuthorsesByVideoId(videosAuthorsList);
         videos = videosRepository.save(videos);
         if (videos.getVideoFileId() != null) {
-            videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+            videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
         }
         return videoMapper.toVideoDTO(videos);
     }
@@ -434,7 +436,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<Videos> allVideos = new ArrayList<>();
         all.forEach(videos -> {
             if (videos.getVideoFileId() != null) {
-                videos.setVideoFilesByVideoFileId(videoFilesRepository.findOne(videos.getVideoFileId()));
+                videoFilesRepository.findById(videos.getVideoFileId()).ifPresent(videos::setVideoFilesByVideoFileId);
             }
             if (videos.getVideoFilesByVideoFileId() != null && videos.getVideoFilesByVideoFileId().getPublic()) {
                 allVideos.add(videos);
@@ -467,16 +469,15 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         if (rateVideoDTO == null || rateVideoDTO.getFilmId() == null || rateVideoDTO.getRate() == null) {
             return;
         }
-        Videos video = videosRepository.findOne(rateVideoDTO.getFilmId());
-        if (video == null) {
-            return;
-        }
-        Float rating = video.getRating();
-        Long ratingTimes = video.getRatingTimes();
-        Float temp = (rating * ratingTimes) + (rateVideoDTO.getRate() * 10);
-        video.setRatingTimes(video.getRatingTimes() + 1);
-        video.setRating(temp / video.getRatingTimes());
-        videosRepository.save(video);
+        Optional<Videos> videoO = videosRepository.findById(rateVideoDTO.getFilmId());
+        videoO.ifPresent(video -> {
+            Float rating = video.getRating();
+            Long ratingTimes = video.getRatingTimes();
+            Float temp = (rating * ratingTimes) + (rateVideoDTO.getRate() * 10);
+            video.setRatingTimes(video.getRatingTimes() + 1);
+            video.setRating(temp / video.getRatingTimes());
+            videosRepository.save(video);
+        });
     }
 
     @Override
@@ -488,7 +489,7 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         List<VideoDTO> result = new ArrayList<>();
         videosIterable.forEach(video -> {
             if (video.getVideoFileId() != null) {
-                video.setVideoFilesByVideoFileId(videoFilesRepository.findOne(video.getVideoFileId()));
+                videoFilesRepository.findById(video.getVideoFileId()).ifPresent(video::setVideoFilesByVideoFileId);
             }
             result.add(videoMapper.toVideoDTO(video));
         });

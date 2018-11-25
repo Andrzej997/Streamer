@@ -29,10 +29,10 @@ public class VideoManagementServiceImpl implements VideoManagementService {
         if (usersRepository.findUsersByUserName(username) == null) {
             return false;
         }
-        if (videoFilesRepository.findOne(fileId) == null) {
+        if (!videoFilesRepository.findById(fileId).isPresent()) {
             return false;
         }
-        videoFilesRepository.delete(fileId);
+        videoFilesRepository.deleteById(fileId);
         return true;
     }
 

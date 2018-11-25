@@ -1,5 +1,6 @@
 package pl.polsl.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface VideosRepository extends CrudRepository<Videos, Long> {
+public interface VideosRepository extends JpaRepository<Videos, Long> {
 
     @Query("SELECT v FROM Videos v where v.rating is not null and v.videoFileId in " +
             "(select f.videoFileId from VideoFiles f where f.isPublic = ?1) order by v.rating desc")

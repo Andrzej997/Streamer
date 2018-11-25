@@ -29,10 +29,10 @@ public class ImageManagementServiceImpl implements ImageManagementService {
         if (usersRepository.findUsersByUserName(username) == null) {
             return false;
         }
-        if (imageFilesRepository.findOne(fileId) == null) {
+        if (!imageFilesRepository.findById(fileId).isPresent()) {
             return false;
         }
-        imageFilesRepository.delete(fileId);
+        imageFilesRepository.deleteById(fileId);
         return true;
     }
 

@@ -14,6 +14,7 @@ import pl.polsl.service.ImageMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -139,10 +140,10 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
     private void saveImageFileMetadataForImage(ImageDTO imageDTO, Images images) {
         ImageFiles imageFiles = null;
-        ImageFiles file = imageFilesRepository.findOne(imageDTO.getImageFileId());
+        Optional<ImageFiles> file = imageFilesRepository.findById(imageDTO.getImageFileId());
         if (imageDTO.getImageFileDTO() != null) {
             ImageFiles toImageFiles = imageMapper.toImageFiles(imageDTO.getImageFileDTO());
-            toImageFiles.setFile(file.getFile());
+            file.ifPresent(imageFiles1 -> toImageFiles.setFile(imageFiles1.getFile()));
             imageFiles = imageFilesRepository.save(toImageFiles);
         }
         if (imageFiles == null) {
@@ -271,7 +272,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             return null;
         }
         String[] data = authorData.split(" ");
-        if (data == null || data.length <= 0) {
+        if (data.length <= 0) {
             return null;
         }
         String name = data[0];
@@ -290,7 +291,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
                 result = imagesRepository.findByArtistNameLikeAndSurnameLikeAndName2LikeOrderByRating(name, data[1], data[2]);
                 break;
             default:
-                break;
+                return null;
         }
         result = result.stream().filter(images ->
                 (images.getImageFilesByImageFileId() != null && images.getImageFilesByImageFileId().getPublic()))
@@ -367,8 +368,7 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
 
         images = imagesRepository.save(images);
 
-        ImageDTO result = imageMapper.toImageDTO(images);
-        return result;
+        return imageMapper.toImageDTO(images);
     }
 
     @Override
@@ -410,24 +410,20 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         if (rateImageDTO == null || rateImageDTO.getImageId() == null || rateImageDTO.getRate() == null) {
             return;
         }
-        Images image = imagesRepository.findOne(rateImageDTO.getImageId());
-        if (image == null) {
-            return;
-        }
-        Float rating = image.getRating();
-        Long ratingTimes = image.getRatingTimes();
-        Float temp = (rating * ratingTimes) + (rateImageDTO.getRate() * 10);
-        image.setRatingTimes(image.getRatingTimes() + 1);
-        image.setRating(temp / image.getRatingTimes());
-        imagesRepository.save(image);
+        Optional<Images> imageO = imagesRepository.findById(rateImageDTO.getImageId());
+        imageO.ifPresent(image -> {
+            Float rating = image.getRating();
+            Long ratingTimes = image.getRatingTimes();
+            Float temp = (rating * ratingTimes) + (rateImageDTO.getRate() * 10);
+            image.setRatingTimes(image.getRatingTimes() + 1);
+            image.setRating(temp / image.getRatingTimes());
+            imagesRepository.save(image);
+        });
     }
 
     @Override
     public List<ImageDTO> getAllImages() {
         Iterable<Images> imagesIterable = imagesRepository.findAll();
-        if (imagesIterable == null) {
-            return null;
-        }
         List<ImageDTO> result = new ArrayList<>();
         imagesIterable.forEach(image -> result.add(imageMapper.toImageDTO(image)));
         return result;

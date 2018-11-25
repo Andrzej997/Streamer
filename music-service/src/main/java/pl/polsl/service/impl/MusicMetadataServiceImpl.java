@@ -14,6 +14,7 @@ import pl.polsl.service.MusicMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -180,10 +181,10 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
 
     private void saveMusicFileMetadataForSong(SongDTO songDTO, Songs songs) {
         MusicFiles musicFiles = null;
-        MusicFiles file = musicFilesRepository.findOne(songDTO.getFileId());
+        Optional<MusicFiles> fileO = musicFilesRepository.findById(songDTO.getFileId());
         if (songDTO.getFileMetadata() != null) {
             MusicFiles toMusicFiles = musicMapper.toMusicFiles(songDTO.getFileMetadata());
-            toMusicFiles.setFile(file.getFile());
+            fileO.ifPresent(mf -> toMusicFiles.setFile(mf.getFile()));
             musicFiles = musicFilesRepository.save(toMusicFiles);
         }
         if (musicFiles == null) {
@@ -440,16 +441,15 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         if (rateSongDTO == null || rateSongDTO.getSongId() == null || rateSongDTO.getRate() == null) {
             return;
         }
-        Songs song = songsRepository.findOne(rateSongDTO.getSongId());
-        if (song == null) {
-            return;
-        }
-        Float rating = song.getRating();
-        Long ratingTimes = song.getRatingTimes();
-        Float temp = (rating * ratingTimes) + (rateSongDTO.getRate() * 10);
-        song.setRatingTimes(song.getRatingTimes() + 1);
-        song.setRating(temp / song.getRatingTimes());
-        songsRepository.save(song);
+        Optional<Songs> songO = songsRepository.findById(rateSongDTO.getSongId());
+        songO.ifPresent(song -> {
+            Float rating = song.getRating();
+            Long ratingTimes = song.getRatingTimes();
+            Float temp = (rating * ratingTimes) + (rateSongDTO.getRate() * 10);
+            song.setRatingTimes(song.getRatingTimes() + 1);
+            song.setRating(temp / song.getRatingTimes());
+            songsRepository.save(song);
+        });
     }
 
     @Override

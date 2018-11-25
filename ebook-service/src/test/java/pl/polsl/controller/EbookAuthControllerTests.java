@@ -13,6 +13,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.dto.EbookDTO;
 import pl.polsl.dto.UploadEbookMetadataDTO;
 import pl.polsl.model.EbookFiles;
@@ -36,10 +37,9 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class EbookAuthControllerTests {
 
-    @Autowired
     @InjectMocks
     private EbookAuthController ebookAuthController;
 

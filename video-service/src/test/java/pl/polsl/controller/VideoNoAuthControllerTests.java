@@ -36,9 +36,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class VideoNoAuthControllerTests {
 
-    @Autowired
     @InjectMocks
-    private VideoNoAuthController videoNoAuthController;
+    private VideoNoAuthController videoNoAuthController = new VideoNoAuthController();
 
     @Mock
     private StorageService storageService;

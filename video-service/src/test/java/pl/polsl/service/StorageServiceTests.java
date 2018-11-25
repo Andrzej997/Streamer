@@ -18,9 +18,11 @@ import pl.polsl.model.Videos;
 import pl.polsl.repository.VideoFilesRepository;
 import pl.polsl.repository.VideosRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.StorageServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -34,9 +36,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class StorageServiceTests {
 
-    @Autowired
     @InjectMocks
-    private StorageService storageService;
+    private StorageService storageService = new StorageServiceImpl();
 
     @Mock
     private VideoFilesRepository videoFilesRepository;
@@ -58,7 +59,7 @@ public class StorageServiceTests {
     @Test
     public void testDownloadVideoFile_whenIdIsNull() {
         Long id = null;
-        when(videoFilesRepository.findOne(id)).thenReturn(null);
+        when(videoFilesRepository.findById(id)).thenReturn(Optional.empty());
 
         VideoFiles result = storageService.downloadVideoFile(id);
 
@@ -71,7 +72,7 @@ public class StorageServiceTests {
         VideoFiles videoFiles = new VideoFiles();
         videoFiles.setVideoFileId(1L);
         videoFiles.setPublic(true);
-        when(videoFilesRepository.findOne(id)).thenReturn(videoFiles);
+        when(videoFilesRepository.findById(id)).thenReturn(Optional.of(videoFiles));
 
         VideoFiles result = storageService.downloadVideoFile(id);
 
@@ -106,7 +107,7 @@ public class StorageServiceTests {
         UsersView usersView = new UsersView();
         usersView.setUserId(1L);
         usersView.setUserName(username);
-        when(videoFilesRepository.findOne(id)).thenReturn(videoFiles);
+        when(videoFilesRepository.findById(id)).thenReturn(Optional.of(videoFiles));
         when(videosRepository.findByVideoFileId(videoFiles.getVideoFileId())).thenReturn(videosList);
         when(usersRepository.findUsersByUserName("test")).thenReturn(usersView);
 

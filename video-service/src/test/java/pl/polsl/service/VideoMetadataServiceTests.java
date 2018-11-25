@@ -12,12 +12,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.polsl.dto.*;
 import pl.polsl.mapper.VideoMapper;
+import pl.polsl.mapper.impl.VideoMapperImpl;
 import pl.polsl.model.*;
 import pl.polsl.repository.*;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.VideoMetadataServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -31,13 +34,11 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class VideoMetadataServiceTests {
 
-    @Autowired
     @InjectMocks
-    private VideoMetadataService videoMetadataService;
+    private VideoMetadataService videoMetadataService = new VideoMetadataServiceImpl();
 
-    @Autowired
     @Spy
-    private VideoMapper videoMapper;
+    private VideoMapper videoMapper = new VideoMapperImpl();
 
     @Mock
     private UsersRepositoryCustom usersRepository;
@@ -470,7 +471,7 @@ public class VideoMetadataServiceTests {
         video.setRatingTimes(1L);
         video.setRating(5.0f);
 
-        when(videosRepository.findOne(1L)).thenReturn(video);
+        when(videosRepository.findById(1L)).thenReturn(Optional.of(video));
 
         videoMetadataService.rateVideo(rateVideoDTO);
 
