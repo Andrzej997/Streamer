@@ -67,3 +67,33 @@ spring:
   cloud:
     config:
       uri: http://config-server-mateuszsojka.cfapps.io:8888/
+---
+spring:
+  profiles: aws
+  application:
+    name: eureka-service
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      enabled: false
+server:
+  port: 8761
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+eureka:
+  instance:
+    prefer-ip-address: false
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    hostname: eureka-service
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/

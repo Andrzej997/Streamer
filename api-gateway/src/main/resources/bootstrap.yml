@@ -129,3 +129,108 @@ spring:
       discovery:
         serviceId: config-server
 ---
+spring:
+  profiles: aws
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      enabled: false
+  mvc:
+    async:
+      request-timeout: 3600s
+  session:
+    timeout: 3600s
+  transaction:
+    default-timeout: 3600s
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+server:
+  port: 8080
+  connection-timeout: -1s
+  session:
+    timeout: 3600s
+eureka:
+  instance:
+    hostname: api-gateway
+    preferIpAddress: true
+    leaseRenewalIntervalInSeconds: 3
+    nonSecurePort: ${server.port}
+  client:
+    fetchRegistry: true
+    registryFetchIntervalSeconds: 5
+    instanceInfoReplicationIntervalSeconds: 5
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    eureka-connection-idle-timeout-seconds: 6000
+    eureka-server-read-timeout-seconds: 5000
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    lease:
+      duration: 5
+ribbon:
+  ReadTimeout: 18000000
+  ConnectTimeout: 18000000
+  MaxAutoRetries: 10
+  MaxAutoRetriesNextServer: 10
+  OkToRetryOnAllOperations: true
+  eureka:
+    enabled: true
+zuul:
+  ignoredServices: "*"
+  host:
+    connect-timeout-millis: 18000000
+    socket-timeout-millis: 18000000
+  routes:
+    auth-service:
+      path: /auth/**
+      service-id: auth-service
+    ebook-service:
+      path: /ebook/**
+      service-id: ebook-service
+    image-service:
+      path: /image/**
+      service-id: image-service
+    music-service:
+      path: /music/**
+      service-id: music-service
+    video-service:
+      path: /video/**
+      service-id: video-service
+    hystrix-dashboard:
+      path: /hystrix/**
+      service-id: hystrix-dashboard
+
+hystrix:
+  threadpool:
+    default:
+      coreSize: 100
+      maxQueueSize: -1
+      queueSizeRejectionThreshold: 5
+  command:
+    default:
+      circuitBreaker:
+        sleepWindowInMilliseconds: 30000
+        requestVolumeThreshold: 20
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 3600000
+endpoints:
+  restart:
+    enabled: true
+  shutdown:
+    enabled: true
+  health:
+    sensitive: false
+gateway:
+  ribbon:
+    ReadTimeout: 18000000
+    ConnectTimeout: 18000000
+    ServerListRefreshInterval: 15000
+    eureka:
+      enabled: true

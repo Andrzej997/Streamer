@@ -6,7 +6,8 @@ spring:
     config:
       uri: http://localhost:8888
       discovery:
-        enabled: true
+        enabled: false
+      enabled: false
   jpa:
     show_sql: true
     hibernate:
@@ -19,9 +20,9 @@ spring:
             non_contextual_creation: true
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/videodb
-    username: sysadm
-    password: sysadm
+    url: jdbc:postgresql://streamer-db.cmyghtop8klq.eu-central-1.rds.amazonaws.com:5432/videodb
+    username: postgres
+    password: postgres
     driver-class-name: org.postgresql.Driver
     tomcat:
       default-auto-commit: false
@@ -78,6 +79,77 @@ spring:
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
+---
+spring:
+  profiles: aws
+  application:
+    name: video-service
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      enabled: false
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+  datasource:
+    url: ${AWS_JDBC_VIDEO_URL}
+    username: ${AWS_JDBC_VIDEO_USER}
+    password: ${AWS_JDBC_VIDEO_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    tomcat:
+      default-auto-commit: false
+    dbcp:
+      default-auto-commit: false
+    hikari:
+      auto-commit: false
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+  mvc:
+    async:
+      request-timeout: 3600s
+  session:
+    timeout: 3600s
+  transaction:
+    default-timeout: 3600s
+server:
+  port: 9008
+  connection-timeout: -1s
+  session:
+    timeout: 3600s
+eureka:
+  instance:
+    hostname: video-service
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    prefer-ip-address: true
+    nonSecurePort: ${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    eureka-connection-idle-timeout-seconds: 3000
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+    enabled: true
+    eureka-server-read-timeout-seconds: 5000
+ribbon:
+  ReadTimeout: 18000000
+  ConnectTimeout: 18000000
+  eureka:
+    enabled: false
+encrypt:
+  failOnError: false
+
 ---
 spring:
   profiles: cloud
