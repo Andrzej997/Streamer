@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.dto.EbookDTO;
 import pl.polsl.service.EbookManagementService;
 import pl.polsl.service.EbookMetadataService;
@@ -26,10 +27,9 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class EbookAdminControllerTests {
 
-    @Autowired
     @InjectMocks
     private EbookAdminController ebookAdminController;
 

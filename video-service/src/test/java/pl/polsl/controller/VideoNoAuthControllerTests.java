@@ -36,9 +36,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class VideoNoAuthControllerTests {
 
-    @Autowired
     @InjectMocks
-    private VideoNoAuthController videoNoAuthController;
+    private VideoNoAuthController videoNoAuthController = new VideoNoAuthController();
 
     @Mock
     private StorageService storageService;
@@ -78,7 +77,7 @@ public class VideoNoAuthControllerTests {
 
         assertThat(streamingResponseBody).isNotNull();
         assertThat(streamingResponseBody.getBody()).isNotNull();
-        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.OK);
+        assertThat(streamingResponseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.PARTIAL_CONTENT);
         OutputStream outputStream = new ByteArrayOutputStream();
         try {
             streamingResponseBody.getBody().writeTo(outputStream);

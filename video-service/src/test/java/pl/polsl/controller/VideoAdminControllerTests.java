@@ -29,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class VideoAdminControllerTests {
 
-    @Autowired
     @InjectMocks
-    private VideoAdminController videoAdminController;
+    private VideoAdminController videoAdminController = new VideoAdminController();
 
     @Mock
     private VideoManagementService videoManagementService;

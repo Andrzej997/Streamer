@@ -21,10 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Mateusz on 27.11.2016.
@@ -61,7 +58,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null) {
             return null;
         }
-        ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
+        Optional<ImageFiles> imageFilesO = imageFilesRepositoryy.findById(id);
+        if (!imageFilesO.isPresent()) {
+            return null;
+        }
+        ImageFiles imageFiles = imageFilesO.get();
         if (imageFiles != null && imageFiles.getPublic() != null && imageFiles.getPublic()) {
             return imageFiles;
         }
@@ -74,10 +75,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null || StringUtils.isEmpty(username)) {
             return null;
         }
-        ImageFiles imageFiles = imageFilesRepositoryy.findOne(id);
-        if (imageFiles == null) {
+        Optional<ImageFiles> imageFilesO = imageFilesRepositoryy.findById(id);
+        if (!imageFilesO.isPresent()) {
             return null;
         }
+        ImageFiles imageFiles = imageFilesO.get();
         Collection<Images> images = imageFiles.getImagesByImageFileId();
         if (images == null || images.size() <= 0) {
             return null;

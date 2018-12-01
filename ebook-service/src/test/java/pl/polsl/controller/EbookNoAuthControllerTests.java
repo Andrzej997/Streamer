@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.dto.*;
 import pl.polsl.model.EbookFiles;
 import pl.polsl.service.EbookMetadataService;
@@ -33,10 +34,9 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class EbookNoAuthControllerTests {
 
-    @Autowired
     @InjectMocks
     private EbookNoAuthController ebookNoAuthController;
 

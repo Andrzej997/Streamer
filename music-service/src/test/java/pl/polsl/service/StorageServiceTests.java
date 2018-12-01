@@ -16,9 +16,11 @@ import pl.polsl.model.Songs;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.MusicFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.StorageServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,9 +34,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class StorageServiceTests {
 
-    @Autowired
     @InjectMocks
-    private StorageService storageService;
+    private StorageService storageService = new StorageServiceImpl();
 
     @Mock
     private MusicFilesRepository musicFilesRepository;
@@ -53,7 +54,7 @@ public class StorageServiceTests {
     @Test
     public void testDownloadMusicFile_whenIdIsNull() {
         Long id = null;
-        when(musicFilesRepository.findOne(id)).thenReturn(null);
+        when(musicFilesRepository.findById(id)).thenReturn(Optional.empty());
 
         MusicFiles result = storageService.downloadMusicFile(id);
 
@@ -66,7 +67,7 @@ public class StorageServiceTests {
         MusicFiles musicFiles = new MusicFiles();
         musicFiles.setMusicFileId(1L);
         musicFiles.setPublic(true);
-        when(musicFilesRepository.findOne(id)).thenReturn(musicFiles);
+        when(musicFilesRepository.findById(id)).thenReturn(Optional.of(musicFiles));
 
         MusicFiles result = storageService.downloadMusicFile(id);
 
@@ -100,7 +101,7 @@ public class StorageServiceTests {
         UsersView usersView = new UsersView();
         usersView.setUserId(1L);
         usersView.setUserName(username);
-        when(musicFilesRepository.findOne(id)).thenReturn(musicFiles);
+        when(musicFilesRepository.findById(id)).thenReturn(Optional.of(musicFiles));
         when(usersRepository.findUsersByUserName("test")).thenReturn(usersView);
 
         MusicFiles result = storageService.downloadMusicFile(id, username);

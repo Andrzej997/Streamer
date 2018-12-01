@@ -13,6 +13,9 @@ import pl.polsl.model.UsersView;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.repository.VideoFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.VideoManagementServiceImpl;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class VideoManagementServiceTests {
 
-    @Autowired
     @InjectMocks
-    private VideoManagementService videoManagementService;
+    private VideoManagementService videoManagementService = new VideoManagementServiceImpl();
 
     @Mock
     private VideoFilesRepository videoFilesRepository;
@@ -72,7 +74,7 @@ public class VideoManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(videoFilesRepository.findOne(fileId)).thenReturn(null);
+        when(videoFilesRepository.findById(fileId)).thenReturn(Optional.empty());
 
         Boolean result = videoManagementService.removeFileAndMetadata(fileId, username);
 
@@ -84,8 +86,8 @@ public class VideoManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(videoFilesRepository.findOne(fileId)).thenReturn(new VideoFiles());
-        Mockito.doNothing().when(videoFilesRepository).delete(fileId);
+        when(videoFilesRepository.findById(fileId)).thenReturn(Optional.of(new VideoFiles()));
+        Mockito.doNothing().when(videoFilesRepository).deleteById(fileId);
 
         Boolean result = videoManagementService.removeFileAndMetadata(fileId, username);
 

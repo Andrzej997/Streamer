@@ -36,9 +36,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class MusicNoAuthControllerTests {
 
-    @Autowired
     @InjectMocks
-    private MusicNoAuthController musicNoAuthController;
+    private MusicNoAuthController musicNoAuthController = new MusicNoAuthController();
 
     @Mock
     private StorageService storageService;

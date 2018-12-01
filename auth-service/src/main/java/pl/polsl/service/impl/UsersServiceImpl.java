@@ -17,6 +17,7 @@ import pl.polsl.service.UsersService;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Mateusz on 27.10.2016.
@@ -104,8 +105,9 @@ public class UsersServiceImpl implements UsersService {
         }
         Users user = mapper.toUsers(dto);
         if (user != null) {
-            Users old = usersRepository.findOne(user.getUserId());
-            if (old != null) {
+            Optional<Users> oldO = usersRepository.findById(user.getUserId());
+            if (oldO.isPresent()) {
+                Users old = oldO.get();
                 user.setPassword(old.getPassword());
                 user.setAccountExpirationDate(old.getAccountExpirationDate());
                 user.setAccountLocked(old.getAccountLocked());
@@ -118,13 +120,13 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public Boolean deleteUser(Long userId) {
-        Users user = usersRepository.findOne(userId);
-        if (userId != null && user != null) {
+        Optional<Users> userO = usersRepository.findById(userId);
+        if (userId != null && userO.isPresent()) {
             List<Authority> authorityList = authorityRepository.findByUserId(userId);
             if (authorityList != null && authorityList.isEmpty()) {
                 authorityList.forEach(authority -> authorityRepository.delete(authority));
             }
-            usersRepository.delete(user);
+            usersRepository.delete(userO.get());
             return true;
         }
         return false;

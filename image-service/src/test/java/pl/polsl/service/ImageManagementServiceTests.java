@@ -13,6 +13,9 @@ import pl.polsl.model.ImageFiles;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.ImageFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.ImageManagementServiceImpl;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class ImageManagementServiceTests {
 
-    @Autowired
     @InjectMocks
-    private ImageManagementService imageManagementService;
+    private ImageManagementService imageManagementService = new ImageManagementServiceImpl();
 
     @Mock
     private ImageFilesRepository imageFilesRepository;
@@ -72,7 +74,7 @@ public class ImageManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(imageFilesRepository.findOne(fileId)).thenReturn(null);
+        when(imageFilesRepository.findById(fileId)).thenReturn(Optional.empty());
 
         Boolean result = imageManagementService.removeFileAndMetadata(fileId, username);
 
@@ -84,8 +86,8 @@ public class ImageManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(imageFilesRepository.findOne(fileId)).thenReturn(new ImageFiles());
-        Mockito.doNothing().when(imageFilesRepository).delete(fileId);
+        when(imageFilesRepository.findById(fileId)).thenReturn(Optional.of(new ImageFiles()));
+        Mockito.doNothing().when(imageFilesRepository).deleteById(fileId);
 
         Boolean result = imageManagementService.removeFileAndMetadata(fileId, username);
 

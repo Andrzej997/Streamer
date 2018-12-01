@@ -21,10 +21,7 @@ import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Mateusz on 28.11.2016.
@@ -61,8 +58,12 @@ public class StorageServiceImpl implements StorageService {
         if (id == null) {
             return null;
         }
-        EbookFiles ebookFiles = ebookFilesRepository.findOne(id);
-        if (ebookFiles != null && ebookFiles.getPublic() != null && ebookFiles.getPublic()) {
+        Optional<EbookFiles> ebookFilesO = ebookFilesRepository.findById(id);
+        if (!ebookFilesO.isPresent()) {
+            return null;
+        }
+        EbookFiles ebookFiles = ebookFilesO.get();
+        if (ebookFiles.getPublic() != null && ebookFiles.getPublic()) {
             return ebookFiles;
         }
         return null;
@@ -74,10 +75,11 @@ public class StorageServiceImpl implements StorageService {
         if (id == null || StringUtils.isEmpty(username)) {
             return null;
         }
-        EbookFiles ebookFiles = ebookFilesRepository.findOne(id);
-        if (ebookFiles == null) {
+        Optional<EbookFiles> ebookFilesO = ebookFilesRepository.findById(id);
+        if (!ebookFilesO.isPresent()) {
             return null;
         }
+        EbookFiles ebookFiles = ebookFilesO.get();
         Collection<Ebook> ebooks = ebookFiles.getEbooksByEbookFileId();
         if (ebooks == null || ebooks.size() <= 0) {
             return null;

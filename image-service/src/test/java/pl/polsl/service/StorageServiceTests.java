@@ -16,9 +16,11 @@ import pl.polsl.model.Images;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.ImageFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.StorageServiceImpl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -32,9 +34,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class StorageServiceTests {
 
-    @Autowired
     @InjectMocks
-    private StorageService storageService;
+    private StorageService storageService = new StorageServiceImpl();
 
     @Mock
     private ImageFilesRepository imageFilesRepository;
@@ -53,7 +54,7 @@ public class StorageServiceTests {
     @Test
     public void testDownloadImageFile_whenIdIsNull() {
         Long id = null;
-        when(imageFilesRepository.findOne(id)).thenReturn(null);
+        when(imageFilesRepository.findById(id)).thenReturn(Optional.empty());
 
         ImageFiles result = storageService.downloadImageFile(id);
 
@@ -66,7 +67,7 @@ public class StorageServiceTests {
         ImageFiles imageFiles = new ImageFiles();
         imageFiles.setImageFileId(1L);
         imageFiles.setPublic(true);
-        when(imageFilesRepository.findOne(id)).thenReturn(imageFiles);
+        when(imageFilesRepository.findById(id)).thenReturn(Optional.of(imageFiles));
 
         ImageFiles result = storageService.downloadImageFile(id);
 
@@ -100,7 +101,7 @@ public class StorageServiceTests {
         UsersView usersView = new UsersView();
         usersView.setUserId(1L);
         usersView.setUserName(username);
-        when(imageFilesRepository.findOne(id)).thenReturn(imageFiles);
+        when(imageFilesRepository.findById(id)).thenReturn(Optional.of(imageFiles));
         when(usersRepository.findUsersByUserName("test")).thenReturn(usersView);
 
         ImageFiles result = storageService.downloadImageFile(id, username);

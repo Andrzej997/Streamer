@@ -29,10 +29,10 @@ public class EbookManagementServiceImpl implements EbookManagementService {
         if (usersRepository.findUsersByUserName(username) == null) {
             return false;
         }
-        if (ebookFilesRepository.findOne(fileId) == null) {
+        if (!ebookFilesRepository.findById(fileId).isPresent()) {
             return false;
         }
-        ebookFilesRepository.delete(fileId);
+        ebookFilesRepository.deleteById(fileId);
         return true;
     }
 

@@ -12,12 +12,21 @@ spring:
     hibernate:
       ddl-auto: validate
     database: POSTGRESQL
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
   datasource:
-    initialize: false
     url: jdbc:postgresql://localhost:5432/usersdb
     username: sysadm
     password: sysadm
     driver-class-name: org.postgresql.Driver
+    tomcat:
+      default-auto-commit: false
+    dbcp:
+      default-auto-commit: false
   resources:
     chain:
       enabled: true
@@ -45,7 +54,11 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error
 jwt:
   header: AuthHeader
   key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
@@ -62,6 +75,62 @@ spring:
         serviceId: config-server
 ---
 spring:
+  profiles: aws
+  application:
+    name: auth-service
+  cloud:
+    config:
+      discovery:
+        enabled: false
+      enabled: false
+  jpa:
+    show_sql: true
+    hibernate:
+      ddl-auto: validate
+    database: POSTGRESQL
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    open-in-view: false
+  datasource:
+    url: ${AWS_JDBC_USERS_URL}
+    username: ${AWS_JDBC_USERS_USER}
+    password: ${AWS_JDBC_USERS_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  resources:
+    chain:
+      enabled: true
+server:
+  port: 9000
+eureka:
+  instance:
+    hostname: auth-service
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 2
+    prefer-ip-address: true
+    nonSecurePort: ${server.port}
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    eureka-connection-idle-timeout-seconds: 3000
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+ribbon:
+  ReadTimeout: 18000000
+  ConnectTimeout: 18000000
+  eureka:
+    enabled: false
+encrypt:
+  failOnError: false
+jwt:
+  header: AuthHeader
+  key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
+  expiration: 36000
+
+---
+spring:
   profiles: test
   application:
     name: auth-service
@@ -70,7 +139,7 @@ spring:
     hibernate:
       ddl-auto: none
   datasource:
-    url: jdbc:h2:mem:test;MODE=PostgreSQL
+    url: jdbc:h2:mem:test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
     username: admin
     password: admin
     platform: h2
@@ -88,4 +157,8 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error

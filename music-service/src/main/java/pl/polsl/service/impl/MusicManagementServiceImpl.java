@@ -29,10 +29,10 @@ public class MusicManagementServiceImpl implements MusicManagementService {
         if (usersRepository.findUsersByUserName(username) == null) {
             return false;
         }
-        if (musicFilesRepository.findOne(fileId) == null) {
+        if (!musicFilesRepository.findById(fileId).isPresent()) {
             return false;
         }
-        musicFilesRepository.delete(fileId);
+        musicFilesRepository.deleteById(fileId);
         return true;
     }
 

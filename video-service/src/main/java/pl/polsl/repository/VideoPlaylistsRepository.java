@@ -1,6 +1,6 @@
 package pl.polsl.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.model.VideoPlaylists;
@@ -10,5 +10,5 @@ import pl.polsl.model.VideoPlaylists;
  */
 @Repository
 @Transactional
-public interface VideoPlaylistsRepository extends CrudRepository<VideoPlaylists, Long> {
+public interface VideoPlaylistsRepository extends JpaRepository<VideoPlaylists, Long> {
 }

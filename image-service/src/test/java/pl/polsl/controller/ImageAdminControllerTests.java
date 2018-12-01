@@ -29,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class ImageAdminControllerTests {
 
-    @Autowired
     @InjectMocks
-    private ImageAdminController imageAdminController;
+    private ImageAdminController imageAdminController = new ImageAdminController();
 
     @Mock
     private ImageManagementService imageManagementService;

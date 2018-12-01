@@ -11,12 +11,15 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import pl.polsl.dto.*;
 import pl.polsl.mapper.MusicMapper;
+import pl.polsl.mapper.impl.MusicMapperImpl;
 import pl.polsl.model.*;
 import pl.polsl.repository.*;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.MusicMetadataServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -30,13 +33,11 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class MusicMetadataServiceTests {
 
-    @Autowired
     @InjectMocks
-    private MusicMetadataService musicMetadataService;
+    private MusicMetadataService musicMetadataService = new MusicMetadataServiceImpl();
 
-    @Autowired
     @Spy
-    private MusicMapper musicMapper;
+    private MusicMapper musicMapper = new MusicMapperImpl();
 
     @Mock
     private UsersRepositoryCustom usersRepository;
@@ -468,7 +469,7 @@ public class MusicMetadataServiceTests {
         songs.setRatingTimes(1L);
         songs.setRating(5.0f);
 
-        when(songsRepository.findOne(1L)).thenReturn(songs);
+        when(songsRepository.findById(1L)).thenReturn(Optional.of(songs));
 
         musicMetadataService.rateSong(rateSongDTO);
 

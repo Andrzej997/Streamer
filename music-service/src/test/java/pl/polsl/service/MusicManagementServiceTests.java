@@ -13,6 +13,9 @@ import pl.polsl.model.MusicFiles;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.MusicFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.MusicManagementServiceImpl;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,9 +29,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"})
 public class MusicManagementServiceTests {
 
-    @Autowired
     @InjectMocks
-    private MusicManagementService musicManagementService;
+    private MusicManagementService musicManagementService = new MusicManagementServiceImpl();
 
     @Mock
     private MusicFilesRepository musicFilesRepository;
@@ -72,7 +74,7 @@ public class MusicManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(musicFilesRepository.findOne(fileId)).thenReturn(null);
+        when(musicFilesRepository.findById(fileId)).thenReturn(Optional.empty());
 
         Boolean result = musicManagementService.removeFileAndMetadata(fileId, username);
 
@@ -84,8 +86,8 @@ public class MusicManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(musicFilesRepository.findOne(fileId)).thenReturn(new MusicFiles());
-        Mockito.doNothing().when(musicFilesRepository).delete(fileId);
+        when(musicFilesRepository.findById(fileId)).thenReturn(Optional.of(new MusicFiles()));
+        Mockito.doNothing().when(musicFilesRepository).deleteById(fileId);
 
         Boolean result = musicManagementService.removeFileAndMetadata(fileId, username);
 

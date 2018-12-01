@@ -61,7 +61,7 @@ public class Users extends BaseEntity implements UserDetails {
     @NotNull
     private String email;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "user")
     private List<Authority> authorities;
 
     @Basic

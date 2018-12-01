@@ -14,6 +14,7 @@ import pl.polsl.service.EbookMetadataService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -138,10 +139,12 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
 
     private void saveEbookFileMetadataForEbook(EbookDTO ebookDTO, Ebook ebook) {
         EbookFiles ebookFiles = null;
-        EbookFiles file = ebookFilesRepository.findOne(ebookDTO.getEbookFileId());
+        Optional<EbookFiles> file = ebookFilesRepository.findById(ebookDTO.getEbookFileId());
         if (ebookDTO.getEbookFileMetadataDTO() != null) {
             EbookFiles toEbookFiles = ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO());
-            toEbookFiles.setFile(file.getFile());
+            if (file.isPresent()) {
+                toEbookFiles.setFile(file.get().getFile());
+            }
             ebookFiles = ebookFilesRepository.save(toEbookFiles);
         }
         if (ebookFiles == null) {
@@ -403,10 +406,11 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         if (rateEbookDTO == null || rateEbookDTO.getEbookId() == null || rateEbookDTO.getRate() == null) {
             return;
         }
-        Ebook ebook = ebookRepository.findOne(rateEbookDTO.getEbookId());
-        if (ebook == null) {
+        Optional<Ebook> ebookO = ebookRepository.findById(rateEbookDTO.getEbookId());
+        if (!ebookO.isPresent()) {
             return;
         }
+        Ebook ebook = ebookO.get();
         Float rating = ebook.getRating();
         Long ratingTimes = ebook.getRatingTimes();
         Float temp = (rating * ratingTimes) + (rateEbookDTO.getRate() * 10);

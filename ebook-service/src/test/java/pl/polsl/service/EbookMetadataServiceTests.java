@@ -9,14 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.dto.*;
 import pl.polsl.mapper.EbookMapper;
+import pl.polsl.mapper.impl.EbookMapperImpl;
 import pl.polsl.model.*;
 import pl.polsl.repository.*;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.EbookMetadataServiceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -27,16 +31,14 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class EbookMetadataServiceTests {
 
-    @Autowired
     @InjectMocks
-    private EbookMetadataService ebookMetadataService;
+    private EbookMetadataService ebookMetadataService = new EbookMetadataServiceImpl();
 
-    @Autowired
     @Spy
-    private EbookMapper ebookMapper;
+    private EbookMapper ebookMapper = new EbookMapperImpl();
 
     @Mock
     private UsersRepositoryCustom usersRepository;
@@ -421,7 +423,7 @@ public class EbookMetadataServiceTests {
         ebook.setRatingTimes(1L);
         ebook.setRating(5.0f);
 
-        when(ebookRepository.findOne(1L)).thenReturn(ebook);
+        when(ebookRepository.findById(1L)).thenReturn(Optional.of(ebook));
 
         ebookMetadataService.rateEbook(rateEbookDTO);
 

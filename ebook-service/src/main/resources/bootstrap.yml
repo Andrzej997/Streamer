@@ -49,4 +49,8 @@ encrypt:
   failOnError: false
 logging:
   file: log.txt
-  level: error
+  level:
+    org:
+      springframework:
+        web: error
+      hibernate: error

@@ -9,10 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import pl.polsl.EbookServiceApplication;
 import pl.polsl.model.EbookFiles;
 import pl.polsl.model.UsersView;
 import pl.polsl.repository.EbookFilesRepository;
 import pl.polsl.repository.custom.UsersRepositoryCustom;
+import pl.polsl.service.impl.EbookManagementServiceImpl;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -23,12 +27,11 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT,
-        properties = {"bootstrap.yml"})
+        properties = {"bootstrap.yml"}, classes = {EbookServiceApplication.class})
 public class EbookManagementServiceTests {
 
-    @Autowired
     @InjectMocks
-    private EbookManagementService ebookManagementService;
+    private EbookManagementService ebookManagementService = new EbookManagementServiceImpl();
 
     @Mock
     private EbookFilesRepository ebookFilesRepository;
@@ -72,7 +75,7 @@ public class EbookManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(ebookFilesRepository.findOne(fileId)).thenReturn(null);
+        when(ebookFilesRepository.findById(fileId)).thenReturn(Optional.ofNullable(null));
 
         Boolean result = ebookManagementService.removeFileAndMetadata(fileId, username);
 
@@ -84,8 +87,8 @@ public class EbookManagementServiceTests {
         Long fileId = 1L;
         String username = "test";
         when(usersRepository.findUsersByUserName(username)).thenReturn(new UsersView());
-        when(ebookFilesRepository.findOne(fileId)).thenReturn(new EbookFiles());
-        Mockito.doNothing().when(ebookFilesRepository).delete(fileId);
+        when(ebookFilesRepository.findById(fileId)).thenReturn(Optional.of(new EbookFiles()));
+        Mockito.doNothing().when(ebookFilesRepository).deleteById(fileId);
 
         Boolean result = ebookManagementService.removeFileAndMetadata(fileId, username);
 

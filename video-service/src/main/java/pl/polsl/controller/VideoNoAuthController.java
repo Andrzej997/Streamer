@@ -1,26 +1,26 @@
 package pl.polsl.controller;
 
-import org.postgresql.largeobject.BlobInputStream;
 import org.springframework.http.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.cache.VideoFilesCacheableProvider;
+import pl.polsl.configuration.MultipartSender;
 import pl.polsl.dto.*;
 import pl.polsl.model.VideoFiles;
 import pl.polsl.service.StorageService;
 import pl.polsl.service.VideoManagementService;
 import pl.polsl.service.VideoMetadataService;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,17 +40,14 @@ public class VideoNoAuthController {
     @Autowired
     private VideoManagementService videoManagementService;
 
+    @Autowired
+    private VideoFilesCacheableProvider cacheableProvider;
+
     @GetMapping(value = "/download")
     public ResponseEntity<StreamingResponseBody>
-    downloadVideoFile(@RequestParam("id") Long id, @RequestHeader("Range") String startRange) {
+    downloadVideoFile(@RequestParam("id") Long id, @RequestHeader(value = "Range", required = false) String range) {
         if (id == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        Long startPosition = 0l;
-        if (!StringUtils.isEmpty(startRange)){
-            startRange = startRange.replaceAll("bytes=", "");
-            String startPositionString = startRange.substring(0, startRange.indexOf("-"));
-            startPosition = Long.parseLong(startPositionString);
         }
         VideoFiles videoFile = storageService.downloadVideoFile(id);
         if (videoFile == null) {
@@ -59,8 +56,7 @@ public class VideoNoAuthController {
         try {
             Long fileLength = new Long(videoFile.getFile().length());
             final InputStream binaryStream = videoFile.getFile().getBinaryStream();
-            //binaryStream.skip(startPosition > 0 ? startPosition - 1 : 0);
-            return ResponseEntity.ok()
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
                     .contentType(MediaType.parseMediaType("video/" + videoFile.getExtension()))
                     .contentLength(videoFile.getFile().length())
                     .header("X-Content-Duration", fileLength.toString())
@@ -75,6 +71,23 @@ public class VideoNoAuthController {
             e.printStackTrace();
         }
         return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @GetMapping(value = "/download-multipart")
+    public void downloadVideoFile(@RequestParam("id") Long id,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) throws Exception {
+        if (id == null) {
+            return;
+        }
+        VideoFiles videoFile = cacheableProvider.downloadVideoFile(id);
+        if (videoFile == null) {
+            return;
+        }
+        MultipartSender.fromVideoFiles(videoFile)
+                .with(request)
+                .with(response)
+                .serveVideoResource();
     }
 
     @GetMapping(value = "/thumbnail")

@@ -39,6 +39,7 @@ public class FFMPEGHelper {
         Runtime run = Runtime.getRuntime();
         Process process = run.exec(System.getProperty("ffmpeg.exec") +
                 " -i " + input.getAbsolutePath().replaceAll("\\s", "") +
+                " -movflags faststart " +
                 " -loglevel error" +
                 " -preset medium " +
                 " -threads 0" +

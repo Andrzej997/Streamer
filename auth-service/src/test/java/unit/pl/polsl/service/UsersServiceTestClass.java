@@ -18,8 +18,10 @@ import pl.polsl.model.Users;
 import pl.polsl.repository.AuthorityRepository;
 import pl.polsl.repository.UsersRepository;
 import pl.polsl.service.UsersService;
+import pl.polsl.service.impl.UsersServiceImpl;
 
 import java.util.Calendar;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -33,9 +35,8 @@ import static org.mockito.Mockito.when;
         properties = {"bootstrap.yml"}, classes = {AuthServiceApplication.class})
 public class UsersServiceTestClass {
 
-    @Autowired
     @InjectMocks
-    private UsersService usersService;
+    private UsersService usersService = new UsersServiceImpl();
 
     @Mock
     private UsersRepository usersRepository;
@@ -172,7 +173,7 @@ public class UsersServiceTestClass {
         dto.setEmail("email");
         dto.setNationality("nationality");
         Users expectedUser = usersMapper.toUsers(dto);
-        when(usersRepository.findOne(1L)).thenReturn(expectedUser);
+        when(usersRepository.findById(1L)).thenReturn(Optional.of(expectedUser));
         when(usersRepository.save(expectedUser)).thenReturn(expectedUser);
 
         Users result = usersService.updateUserInformations(dto);
@@ -189,7 +190,7 @@ public class UsersServiceTestClass {
         dto.setUserName("username");
         dto.setEmail("email");
         dto.setNationality("nationality");
-        when(usersRepository.findOne(1L)).thenReturn(null);
+        when(usersRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
 
         Users result = usersService.updateUserInformations(dto);
 
@@ -214,7 +215,7 @@ public class UsersServiceTestClass {
         dto.setEmail("email");
         dto.setNationality("nationality");
         Users users = usersMapper.toUsers(dto);
-        when(usersRepository.findOne(1L)).thenReturn(users);
+        when(usersRepository.findById(1L)).thenReturn(Optional.of(users));
         Mockito.doNothing().when(usersRepository).delete(users);
 
         Boolean result = usersService.deleteUser(1L);
@@ -231,7 +232,7 @@ public class UsersServiceTestClass {
         dto.setUserName("username");
         dto.setEmail("email");
         dto.setNationality("nationality");
-        when(usersRepository.findOne(1L)).thenReturn(null);
+        when(usersRepository.findById(1L)).thenReturn(Optional.ofNullable(null));
 
         Boolean result = usersService.deleteUser(1L);
 

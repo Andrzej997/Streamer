@@ -1,6 +1,6 @@
 package pl.polsl.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pl.polsl.model.Directors;
@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 @Transactional
-public interface DirectorsRepository extends CrudRepository<Directors, Long> {
+public interface DirectorsRepository extends JpaRepository<Directors, Long> {
 
     List<Directors> findByNameLike(String name);
 
