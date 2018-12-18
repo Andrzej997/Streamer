@@ -86,7 +86,7 @@ public class VideoAuthControllerTests {
         String username = "test";
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null, null);
 
         assertThat(responseBody).isNotNull();
         assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
@@ -98,7 +98,7 @@ public class VideoAuthControllerTests {
         String username = null;
         when(storageService.downloadVideoFile(id, username)).thenReturn(null);
 
-        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null);
+        ResponseEntity<StreamingResponseBody> responseBody = videoAuthController.downloadVideoFile(id, username, null, null);
 
         assertThat(responseBody).isNotNull();
         assertThat(responseBody.getStatusCode()).isEqualByComparingTo(HttpStatus.BAD_REQUEST);
@@ -121,7 +121,7 @@ public class VideoAuthControllerTests {
         when(storageService.downloadVideoFile(id, username)).thenReturn(videoFiles);
 
 
-        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoAuthController.downloadVideoFile(id, username, null);
+        ResponseEntity<StreamingResponseBody> streamingResponseBody = videoAuthController.downloadVideoFile(id, username, null, null);
 
 
         assertThat(streamingResponseBody).isNotNull();
@@ -139,7 +139,7 @@ public class VideoAuthControllerTests {
     @Test
     public void testSaveVideoFileMetadata_whenMetadataIsNull() {
 
-        ResponseEntity<UploadVideoMetadataDTO> responseEntity = videoAuthController.saveVideoFileMetadata(null);
+        ResponseEntity<UploadVideoMetadataDTO> responseEntity = videoAuthController.saveVideoFileMetadata(null, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -151,7 +151,7 @@ public class VideoAuthControllerTests {
         UploadVideoMetadataDTO uploadVideoMetadataDTO = new UploadVideoMetadataDTO();
         when(videoMetadataService.saveMetadata(uploadVideoMetadataDTO)).thenReturn(uploadVideoMetadataDTO);
 
-        ResponseEntity<UploadVideoMetadataDTO> responseEntity = videoAuthController.saveVideoFileMetadata(uploadVideoMetadataDTO);
+        ResponseEntity<UploadVideoMetadataDTO> responseEntity = videoAuthController.saveVideoFileMetadata(uploadVideoMetadataDTO, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -163,7 +163,7 @@ public class VideoAuthControllerTests {
         String username = null;
         String title = null;
 
-        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getTop10VideosOnlyPrivates(title, username);
+        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getTop10VideosOnlyPrivates(title, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -176,7 +176,7 @@ public class VideoAuthControllerTests {
         String title = null;
         when(videoMetadataService.getTop10Videos(username, title)).thenReturn(new ArrayList<>());
 
-        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getTop10VideosOnlyPrivates(title, username);
+        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getTop10VideosOnlyPrivates(title, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -187,7 +187,7 @@ public class VideoAuthControllerTests {
     public void testGetAllUserVideos_whenUsernameIsNull() {
         String username = null;
 
-        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getAllUserVideos(username);
+        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getAllUserVideos(username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -199,7 +199,7 @@ public class VideoAuthControllerTests {
         String username = "test";
         when(videoMetadataService.getAllUserVideos(username)).thenReturn(new ArrayList<>());
 
-        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getAllUserVideos(username);
+        ResponseEntity<List<VideoDTO>> responseEntity = videoAuthController.getAllUserVideos(username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -211,7 +211,7 @@ public class VideoAuthControllerTests {
         String username = "test";
         Long id = null;
 
-        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -223,7 +223,7 @@ public class VideoAuthControllerTests {
         String username = null;
         Long id = 1L;
 
-        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -236,7 +236,7 @@ public class VideoAuthControllerTests {
         Long id = 1L;
         when(videoManagementService.removeFileAndMetadata(id, username)).thenReturn(true);
 
-        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAuthController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -247,7 +247,7 @@ public class VideoAuthControllerTests {
     public void testUpdateEbookMetadata_whenEbookNotExists() {
         VideoDTO videoDTO = null;
 
-        ResponseEntity<VideoDTO> responseEntity = videoAuthController.updateVideoMetadata(videoDTO);
+        ResponseEntity<VideoDTO> responseEntity = videoAuthController.updateVideoMetadata(videoDTO, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -259,7 +259,7 @@ public class VideoAuthControllerTests {
         VideoDTO videoDTO = new VideoDTO();
         when(videoMetadataService.updateVideoMetadata(videoDTO)).thenReturn(videoDTO);
 
-        ResponseEntity<VideoDTO> responseEntity = videoAuthController.updateVideoMetadata(videoDTO);
+        ResponseEntity<VideoDTO> responseEntity = videoAuthController.updateVideoMetadata(videoDTO, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

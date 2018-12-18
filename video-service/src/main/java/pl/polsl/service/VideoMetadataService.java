@@ -30,4 +30,6 @@ public interface VideoMetadataService {
     void rateVideo(RateVideoDTO rateVideoDTO);
 
     List<VideoDTO> getAllVideos();
+
+    String getUsernameByVideoId(Long videoId);
 }

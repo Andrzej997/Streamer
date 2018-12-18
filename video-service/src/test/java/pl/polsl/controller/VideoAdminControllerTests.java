@@ -71,7 +71,7 @@ public class VideoAdminControllerTests {
         Long id = null;
         when(videoManagementService.removeFileAndMetadata(id, username)).thenReturn(false);
 
-        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -85,7 +85,7 @@ public class VideoAdminControllerTests {
         Long id = 1L;
         when(videoManagementService.removeFileAndMetadata(id, username)).thenReturn(false);
 
-        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -99,7 +99,7 @@ public class VideoAdminControllerTests {
         Long id = 1L;
         when(videoManagementService.removeFileAndMetadata(id, username)).thenReturn(true);
 
-        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username);
+        ResponseEntity<Boolean> responseEntity = videoAdminController.deleteFileAndMetadata(id, username, null);
 
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

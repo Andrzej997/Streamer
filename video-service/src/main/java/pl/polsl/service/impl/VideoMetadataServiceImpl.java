@@ -496,6 +496,19 @@ public class VideoMetadataServiceImpl implements VideoMetadataService {
         return result;
     }
 
+    @Override
+    public String getUsernameByVideoId(Long videoId) {
+        if (videoId == null) {
+            return null;
+        }
+        Optional<Videos> oVideo = videosRepository.findById(videoId);
+        if (oVideo.isPresent()) {
+            Videos video = oVideo.get();
+            return usersRepository.findUsersByUserId(video.getOwnerId()).getUserName();
+        }
+        return null;
+    }
+
     public VideoMapper getVideoMapper() {
         return videoMapper;
     }

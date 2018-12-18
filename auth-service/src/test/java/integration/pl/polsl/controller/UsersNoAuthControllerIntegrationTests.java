@@ -4,13 +4,14 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StringUtils;
 import pl.polsl.AuthServiceApplication;
 import pl.polsl.dto.RegistrationDTO;
 
@@ -33,6 +34,9 @@ public class UsersNoAuthControllerIntegrationTests {
     private TestRestTemplate restTemplate;
 
     private String controllerUrl = "/noauth";
+
+    @Value("${jwt.header}")
+    private String tokenHeader;
 
     @Test
     public void testLogin_whenUserExists() {
@@ -283,5 +287,59 @@ public class UsersNoAuthControllerIntegrationTests {
         assertThat(responseEntity).isNotNull();
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isTrue();
+    }
+
+    public String login() {
+        String username = "test";
+        String password = "test";
+        String url = "/noauth/login?username={username}&password={password}";
+        Map<String, Object> urlVariables = new HashMap<>();
+        urlVariables.put("username", username);
+        urlVariables.put("password", password);
+
+        ResponseEntity<String> responseEntity =
+                restTemplate.getForEntity(url, String.class, urlVariables);
+
+        String response = responseEntity.getBody();
+        if (!StringUtils.isEmpty(response)) {
+            return response.substring(1, response.length() - 1);
+        }
+        return null;
+    }
+
+    @Test
+    public void testCheckUsernameMatchesToken_whenUsernameMatchesToken() {
+        String token = login();
+
+        String username = "test";
+        String url = "/noauth/token/verify/username?token={token}&username={username}";
+        Map<String, Object> urlVariables = new HashMap<>();
+        urlVariables.put("token", token);
+        urlVariables.put("username", username);
+
+        ResponseEntity<Boolean> responseEntity =
+                restTemplate.getForEntity(url, Boolean.class, urlVariables);
+
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isTrue();
+    }
+
+    @Test
+    public void testCheckUsernameMatchesToken_whenUsernameNotMatchesToken() {
+        String token = login();
+
+        String username = "admin";
+        String url = "/noauth/token/verify/username?token={token}&username={username}";
+        Map<String, Object> urlVariables = new HashMap<>();
+        urlVariables.put("token", token);
+        urlVariables.put("username", username);
+
+        ResponseEntity<Boolean> responseEntity =
+                restTemplate.getForEntity(url, Boolean.class, urlVariables);
+
+        assertThat(responseEntity).isNotNull();
+        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(responseEntity.getBody()).isFalse();
     }
 }
