@@ -20,9 +20,9 @@ spring:
             non_contextual_creation: true
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://streamer-db.cmyghtop8klq.eu-central-1.rds.amazonaws.com:5432/videodb
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5441/videodb
+    username: sysadm
+    password: sysadm
     driver-class-name: org.postgresql.Driver
     tomcat:
       default-auto-commit: false
@@ -65,7 +65,7 @@ ribbon:
   ReadTimeout: 18000000
   ConnectTimeout: 18000000
   eureka:
-    enabled: false
+    enabled: true
 encrypt:
   failOnError: false
 
@@ -146,7 +146,7 @@ ribbon:
   ReadTimeout: 18000000
   ConnectTimeout: 18000000
   eureka:
-    enabled: false
+    enabled: true
 encrypt:
   failOnError: false
 

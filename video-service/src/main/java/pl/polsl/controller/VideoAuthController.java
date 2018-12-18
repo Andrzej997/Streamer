@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
+import pl.polsl.annotations.VerifyUsername;
 import pl.polsl.dto.TranscodeRequestDTO;
 import pl.polsl.dto.UploadVideoMetadataDTO;
 import pl.polsl.dto.VideoDTO;
@@ -53,10 +54,12 @@ public class VideoAuthController {
     }
 
     @GetMapping(value = "/download")
+    @VerifyUsername(parameterName = "username")
     public ResponseEntity<StreamingResponseBody>
     downloadVideoFile(@RequestParam("id") Long id,
                       @RequestParam("username") String username,
-                      @RequestHeader("Range") String startRange) {
+                      @RequestParam("authToken") String authToken,
+                      @RequestHeader(value = "Range", required = false) String startRange) {
         if (id == null || username == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -92,10 +95,12 @@ public class VideoAuthController {
     }
 
     @PostMapping("/file/metadata")
+    @VerifyUsername(parameterType = UploadVideoMetadataDTO.class)
     public
     @ResponseBody
     ResponseEntity<UploadVideoMetadataDTO>
-    saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO) {
+    saveVideoFileMetadata(@RequestBody UploadVideoMetadataDTO uploadVideoMetadataDTO,
+                          @RequestHeader("AuthHeader") String authHeader) {
         if (uploadVideoMetadataDTO == null) {
             return new ResponseEntity<UploadVideoMetadataDTO>(HttpStatus.NOT_FOUND);
         }
@@ -104,10 +109,12 @@ public class VideoAuthController {
     }
 
     @PostMapping("/video/transcode")
+    @VerifyUsername(parameterType = TranscodeRequestDTO.class)
     public
     @ResponseBody
     ResponseEntity<Long>
-    transcodeVideo(@RequestBody TranscodeRequestDTO request) {
+    transcodeVideo(@RequestBody TranscodeRequestDTO request,
+                   @RequestHeader("AuthHeader") String authHeader) {
         if (request == null) {
             return new ResponseEntity<Long>(HttpStatus.NOT_FOUND);
         }
@@ -122,11 +129,13 @@ public class VideoAuthController {
     }
 
     @GetMapping("/top10/videos")
+    @VerifyUsername(parameterName = "username")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>>
     getTop10VideosOnlyPrivates(@RequestParam(value = "title", required = false) String title,
-                               @RequestParam("username") String username) {
+                               @RequestParam("username") String username,
+                               @RequestHeader("AuthHeader") String authHeader) {
         if (StringUtils.isEmpty(username)) {
             return new ResponseEntity<List<VideoDTO>>(HttpStatus.NOT_FOUND);
         }
@@ -135,10 +144,12 @@ public class VideoAuthController {
     }
 
     @GetMapping("/user/videos")
+    @VerifyUsername(parameterName = "username")
     public
     @ResponseBody
     ResponseEntity<List<VideoDTO>>
-    getAllUserVideos(@RequestParam("username") String username) {
+    getAllUserVideos(@RequestParam("username") String username,
+                     @RequestHeader("AuthHeader") String authHeader) {
         if (StringUtils.isEmpty(username)) {
             return new ResponseEntity<List<VideoDTO>>(HttpStatus.NOT_FOUND);
         }
@@ -147,11 +158,13 @@ public class VideoAuthController {
     }
 
     @DeleteMapping("/delete/video")
+    @VerifyUsername(parameterName = "username")
     public
     @ResponseBody
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
-                          @RequestParam("username") String username) {
+                          @RequestParam("username") String username,
+                          @RequestHeader("AuthHeader") String authHeader) {
         if (StringUtils.isEmpty(username) || id == null) {
             return new ResponseEntity<Boolean>(HttpStatus.NOT_FOUND);
         }
@@ -160,10 +173,12 @@ public class VideoAuthController {
     }
 
     @PutMapping("/update/video")
+    @VerifyUsername(parameterType = VideoDTO.class)
     public
     @ResponseBody
     ResponseEntity<VideoDTO>
-    updateVideoMetadata(@RequestBody VideoDTO videoDTO) {
+    updateVideoMetadata(@RequestBody VideoDTO videoDTO,
+                        @RequestHeader("AuthHeader") String authHeader) {
         if (videoDTO == null) {
             return new ResponseEntity<VideoDTO>(HttpStatus.NOT_FOUND);
         }

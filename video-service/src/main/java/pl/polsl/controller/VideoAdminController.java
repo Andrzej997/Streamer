@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import pl.polsl.annotations.VerifyUsername;
 import pl.polsl.dto.VideoDTO;
 import pl.polsl.service.VideoManagementService;
 import pl.polsl.service.VideoMetadataService;
@@ -16,6 +17,7 @@ import java.util.List;
 @SuppressWarnings("ALL")
 @RestController
 @RequestMapping("/admin")
+// dla admina teoretycznie nie trzeba sprawdzać uprawnień - na api-gateway są dużo mocniejsze weryfikacje dla admina
 public class VideoAdminController {
 
     @Autowired
@@ -41,7 +43,8 @@ public class VideoAdminController {
     @ResponseBody
     ResponseEntity<Boolean>
     deleteFileAndMetadata(@RequestParam("id") Long id,
-                          @RequestParam("username") String username) {
+                          @RequestParam("username") String username,
+                          @RequestHeader("AuthHeader") String authHeader) {
         Boolean success = false;
         if (id == null || username == null) {
             return ResponseEntity.ok(success);

@@ -95,6 +95,21 @@ public class UsersNoAuthController {
         return new ResponseEntity<Boolean>(exists, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/token/verify/username")
+    public
+    @ResponseBody
+    ResponseEntity<Boolean>
+    checkUsernameMatchesToken(@RequestParam(value = "token") String token,
+                              @RequestParam(value = "username") String username) {
+
+        if (StringUtils.isEmpty(token) || StringUtils.isEmpty(username)) {
+            return new ResponseEntity<Boolean>(false, HttpStatus.BAD_REQUEST);
+        }
+        String usernameFromToken = tokenizer.getUsernameFromToken(token);
+        boolean equals = usernameFromToken.equals(username);
+        return new ResponseEntity<Boolean>(equals, HttpStatus.OK);
+    }
+
     private String generateToken(String username, String password, String email) {
         return this.tokenizer.generateToken(getUserDetails(username, email, password));
     }

@@ -19,7 +19,7 @@ spring:
             non_contextual_creation: true
     open-in-view: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/usersdb
+    url: jdbc:postgresql://localhost:5442/usersdb
     username: sysadm
     password: sysadm
     driver-class-name: org.postgresql.Driver
@@ -49,7 +49,7 @@ ribbon:
   ReadTimeout: 18000000
   ConnectTimeout: 18000000
   eureka:
-    enabled: false
+    enabled: true
 encrypt:
   failOnError: false
 logging:
@@ -121,7 +121,7 @@ ribbon:
   ReadTimeout: 18000000
   ConnectTimeout: 18000000
   eureka:
-    enabled: false
+    enabled: true
 encrypt:
   failOnError: false
 jwt:

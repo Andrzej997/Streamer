@@ -53,6 +53,8 @@ ribbon:
     enabled: true
 zuul:
   ignoredServices: "*"
+  ignoredPatterns:
+    - /auth/noauth/token/**
   host:
     connect-timeout-millis: 18000000
     socket-timeout-millis: 18000000
@@ -181,6 +183,8 @@ ribbon:
     enabled: true
 zuul:
   ignoredServices: "*"
+  ignoredPatterns:
+    - /auth/noauth/token/**
   host:
     connect-timeout-millis: 18000000
     socket-timeout-millis: 18000000
