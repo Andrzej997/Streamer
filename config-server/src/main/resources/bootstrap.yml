@@ -20,7 +20,8 @@ spring:
 server:
   port: 8888
 management:
-  context-path: /admin
+  endpoints:
+    enabled-by-default: false
 ---
 
 spring:
@@ -51,7 +52,8 @@ eureka:
 server:
   port: 8888
 management:
-  context-path: /admin
+  endpoints:
+    enabled-by-default: false
 
 ---
 spring:
@@ -76,7 +78,8 @@ spring:
 server:
   port: 8888
 management:
-  context-path: /admin
+  endpoints:
+    enabled-by-default: false
 ---
 spring:
   profiles: aws
@@ -106,4 +109,5 @@ eureka:
 server:
   port: 8888
 management:
-  context-path: /admin
+  endpoints:
+    enabled-by-default: false

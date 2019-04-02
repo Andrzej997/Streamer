@@ -15,6 +15,24 @@ spring:
       uri: http://config-server:8888
       discovery:
         serviceId: config-server
+management:
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    web:
+      server:
+        auto-time-requests: true
+  endpoint:
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
 ---
 spring:
   profiles: cloud

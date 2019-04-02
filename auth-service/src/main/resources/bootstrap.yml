@@ -63,6 +63,37 @@ jwt:
   header: AuthHeader
   key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
   expiration: 36000
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+    export:
+      elastic:
+        host: http://localhost:9200
+        enabled: true
+        step: 1s
+        index: metrics
+  endpoint:
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    auditevents:
+      enabled: true
+    httptrace:
+      enabled: true
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
 ---
 spring:
   profiles: docker
@@ -128,6 +159,37 @@ jwt:
   header: AuthHeader
   key: e038394bc945eed83ca8797aae26fddfae91b175fc4dd26339dd6cb8066c65b892d6ac07c0a3c0384601896ade90551905460af66e4864e9c71a31d6d523c136
   expiration: 36000
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+    export:
+      elastic:
+        host: http://localhost:9200
+        enabled: true
+        step: 1s
+        index: metrics
+  endpoint:
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    auditevents:
+      enabled: true
+    httptrace:
+      enabled: true
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
 
 ---
 spring:

@@ -131,6 +131,8 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
             literaryGenre = literaryGenreRepository.save(ebookMapper.toLiteraryGenre(ebookDTO.getLiteraryGenreDTO()));
         }
         if (literaryGenre == null) {
+            ebook.setLiteraryGenreByGenreId(null);
+            ebook.setGenreId(null);
             return;
         }
         ebook.setLiteraryGenreByGenreId(literaryGenre);
@@ -142,12 +144,12 @@ public class EbookMetadataServiceImpl implements EbookMetadataService {
         Optional<EbookFiles> file = ebookFilesRepository.findById(ebookDTO.getEbookFileId());
         if (ebookDTO.getEbookFileMetadataDTO() != null) {
             EbookFiles toEbookFiles = ebookMapper.toEbookFiles(ebookDTO.getEbookFileMetadataDTO());
-            if (file.isPresent()) {
-                toEbookFiles.setFile(file.get().getFile());
-            }
+            file.ifPresent(ebookFiles1 -> toEbookFiles.setFile(ebookFiles1.getFile()));
             ebookFiles = ebookFilesRepository.save(toEbookFiles);
         }
         if (ebookFiles == null) {
+            ebook.setEbookFilesByEbookFileId(null);
+            ebook.setEbookFileId(null);
             return;
         }
         ebook.setEbookFilesByEbookFileId(ebookFiles);

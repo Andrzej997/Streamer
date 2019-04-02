@@ -132,6 +132,8 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             imageTypes = imageTypesRepository.save(imageMapper.toImageTypes(imageDTO.getImageTypeDTO()));
         }
         if (imageTypes == null) {
+            images.setImageTypesByTypeId(null);
+            images.setTypeId(null);
             return;
         }
         images.setImageTypesByTypeId(imageTypes);
@@ -147,6 +149,8 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             imageFiles = imageFilesRepository.save(toImageFiles);
         }
         if (imageFiles == null) {
+            images.setImageFilesByImageFileId(null);
+            images.setImageFileId(null);
             return;
         }
         images.setImageFilesByImageFileId(imageFiles);

@@ -68,6 +68,37 @@ ribbon:
     enabled: true
 encrypt:
   failOnError: false
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+    export:
+      elastic:
+        host: http://localhost:9200
+        enabled: true
+        step: 1s
+        index: metrics
+  endpoint:
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    auditevents:
+      enabled: true
+    httptrace:
+      enabled: true
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
 
 ---
 spring:
@@ -149,6 +180,37 @@ ribbon:
     enabled: true
 encrypt:
   failOnError: false
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests: true
+    export:
+      elastic:
+        host: http://localhost:9200
+        enabled: true
+        step: 1s
+        index: metrics
+  endpoint:
+    health:
+      enabled: true
+    metrics:
+      enabled: true
+    auditevents:
+      enabled: true
+    httptrace:
+      enabled: true
+    shutdown:
+      enabled: true
+    restart:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    enabled-by-default: true
 
 ---
 spring:

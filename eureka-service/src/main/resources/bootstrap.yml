@@ -9,13 +9,9 @@ spring:
         serviceId: config-server
 server:
   port: 8761
-endpoints:
-  restart:
-    enabled: true
-  shutdown:
-    enabled: true
-  health:
-    sensitive: false
+management:
+  endpoints:
+    enabled-by-default: false
 eureka:
   instance:
     hostname: eureka-service
@@ -41,13 +37,9 @@ spring:
         serviceId: config-server
 server:
   port: 8761
-endpoints:
-  restart:
-    enabled: true
-  shutdown:
-    enabled: true
-  health:
-    sensitive: false
+management:
+  endpoints:
+    enabled-by-default: false
 eureka:
   instance:
     prefer-ip-address: false
@@ -79,13 +71,9 @@ spring:
       enabled: false
 server:
   port: 8761
-endpoints:
-  restart:
-    enabled: true
-  shutdown:
-    enabled: true
-  health:
-    sensitive: false
+management:
+  endpoints:
+    enabled-by-default: false
 eureka:
   instance:
     prefer-ip-address: false

@@ -118,7 +118,7 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
         if (uploadSongMetadataDTO == null || StringUtils.isEmpty(uploadSongMetadataDTO.getUsername())) {
             return null;
         }
-        if (uploadSongMetadataDTO == null || uploadSongMetadataDTO.getSongDTO() == null
+        if (uploadSongMetadataDTO.getSongDTO() == null
                 || uploadSongMetadataDTO.getSongDTO().getFileId() == null) {
             return null;
         }
@@ -161,6 +161,8 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             genre = musicGenresRepository.save(musicMapper.toMusicGenres(songDTO.getGenre()));
         }
         if (genre == null) {
+            songs.setMusicGenresByMusicGenreId(null);
+            songs.setMusicGenreId(null);
             return;
         }
         songs.setMusicGenresByMusicGenreId(genre);
@@ -173,6 +175,8 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             album = musicAlbumsRepository.save(musicMapper.toMusicAlbums(songDTO.getAlbum()));
         }
         if (album == null) {
+            songs.setMusicAlbumsByAlbumId(null);
+            songs.setAlbumId(null);
             return;
         }
         songs.setMusicAlbumsByAlbumId(album);
@@ -188,6 +192,8 @@ public class MusicMetadataServiceImpl implements MusicMetadataService {
             musicFiles = musicFilesRepository.save(toMusicFiles);
         }
         if (musicFiles == null) {
+            songs.setMusicFilesByFileId(null);
+            songs.setFileId(null);
             return;
         }
         songs.setMusicFilesByFileId(musicFiles);
