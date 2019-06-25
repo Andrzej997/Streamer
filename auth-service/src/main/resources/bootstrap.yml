@@ -7,6 +7,12 @@ spring:
       uri: http://localhost:8888
       discovery:
         enabled: true
+    kubernetes:
+      enabled: false
+      discovery:
+        enabled: false
+      ribbon:
+        enabled: false
   jpa:
     show_sql: true
     hibernate:

@@ -8,6 +8,12 @@ spring:
       discovery:
         enabled: true
         serviceId: config-server
+    kubernetes:
+      enabled: false
+      discovery:
+        enabled: false
+      ribbon:
+        enabled: false
   mvc:
     async:
       request-timeout: 3600000s

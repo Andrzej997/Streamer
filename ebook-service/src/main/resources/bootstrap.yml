@@ -8,6 +8,12 @@ spring:
       uri: http://localhost:8888/
       discovery:
         serviceId: config-server
+    kubernetes:
+      enabled: false
+      discovery:
+        enabled: false
+      ribbon:
+        enabled: false
 ---
 spring:
   profiles: docker

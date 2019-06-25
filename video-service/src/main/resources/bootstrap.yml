@@ -8,6 +8,12 @@ spring:
       discovery:
         enabled: false
       enabled: false
+    kubernetes:
+      enabled: false
+      discovery:
+        enabled: false
+      ribbon:
+        enabled: false
   jpa:
     show_sql: true
     hibernate:

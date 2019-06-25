@@ -212,6 +212,8 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
             return null;
         }
         List<ImageDTO> imageDTOList = imageMapper.toImageDTOList(imagesList);
+        RelayService relay = new RelayService();
+        relay.calculatePi();
         if (imageDTOList == null || imageDTOList.isEmpty()) {
             return null;
         } else {
