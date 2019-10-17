@@ -88,6 +88,16 @@ public class ImageNoAuthController {
         return ResponseEntity.ok(top10Images);
     }
 
+    @GetMapping("/images/top20")
+    public
+    @ResponseBody
+    ResponseEntity<List<ImageDTO>>
+    getTop20Images(@RequestParam(value = "title", required = false) String title) {
+
+        List<ImageDTO> top10Images = imageMetadataService.getTop20Images(null, title);
+        return ResponseEntity.ok(top10Images);
+    }
+
     @PostMapping("/public/images")
     public
     @ResponseBody

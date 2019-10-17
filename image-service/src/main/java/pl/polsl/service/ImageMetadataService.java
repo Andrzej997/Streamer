@@ -17,6 +17,8 @@ public interface ImageMetadataService {
 
     List<ImageDTO> getTop10Images(String username, String title);
 
+    List<ImageDTO> getTop20Images(String username, String title);
+
     List<ImageDTO> getAllUserImages(String username);
 
     List<ImageDTO> searchImagesByCriteria(SearchImageCriteriaDTO searchImageCriteriaDTO);

@@ -5,11 +5,11 @@ public class RelayService {
     private final int timeout; // in nanoseconds
 
     public RelayService() {
-        this.timeout = 100000;
+        this.timeout = 50000000;
     }
 
     public RelayService(int timeout) {
-        this.timeout = timeout * 1000;
+        this.timeout = timeout * 1000000;
     }
 
     void calculatePi() {
@@ -25,5 +25,14 @@ public class RelayService {
                 exit = true;
             }
         } while (!exit);
+    }
+
+    void calculateTimelessPi() {
+        double pi = 0;
+        boolean exit = false;
+        for (int i = 0; i < 1000000; i++) {
+            pi += Math.pow(-1, i)/(2*i+1);
+        }
+        System.out.println(pi);
     }
 }

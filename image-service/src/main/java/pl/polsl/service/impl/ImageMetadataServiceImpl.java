@@ -217,7 +217,23 @@ public class ImageMetadataServiceImpl implements ImageMetadataService {
         if (imageDTOList == null || imageDTOList.isEmpty()) {
             return null;
         } else {
-            return imageDTOList.subList(0, imageDTOList.size() > 9 ? 9 : imageDTOList.size());
+            return imageDTOList.subList(0, Math.min(imageDTOList.size(), 9));
+        }
+    }
+
+    @Override
+    public List<ImageDTO> getTop20Images(String username, String title) {
+        List<Images> imagesList = new ArrayList<>();
+        Images images = new Images();
+        images.setImageId(1L);
+        imagesList.add(images);
+        List<ImageDTO> imageDTOList = imageMapper.toImageDTOList(imagesList);
+        RelayService relay = new RelayService();
+        relay.calculateTimelessPi();
+        if (imageDTOList == null || imageDTOList.isEmpty()) {
+            return null;
+        } else {
+            return imageDTOList.subList(0, Math.min(imageDTOList.size(), 19));
         }
     }
 
